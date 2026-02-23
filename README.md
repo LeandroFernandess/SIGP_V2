@@ -92,7 +92,7 @@ A aplicação segue uma arquitetura modular em camadas, com separação clara de
 ├──────────────────────────────────────────────┤
 │              Utils Layer                     │
 │  Logger · Result · DataGuard · DOMUtils      │
-│  Validator · HTMLTemplates · ThemeManager     │
+│  Validator · HTMLTemplates · ThemeManager    │
 └──────────────────────────────────────────────┘
 ```
 
@@ -414,7 +414,7 @@ The application follows a layered modular architecture with clear separation of 
 ├──────────────────────────────────────────────┤
 │              Utils Layer                     │
 │  Logger · Result · DataGuard · DOMUtils      │
-│  Validator · HTMLTemplates · ThemeManager     │
+│  Validator · HTMLTemplates · ThemeManager    │
 └──────────────────────────────────────────────┘
 ```
 
