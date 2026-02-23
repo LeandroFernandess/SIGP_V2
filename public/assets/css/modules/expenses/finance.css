@@ -1,0 +1,1306 @@
+/**
+ * @file finance.css
+ * @description Finance/expenses module styling for expense tracking and management.
+ * 
+ * Contents:
+ * - Expenses sections grid (fixed, credit, total)
+ * - Section summary cards
+ * - Expense cards with categories
+ * - Credit card specific styling
+ * - Expense form modal
+ * - Action buttons
+ * - Light theme overrides
+ * 
+ * Dependencies: base.css, components.css, _containers.css, _hero.css, animations.css
+ * Used by: ExpensesPageHandler.js, FixedExpensesModule.js, CreditExpensesModule.js
+ * 
+ * @author Leandro Fialho Fernandes
+ */
+
+/* =========================================================
+   INTRO SECTION
+   Centered intro text below hero
+   ========================================================= */
+
+.expenses-intro {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.expenses-intro .intro-text {
+    color: var(--text-gray);
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+/* =========================================================
+   EXPENSES SECTIONS GRID
+   Three-column grid for fixed expenses, credit, and total
+   ========================================================= */
+
+.expenses-sections-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.expenses-section {
+    background: linear-gradient(165deg, rgba(255, 255, 255, 0.03) 0%, rgba(0, 0, 0, 0.12) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 18px;
+    padding: 1.5rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.25);
+    position: relative;
+    overflow: hidden;
+}
+
+.expenses-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #a855f7, #ec4899, #ef4444);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.expenses-section:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+    border-color: rgba(168, 85, 247, 0.2);
+}
+
+.expenses-section:hover::before {
+    opacity: 1;
+}
+
+.expenses-section:hover .section-icon {
+    transform: rotate(0deg) scale(1.1);
+    box-shadow: 0 12px 32px rgba(59, 130, 246, 0.5);
+}
+
+.expenses-total-section {
+    background: linear-gradient(165deg, rgba(239, 68, 68, 0.06) 0%, rgba(0, 0, 0, 0.15) 100%);
+    border-color: rgba(239, 68, 68, 0.15);
+}
+
+.expenses-total-section::before {
+    background: linear-gradient(90deg, #ef4444, #f97316, #f59e0b);
+}
+
+/* =========================================================
+   SECTION SUMMARY CARDS
+   Summary values and labels for each expense section
+   ========================================================= */
+
+.section-summary {
+    text-align: center;
+    padding: 1rem 0;
+}
+
+.summary-value {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+}
+
+.summary-value.negative {
+    color: #ef4444;
+}
+
+.summary-value.total-value {
+    color: #f97316;
+    font-size: 2.25rem;
+    text-shadow: 0 4px 16px rgba(249, 115, 22, 0.3);
+}
+
+.summary-percentage {
+    color: var(--text-gray);
+    font-size: 0.9rem;
+}
+
+/* =========================================================
+   MANAGEMENT SECTION
+   ========================================================= */
+
+.expenses-management-section {
+    background: linear-gradient(165deg, rgba(255, 255, 255, 0.03) 0%, rgba(0, 0, 0, 0.12) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
+}
+
+.visualization-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.visualization-header h2 {
+    color: var(--text-light);
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+}
+
+.visualization-header p {
+    color: var(--text-gray);
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+/* =========================================================
+   FORMS
+   ========================================================= */
+
+.finance-form {
+    background: linear-gradient(165deg, rgba(255, 255, 255, 0.03) 0%, rgba(0, 0, 0, 0.12) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 2rem;
+    border-radius: 20px;
+    margin-bottom: 2rem;
+    display: none;
+    animation: slideDown 0.3s ease;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
+}
+
+.finance-form.active {
+    display: block;
+}
+
+.finance-form.active~.expenses-list {
+    display: none;
+}
+
+.finance-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 1.25rem;
+}
+
+.finance-action-btn {
+    width: auto !important;
+    min-width: 220px;
+    margin-top: 0 !important;
+    padding: 0.85rem 1.5rem !important;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.finance-action-btn.is-hidden {
+    display: none !important;
+}
+
+.finance-action-btn.btn-primary {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    border: none;
+    color: white;
+}
+
+.finance-action-btn.btn-primary:hover {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
+}
+
+.finance-action-btn.btn-secondary {
+    background: linear-gradient(165deg, rgba(107, 114, 128, 0.25) 0%, rgba(75, 85, 99, 0.35) 100%);
+    border: 1px solid rgba(107, 114, 128, 0.3);
+    color: var(--text-light);
+}
+
+.finance-action-btn.btn-secondary:hover {
+    background: linear-gradient(165deg, rgba(107, 114, 128, 0.35) 0%, rgba(75, 85, 99, 0.45) 100%);
+    border-color: rgba(107, 114, 128, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.finance-action-btn.btn-delete-all {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    border: 1px solid rgba(220, 38, 38, 0.3);
+    color: white;
+    min-width: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.finance-action-btn.btn-delete-all svg {
+    stroke: white;
+    fill: none;
+}
+
+.finance-action-btn.btn-delete-all:hover {
+    background: linear-gradient(135deg, #b91c1c, #991b1b);
+    border-color: rgba(220, 38, 38, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(220, 38, 38, 0.4);
+}
+
+.finance-form h3 {
+    color: var(--text-light);
+    margin-bottom: 1.5rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.finance-form .btn-primary,
+.finance-form .btn-secondary {
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.finance-form .btn-primary {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    border: none;
+    color: white;
+}
+
+.finance-form .btn-primary:hover {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
+}
+
+.finance-form .btn-secondary {
+    background: linear-gradient(165deg, rgba(107, 114, 128, 0.25) 0%, rgba(75, 85, 99, 0.35) 100%);
+    border: 1px solid rgba(107, 114, 128, 0.3);
+    color: var(--text-light);
+}
+
+.finance-form .btn-secondary:hover {
+    background: linear-gradient(165deg, rgba(107, 114, 128, 0.35) 0%, rgba(75, 85, 99, 0.45) 100%);
+    border-color: rgba(107, 114, 128, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.form-input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-input-group label {
+    color: var(--text-gray);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.form-input-group input,
+.form-input-group select {
+    padding: 0.85rem 1rem;
+    background: linear-gradient(165deg, rgba(255, 255, 255, 0.02) 0%, rgba(0, 0, 0, 0.08) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    color: var(--text-light);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-input-group select {
+    background-color: #1f2937;
+    cursor: pointer;
+}
+
+.form-input-group select option {
+    background-color: #1f2937;
+    color: var(--text-light);
+    padding: 0.75rem 1rem;
+}
+
+.form-input-group select option:hover,
+.form-input-group select option:checked {
+    background-color: #374151;
+    color: #60a5fa;
+}
+
+.form-input-group input:focus,
+.form-input-group select:focus {
+    outline: none;
+    border-color: rgba(59, 130, 246, 0.4);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    background: linear-gradient(165deg, rgba(59, 130, 246, 0.04) 0%, rgba(0, 0, 0, 0.1) 100%);
+}
+
+/* =========================================================
+   SUMMARY CARDS
+   ========================================================= */
+
+.summary-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.summary-card {
+    background: linear-gradient(165deg, rgba(255, 255, 255, 0.03) 0%, rgba(0, 0, 0, 0.12) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 1.5rem;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
+.summary-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+}
+
+.summary-card.income {
+    border-left: 4px solid #10b981;
+}
+
+.summary-card.expense {
+    border-left: 4px solid #ef4444;
+}
+
+.summary-card.balance {
+    border-left: 4px solid #3b82f6;
+}
+
+.summary-card-title {
+    color: var(--text-gray);
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.summary-card-value {
+    color: var(--text-light);
+    font-size: 1.75rem;
+    font-weight: 700;
+}
+
+.summary-card-value.positive {
+    color: #10b981;
+}
+
+.summary-card-value.negative {
+    color: #ef4444;
+}
+
+/* =========================================================
+   EXPENSES LIST
+   ========================================================= */
+
+.expenses-list {
+    background: transparent;
+    border-radius: 12px;
+    overflow: visible;
+    padding: 0;
+}
+
+.expense-item {
+    padding: 1.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.3s ease;
+    background: linear-gradient(165deg, rgba(255, 255, 255, 0.02) 0%, rgba(0, 0, 0, 0.06) 100%);
+    border-radius: 14px;
+    margin-bottom: 0.75rem;
+}
+
+.expense-item:hover {
+    background: linear-gradient(165deg, rgba(59, 130, 246, 0.04) 0%, rgba(0, 0, 0, 0.08) 100%);
+    border-color: rgba(59, 130, 246, 0.15);
+}
+
+.expense-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.expense-info {
+    flex: 1;
+}
+
+.expense-name {
+    color: var(--text-light);
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.expense-details {
+    color: var(--text-gray);
+    font-size: 0.85rem;
+}
+
+.expense-category {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: rgba(59, 130, 246, 0.15);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 8px;
+    font-size: 0.75rem;
+    color: var(--light-blue);
+    margin-left: 0.5rem;
+    font-weight: 600;
+}
+
+.expense-value {
+    color: var(--text-light);
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-right: 1rem;
+}
+
+.expense-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* =========================================================
+   EXPENSE CARDS
+   ========================================================= */
+
+.expense-card {
+    padding: 0;
+    margin-bottom: 1.25rem;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 0;
+    align-items: stretch;
+    background: linear-gradient(165deg, rgba(255, 255, 255, 0.03) 0%, rgba(0, 0, 0, 0.12) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 20px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.expense-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+    border-color: rgba(59, 130, 246, 0.15);
+}
+
+.expense-card .expense-info {
+    padding: 1.5rem 1.5rem 1.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    justify-content: center;
+    z-index: 1;
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.expense-card .expense-info h4 {
+    color: var(--text-light);
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.3px;
+    line-height: 1.3;
+}
+
+.expense-card .expense-category {
+    color: var(--light-blue);
+    font-size: 0.875rem;
+    margin: 0;
+    padding: 0.3rem 0.75rem;
+    background: rgba(59, 130, 246, 0.15);
+    border-radius: 6px;
+    width: fit-content;
+    font-weight: 600;
+    border: 1px solid rgba(59, 130, 246, 0.25);
+}
+
+.expense-card .expense-due,
+.expense-card .expense-installments {
+    color: rgba(148, 163, 184, 0.9);
+    font-size: 0.85rem;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    line-height: 1.5;
+}
+
+.expense-card .installment-badge {
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(139, 92, 246, 0.25));
+    color: #c4b5fd;
+    padding: 0.4rem 0.9rem;
+    border-radius: 8px;
+    font-weight: 700;
+    border: 1px solid rgba(168, 85, 247, 0.35);
+    font-size: 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 8px rgba(168, 85, 247, 0.15);
+}
+
+.expense-card .expense-amount {
+    padding: 1.5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    z-index: 1;
+    background: linear-gradient(165deg, rgba(255, 255, 255, 0.02) 0%, rgba(0, 0, 0, 0.08) 100%);
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    min-width: 200px;
+}
+
+.expense-card .amount-value {
+    color: var(--text-light);
+    font-size: 2rem;
+    font-weight: 900;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    letter-spacing: -1px;
+    line-height: 1;
+}
+
+.expense-card .amount-label {
+    color: rgba(148, 163, 184, 0.8);
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.expense-card .expense-actions {
+    padding: 1.5rem;
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    z-index: 1;
+}
+
+.expense-card.credit-expense .expense-actions {
+    margin-top: 3.5rem;
+}
+
+.expense-card.fixed-expense .expense-actions {
+    margin-top: 2.3rem;
+}
+
+.expense-card.paid-expense {
+    opacity: 0.7;
+    border-color: rgba(34, 197, 94, 0.3);
+}
+
+.expense-card.paid-expense::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.05) 0%, transparent 100%);
+    pointer-events: none;
+    border-radius: inherit;
+}
+
+.expense-paid-status {
+    color: #22c55e;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+}
+
+.expense-card.yearly-expense::after {
+    content: '🗓️';
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.5rem;
+    opacity: 0.8;
+    pointer-events: none;
+}
+
+.expense-card.yearly-expense {
+    border-left: 4px solid rgba(168, 85, 247, 0.5);
+}
+
+.expense-card.yearly-expense .amount-label {
+    color: rgba(168, 85, 247, 0.9);
+    font-weight: 600;
+}
+
+.expense-card.monthly-expense::after {
+    content: '📅';
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.5rem;
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.expense-card.monthly-expense {
+    border-left: 4px solid rgba(59, 130, 246, 0.4);
+}
+
+@media (max-width: 1024px) {
+    .expense-card {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+    }
+
+    .expense-card .expense-info {
+        padding: 1.5rem;
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .expense-card .expense-amount {
+        padding: 1.25rem;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        min-width: unset;
+    }
+
+    .expense-card .amount-value {
+        font-size: 1.75rem;
+    }
+
+    .expense-card .expense-actions {
+        padding: 1.25rem;
+        flex-direction: row;
+        gap: 1rem;
+    }
+
+    .expense-card .btn-edit,
+    .expense-card .btn-delete,
+    .expense-card .btn-mark-paid,
+    .expense-card .btn-unmark-paid {
+        flex: 1;
+        min-width: unset;
+    }
+}
+
+@media (max-width: 640px) {
+    .expense-card .expense-info {
+        padding-left: 1.25rem;
+    }
+
+    .expense-card .amount-value {
+        font-size: 1.5rem;
+    }
+}
+
+/* =========================================================
+   TABS
+   ========================================================= */
+
+.tabs,
+.expense-tabs,
+.finance-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.08);
+    background: linear-gradient(165deg, rgba(255, 255, 255, 0.02) 0%, rgba(0, 0, 0, 0.06) 100%);
+    border-radius: 16px 16px 0 0;
+    padding: 0.5rem 0.5rem 0;
+}
+
+.tab,
+.expense-tab,
+.finance-tab {
+    padding: 1rem 1.75rem;
+    background: transparent;
+    border: none;
+    color: var(--text-gray);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: 12px 12px 0 0;
+    letter-spacing: 0.3px;
+}
+
+.tab:hover,
+.expense-tab:hover,
+.finance-tab:hover {
+    color: var(--light-blue);
+    background: linear-gradient(165deg, rgba(59, 130, 246, 0.06) 0%, rgba(59, 130, 246, 0.02) 100%);
+}
+
+.tab.active,
+.expense-tab.active,
+.finance-tab.active {
+    color: #60a5fa;
+    border-bottom-color: #3b82f6;
+    background: linear-gradient(165deg, rgba(59, 130, 246, 0.12) 0%, rgba(59, 130, 246, 0.04) 100%);
+}
+
+.tab-content,
+.expense-tab-content {
+    display: none;
+}
+
+.tab-content.active,
+.expense-tab-content.active {
+    display: block;
+}
+
+/* =========================================================
+   CHARTS
+   ========================================================= */
+
+.chart-container {
+    background: linear-gradient(165deg, rgba(255, 255, 255, 0.03) 0%, rgba(0, 0, 0, 0.12) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 2rem;
+    border-radius: 20px;
+    margin-bottom: 2rem;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
+}
+
+.chart-container h3 {
+    color: var(--text-light);
+    margin-bottom: 1.5rem;
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+}
+
+.chart-wrapper {
+    position: relative;
+    height: 300px;
+}
+
+.chart-bar {
+    display: flex;
+    align-items: flex-end;
+    gap: 1rem;
+    height: 100%;
+    padding: 1rem 0;
+}
+
+.bar-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.bar {
+    width: 100%;
+    background: linear-gradient(to top, #3b82f6, #60a5fa);
+    border-radius: 10px 10px 0 0;
+    position: relative;
+    transition: all 0.3s ease;
+    min-height: 20px;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+}
+
+.bar:hover {
+    opacity: 0.9;
+    transform: translateY(-6px);
+    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.35);
+}
+
+.bar-value {
+    position: absolute;
+    top: -28px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--text-light);
+    font-size: 0.9rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.bar-label {
+    color: var(--text-gray);
+    font-size: 0.85rem;
+    text-align: center;
+    font-weight: 500;
+}
+
+.donut-chart {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3rem;
+}
+
+.donut-chart-svg-container {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    aspect-ratio: 1;
+    margin: 0 auto;
+}
+
+.donut-svg {
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.donut-slice {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.donut-tooltip {
+    position: absolute;
+    display: none;
+    background: linear-gradient(165deg, rgba(15, 23, 42, 0.98) 0%, rgba(0, 0, 0, 0.95) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 1rem;
+    color: var(--text-light);
+    font-size: 0.9rem;
+    pointer-events: none;
+    z-index: 1000;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    min-width: 140px;
+}
+
+.donut-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 300px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: linear-gradient(165deg, rgba(255, 255, 255, 0.02) 0%, rgba(0, 0, 0, 0.06) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.legend-item:hover {
+    background: linear-gradient(165deg, rgba(59, 130, 246, 0.06) 0%, rgba(0, 0, 0, 0.08) 100%);
+    transform: translateX(4px);
+}
+
+.legend-color {
+    width: 18px;
+    height: 18px;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+.legend-text {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.legend-value {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin-left: auto;
+    font-weight: 700;
+}
+
+.empty-state-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+/* =========================================================
+   PROCESSING STATES
+   ========================================================= */
+
+.expense-card.processing {
+    position: relative;
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.expense-card.processing::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(59, 130, 246, 0.15) 50%,
+            transparent 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+    border-radius: 20px;
+    pointer-events: none;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+.expense-card.saving {
+    border-color: rgba(59, 130, 246, 0.4) !important;
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+}
+
+.expense-card.deleting {
+    border-color: rgba(239, 68, 68, 0.4) !important;
+    animation: fadeOutPulse 0.8s ease-in-out;
+}
+
+.expense-card.success {
+    animation: successPulse 0.6s ease-out;
+}
+
+.expenses-list.loading {
+    position: relative;
+    min-height: 200px;
+}
+
+.expenses-list.loading::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 16px;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.expenses-list.loading::after {
+    content: '⏳';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2.5rem;
+    z-index: 11;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+.processing-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(139, 92, 246, 0.15));
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    border-radius: 10px;
+    color: #60a5fa;
+    font-size: 0.9rem;
+    font-weight: 600;
+    animation: fadeInUp 0.3s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.processing-indicator .spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(96, 165, 250, 0.3);
+    border-top-color: #60a5fa;
+    border-radius: 50%;
+    animation: spinSimple 0.8s linear infinite;
+}
+
+@keyframes spinSimple {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (min-width: 1600px) {
+    .expenses-container {
+        max-width: 1800px;
+        padding: 2.5rem 3rem;
+    }
+}
+
+@media (max-width: 1400px) {
+    .expenses-sections-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.25rem;
+    }
+
+    .expenses-section {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 1200px) {
+    .summary-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 968px) {
+    .expenses-container {
+        padding: 1.5rem;
+    }
+
+    .expenses-sections-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .expenses-section {
+        padding: 1.25rem;
+    }
+
+    .expenses-hero h1 {
+        font-size: 2rem;
+    }
+
+    .summary-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .donut-chart {
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .donut-chart-svg-container {
+        width: 340px;
+        height: 340px;
+    }
+}
+
+@media (max-width: 768px) {
+    .expenses-hero {
+        padding: 2rem 1.5rem;
+    }
+
+    .expenses-hero h1 {
+        font-size: 1.75rem;
+    }
+
+    .expenses-section {
+        padding: 1.5rem;
+    }
+
+    .expenses-management-section {
+        padding: 1.5rem;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .expense-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .expense-actions {
+        width: 100%;
+    }
+
+    .btn-delete {
+        flex: 1;
+    }
+
+    .donut-chart-svg-container {
+        width: 300px;
+        height: 300px;
+    }
+
+    .donut-legend {
+        max-width: 100%;
+    }
+
+    .tabs,
+    .expense-tabs,
+    .finance-tabs {
+        overflow-x: auto;
+        padding: 0.5rem 0.25rem 0;
+    }
+
+    .tab,
+    .expense-tab,
+    .finance-tab {
+        padding: 0.85rem 1.25rem;
+        font-size: 0.9rem;
+        white-space: nowrap;
+    }
+
+    .finance-form {
+        padding: 1.5rem;
+        border-radius: 16px;
+    }
+
+    .summary-card {
+        padding: 1.25rem;
+    }
+
+    .summary-card-value {
+        font-size: 1.5rem;
+    }
+
+    .chart-container {
+        padding: 1.5rem;
+        border-radius: 16px;
+    }
+
+    .section-header {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .expenses-container {
+        padding: 1rem;
+    }
+
+    .expenses-hero {
+        padding: 1.5rem 1rem;
+        border-radius: 16px;
+    }
+
+    .expenses-hero h1 {
+        font-size: 1.5rem;
+    }
+
+    .expenses-section {
+        padding: 1.25rem;
+        border-radius: 16px;
+    }
+
+    .summary-value {
+        font-size: 1.5rem;
+    }
+
+    .summary-value.total-value {
+        font-size: 1.75rem;
+    }
+
+    .expenses-management-section {
+        padding: 1.25rem;
+        border-radius: 16px;
+    }
+
+    .finance-form {
+        padding: 1rem;
+    }
+
+    .form-input-group input,
+    .form-input-group select {
+        padding: 0.75rem;
+    }
+
+    .summary-card {
+        padding: 1rem;
+    }
+
+    .summary-card-value {
+        font-size: 1.35rem;
+    }
+
+    .expense-item {
+        padding: 0.875rem;
+    }
+
+    .expense-value {
+        font-size: 1.1rem;
+    }
+
+    .tab,
+    .expense-tab,
+    .finance-tab {
+        padding: 0.75rem 1rem;
+        font-size: 0.85rem;
+    }
+
+    .donut-chart-svg-container {
+        width: 100%;
+        max-width: 260px;
+        height: auto;
+        aspect-ratio: 1;
+        margin: 0 auto;
+    }
+
+    .legend-item {
+        padding: 0.6rem 0.75rem;
+    }
+
+    .finance-action-btn {
+        min-width: unset;
+        width: 100%;
+    }
+
+    .expense-amount {
+        min-width: unset;
+    }
+
+    .expense-actions {
+        flex-direction: column;
+        gap: 0.375rem;
+    }
+
+    .expense-actions button {
+        width: 100%;
+        min-height: 44px;
+    }
+}

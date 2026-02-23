@@ -1,0 +1,451 @@
+/**
+ * @file base.css
+ * @description Base styles and CSS Custom Properties (variables).
+ * 
+ * Contents:
+ * - CSS Reset (box-sizing, margins)
+ * - Dark theme variables (default)
+ * - Light theme variables
+ * - Light theme semantic tokens
+ * - Global body styles
+ * - Custom scrollbar
+ * - Utility classes
+ * 
+ * Dependencies: None (loaded first)
+ * Used by: All other CSS files via CSS variables
+ * 
+ * @author Leandro Fialho Fernandes
+ */
+
+/* =========================================================
+   CSS RESET
+   ========================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* =========================================================
+   CSS VARIABLES - DARK THEME (DEFAULT)
+   ========================================================= */
+
+:root {
+    --primary-blue: #1e3a8a;
+    --secondary-blue: #3b82f6;
+    --light-blue: #60a5fa;
+
+    --dark-bg: #1f2937;
+    --darker-bg: #111827;
+    --card-bg: #374151;
+    --input-bg: #1f2937;
+
+    --text-light: #f9fafb;
+    --text-gray: #d1d5db;
+
+    --border-color: #4b5563;
+
+    --success-bg: rgba(34, 197, 94, 0.2);
+    --success-border: rgba(34, 197, 94, 0.4);
+    --success-text: #86efac;
+
+    --error-bg: rgba(239, 68, 68, 0.2);
+    --error-border: rgba(239, 68, 68, 0.4);
+    --error-text: #fca5a5;
+}
+
+/* =========================================================
+   LIGHT THEME VARIABLES
+   ========================================================= */
+
+body.light-theme {
+    --primary-blue: #4361ee;
+    --secondary-blue: #5a7cf7;
+    --light-blue: #3a56d4;
+    --dark-blue: #2d3ea8;
+
+    --dark-bg: #f5f7fb;
+    --darker-bg: #edf0f7;
+    --card-bg: #ffffff;
+    --input-bg: #f8f9fd;
+
+    --text-light: #1e293b;
+    --text-light-buttons: #ffffff;
+    --text-gray: #475569;
+
+    --border-color: #dde3f0;
+
+    --success-bg: rgba(16, 185, 129, 0.1);
+    --success-border: rgba(16, 185, 129, 0.35);
+    --success-text: #059669;
+
+    --error-bg: rgba(239, 68, 68, 0.1);
+    --error-border: rgba(239, 68, 68, 0.35);
+    --error-text: #dc2626;
+
+    /* ========================================================================
+       LIGHT THEME SEMANTIC TOKENS
+       Enhanced for visual hierarchy and material depth
+       ======================================================================== */
+
+    --light-card-solid: #ffffff;
+    --light-card-semi: rgba(255, 255, 255, 0.94);
+    --light-card-trans: rgba(245, 247, 251, 0.88);
+    --light-bg-hover: rgba(232, 237, 248, 0.6);
+
+    --blue-overlay-light: rgba(67, 97, 238, 0.03);
+    --blue-overlay-medium: rgba(67, 97, 238, 0.05);
+    --blue-overlay-strong: rgba(67, 97, 238, 0.08);
+    --blue-overlay-intense: rgba(67, 97, 238, 0.11);
+    --blue-overlay-heavy: rgba(67, 97, 238, 0.15);
+
+    --blue-border-light: rgba(195, 205, 225, 0.4);
+    --blue-border-medium: rgba(150, 165, 200, 0.35);
+    --blue-border-strong: rgba(67, 97, 238, 0.2);
+    --blue-border-intense: rgba(67, 97, 238, 0.3);
+    --blue-border-heavy: rgba(67, 97, 238, 0.45);
+
+    --blue-shadow-light: rgba(0, 0, 0, 0.04);
+    --blue-shadow-medium: rgba(0, 0, 0, 0.06);
+    --blue-shadow-strong: rgba(0, 0, 0, 0.08);
+    --blue-shadow-intense: rgba(0, 0, 0, 0.12);
+
+    --lt-text-primary: #1e293b;
+    --lt-text-secondary: #334155;
+    --lt-text-tertiary: #475569;
+    --lt-text-muted: #64748b;
+    --lt-text-disabled: #cbd5e1;
+    --lt-text-label: #475569;
+
+    --lt-warning-bg: rgba(245, 158, 11, 0.08);
+    --lt-warning-text: #d97706;
+    --lt-warning-border: rgba(245, 158, 11, 0.25);
+
+    --lt-success-bg: rgba(16, 185, 129, 0.08);
+    --lt-success-text: #059669;
+    --lt-success-border: rgba(16, 185, 129, 0.25);
+
+    --lt-danger-bg: rgba(239, 68, 68, 0.08);
+    --lt-danger-text: #dc2626;
+    --lt-danger-border: rgba(239, 68, 68, 0.25);
+
+    --lt-purple-bg: rgba(139, 92, 246, 0.08);
+    --lt-purple-text: #7c3aed;
+    --lt-purple-border: rgba(139, 92, 246, 0.25);
+
+    --lt-btn-edit-gradient: linear-gradient(135deg, #f59e0b, #fbbf24);
+    --lt-btn-edit-hover: linear-gradient(135deg, #d97706, #f59e0b);
+    --lt-btn-edit-border: rgba(245, 158, 11, 0.35);
+    --lt-btn-edit-shadow: rgba(245, 158, 11, 0.3);
+
+    --lt-btn-delete-gradient: linear-gradient(135deg, #dc2626, #ef4444);
+    --lt-btn-delete-hover: linear-gradient(135deg, #b91c1c, #dc2626);
+    --lt-btn-delete-border: rgba(239, 68, 68, 0.35);
+    --lt-btn-delete-shadow: rgba(239, 68, 68, 0.3);
+
+    --lt-btn-reset-gradient: linear-gradient(135deg, #8b5cf6, #a78bfa);
+    --lt-btn-reset-hover: linear-gradient(135deg, #7c3aed, #8b5cf6);
+    --lt-btn-reset-border: rgba(139, 92, 246, 0.35);
+    --lt-btn-reset-shadow: rgba(139, 92, 246, 0.3);
+
+    --lt-icon-stroke: #1e293b;
+}
+
+/* =========================================================
+   GLOBAL STYLES
+   ========================================================= */
+
+html {
+    font-size: 90%;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #0f172a;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    color: var(--text-light);
+    transition: background-color 0.45s ease, color 0.45s ease;
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+        radial-gradient(circle at 50% 50%, transparent 0%, rgba(0, 0, 0, 0.3) 100%),
+        radial-gradient(ellipse at 20% 0%, rgba(30, 58, 138, 0.3) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 100%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+        linear-gradient(165deg, #0f172a 0%, #1e293b 40%, #1e3a8a 100%);
+    pointer-events: none;
+    z-index: -2;
+    opacity: 1;
+    transition: opacity 0.45s ease;
+}
+
+body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+        radial-gradient(circle at 50% 50%, transparent 0%, rgba(255, 255, 255, 0.4) 100%),
+        radial-gradient(ellipse at 20% 0%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 100%, rgba(96, 165, 250, 0.06) 0%, transparent 50%),
+        linear-gradient(165deg, #fafbfc 0%, #f4f7fa 40%, #eef4fb 100%);
+    pointer-events: none;
+    z-index: -2;
+    opacity: 0;
+    transition: opacity 0.45s ease;
+}
+
+body.light-theme {
+    background-color: #f5f7fb;
+}
+
+body.light-theme::before {
+    opacity: 0;
+}
+
+body.light-theme::after {
+    opacity: 1;
+}
+
+body.dark-theme {
+    background-color: #0f172a;
+}
+
+body.dark-theme::before {
+    opacity: 1;
+}
+
+body.dark-theme::after {
+    opacity: 0;
+}
+
+body.theme-switching,
+body.theme-switching *,
+body.theme-switching *::before,
+body.theme-switching *::after {
+    transition: background-color 0.45s ease,
+        color 0.45s ease,
+        border-color 0.45s ease,
+        box-shadow 0.45s ease,
+        fill 0.45s ease,
+        stroke 0.45s ease !important;
+}
+
+/* =========================================================
+   CUSTOM SCROLLBAR
+   ========================================================= */
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--dark-bg);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+    transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-blue);
+}
+
+body.light-theme ::-webkit-scrollbar-track {
+    background: rgba(241, 245, 249, 0.5);
+}
+
+body.light-theme ::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.4);
+    border-radius: 4px;
+}
+
+body.light-theme ::-webkit-scrollbar-thumb:hover {
+    background: rgba(59, 130, 246, 0.5);
+}
+
+/* =========================================================
+   UTILITY CLASSES
+   ========================================================= */
+
+
+.text-center {
+    text-align: center;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.text-right {
+    text-align: right;
+}
+
+
+.mb-0 {
+    margin-bottom: 0;
+}
+
+.mb-1 {
+    margin-bottom: 0.5rem;
+}
+
+.mb-2 {
+    margin-bottom: 1rem;
+}
+
+.mb-3 {
+    margin-bottom: 1.5rem;
+}
+
+.mb-4 {
+    margin-bottom: 2rem;
+}
+
+.mt-0 {
+    margin-top: 0;
+}
+
+.mt-1 {
+    margin-top: 0.5rem;
+}
+
+.mt-2 {
+    margin-top: 1rem;
+}
+
+.mt-3 {
+    margin-top: 1.5rem;
+}
+
+.mt-4 {
+    margin-top: 2rem;
+}
+
+
+.p-0 {
+    padding: 0;
+}
+
+.p-1 {
+    padding: 0.5rem;
+}
+
+.p-2 {
+    padding: 1rem;
+}
+
+.p-3 {
+    padding: 1.5rem;
+}
+
+.p-4 {
+    padding: 2rem;
+}
+
+
+.d-none {
+    display: none;
+}
+
+.d-block {
+    display: block;
+}
+
+.d-flex {
+    display: flex;
+}
+
+.d-grid {
+    display: grid;
+}
+
+
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flex-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.gap-1 {
+    gap: 0.5rem;
+}
+
+.gap-2 {
+    gap: 1rem;
+}
+
+.gap-3 {
+    gap: 1.5rem;
+}
+
+
+.invisible {
+    visibility: hidden;
+}
+
+.visible {
+    visibility: visible;
+}
+
+
+.relative {
+    position: relative;
+}
+
+.absolute {
+    position: absolute;
+}
+
+
+.w-full {
+    width: 100%;
+}
+
+.w-auto {
+    width: auto;
+}
+
+
+.overflow-hidden {
+    overflow: hidden;
+}
+
+.overflow-auto {
+    overflow: auto;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.cursor-default {
+    cursor: default;
+}

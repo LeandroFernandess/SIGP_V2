@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0f172a">
+    <link rel="icon" type="image/png" href="assets/img/logo.png">
+    <title>Dashboard - SIGP</title>
+
+    <!-- Base -->
+    <link rel="stylesheet" href="assets/css/base/base.css">
+    <link rel="stylesheet" href="assets/css/base/components.css">
+    <link rel="stylesheet" href="assets/css/base/loader.css">
+    <link rel="stylesheet" href="assets/css/base/animations.css">
+
+    <!-- Layout -->
+    <link rel="stylesheet" href="assets/css/layout/dashboard.css">
+
+    <!-- Components -->
+    <link rel="stylesheet" href="assets/css/components/tabs.css">
+    <link rel="stylesheet" href="assets/css/components/forms.css">
+    <link rel="stylesheet" href="assets/css/components/_hero.css">
+    <link rel="stylesheet" href="assets/css/components/_containers.css">
+    <link rel="stylesheet" href="assets/css/components/_version.css">
+
+    <!-- Modules -->
+    <link rel="stylesheet" href="assets/css/modules/expenses/finance.css">
+    <link rel="stylesheet" href="assets/css/modules/expenses/income.css">
+    <link rel="stylesheet" href="assets/css/modules/expenses/reports.css">
+    <link rel="stylesheet" href="assets/css/modules/settings/settings.css">
+    <link rel="stylesheet" href="assets/css/modules/documents/documents.css">
+    <link rel="stylesheet" href="assets/css/modules/exams/exams.css">
+    <link rel="stylesheet" href="assets/css/modules/training/training.css">
+    <link rel="stylesheet" href="assets/css/modules/support/support.css">
+    <link rel="stylesheet" href="assets/css/modules/personal/personal.css">
+
+    <!-- Themes -->
+    <link rel="stylesheet" href="assets/css/themes/light-theme.css">
+    <link rel="stylesheet" href="assets/css/themes/tracking-light-theme.css">
+
+    <!-- Responsive - MUST BE LAST to override everything -->
+    <link rel="stylesheet" href="assets/css/base/responsive.css">
+
+    <!-- SweetAlert2 - Custom Alerts -->
+    <link rel="stylesheet" href="assets/css/themes/sweet-alert2.css">
+    <link rel="stylesheet" href="assets/css/themes/sweet-alert-custom.css">
+
+    <!-- EmailJS - Email Service -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script src="assets/js/core/emailjsInit.js"></script>
+</head>
+
+<body class="dashboard-body">
+
+    <!-- SIDEBAR - Side Navigation -->
+    <aside class="sidebar" id="sidebar">
+
+        <!-- Sidebar Header -->
+        <div class="sidebar-header">
+            <div class="sidebar-header-content">
+                <h1 class="sidebar-logo">SIGP</h1>
+                <p class="sidebar-subtitle">Sistema Inteligente de Gestão Pessoal</p>
+            </div>
+            <button class="btn-close-sidebar" id="btnCloseSidebar" title="Fechar menu">
+                <span>✕</span>
+            </button>
+        </div>
+
+        <!-- User Information -->
+        <div class="user-info">
+            <div class="user-avatar">
+                <span id="userInitials"></span>
+            </div>
+            <div class="user-details">
+                <p class="user-id" id="userId"></p>
+                <p class="user-name" id="userName"></p>
+            </div>
+        </div>
+
+        <!-- Main Navigation -->
+        <nav class="sidebar-nav">
+
+            <!-- Link: Home -->
+            <a href="#" class="nav-item active" data-page="home">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-text">Início</span>
+            </a>
+
+            <!-- Folder: Financial -->
+            <div class="nav-folder">
+                <button class="nav-folder-toggle" data-folder="financeiro">
+                    <span class="nav-icon">💰</span>
+                    <span class="nav-text">Financeiro</span>
+                    <span class="folder-arrow">▼</span>
+                </button>
+                <div class="nav-folder-content" data-folder-content="financeiro">
+                    <a href="#" class="nav-item nav-subitem" data-page="renda-mensal">
+                        <span class="nav-icon">💵</span>
+                        <span class="nav-text">Renda Mensal</span>
+                    </a>
+                    <a href="#" class="nav-item nav-subitem" data-page="gastos">
+                        <span class="nav-icon">💳</span>
+                        <span class="nav-text">Gastos</span>
+                    </a>
+                    <a href="#" class="nav-item nav-subitem" data-page="relatorio-financeiro">
+                        <span class="nav-icon">📊</span>
+                        <span class="nav-text">Relatório Completo</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Folder: Personal -->
+            <div class="nav-folder">
+                <button class="nav-folder-toggle" data-folder="pessoal">
+                    <span class="nav-icon">👤</span>
+                    <span class="nav-text">Pessoal</span>
+                    <span class="folder-arrow">▼</span>
+                </button>
+                <!-- Personal Folder Subitems -->
+                <div class="nav-folder-content" data-folder-content="pessoal">
+                    <a href="#" class="nav-item nav-subitem" data-page="anotacoes">
+                        <span class="nav-icon">📝</span>
+                        <span class="nav-text">Anotações</span>
+                    </a>
+                    <a href="#" class="nav-item nav-subitem" data-page="exames-medicos">
+                        <span class="nav-icon">🏥</span>
+                        <span class="nav-text">Exames Médicos</span>
+                    </a>
+                    <a href="#" class="nav-item nav-subitem" data-page="documentos">
+                        <span class="nav-icon">📄</span>
+                        <span class="nav-text">Documentos</span>
+                    </a>
+                    <a href="#" class="nav-item nav-subitem" data-page="treinos">
+                        <span class="nav-icon">💪</span>
+                        <span class="nav-text">Treinos</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Link: Settings -->
+            <a href="#" class="nav-item" data-page="configuracoes">
+                <span class="nav-icon">⚙️</span>
+                <span class="nav-text">Configurações</span>
+            </a>
+
+            <!-- Link: Support -->
+            <a href="#" class="nav-item" data-page="suporte">
+                <span class="nav-icon">❓</span>
+                <span class="nav-text">Suporte</span>
+            </a>
+        </nav>
+
+        <!-- Sidebar Footer -->
+        <div class="sidebar-footer">
+            <button class="btn-logout" id="btnLogout">
+                <span class="nav-icon">🚪</span>
+                <span class="nav-text">Sair</span>
+            </button>
+
+            <!-- Version Badge -->
+            <div id="versionBadge" class="version-badge-container">
+                <!-- Será preenchido dinamicamente pelo VersionManager -->
+            </div>
+        </div>
+
+    </aside>
+
+    <!-- Overlay to close sidebar on mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <main class="main-content">
+
+        <header class="dashboard-header">
+            <button class="btn-toggle-sidebar" id="btnToggleSidebar">
+                <span>☰</span>
+            </button>
+            <h1 class="page-title" id="pageTitle">Início</h1>
+        </header>
+
+        <!-- Dynamic Content Area -->
+        <div class="content-area" id="contentArea">
+            <!-- Content will be loaded dynamically here -->
+        </div>
+
+    </main>
+
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- SCRIPTS - Firebase & Services (Módulos ES6) -->
+    <script type="module" src="assets/js/core/firebaseConfig.js"></script>
+    <script type="module" src="assets/js/core/firebaseDataService.js"></script>
+    <script type="module" src="assets/js/core/firebaseGlobals.js"></script>
+    <script type="module" src="assets/js/services/UserService.js"></script>
+    <script type="module" src="assets/js/services/FinanceService.js"></script>
+    <script type="module" src="assets/js/services/PersonalDataService.js"></script>
+    <script type="module" src="assets/js/services/TrainingService.js"></script>
+
+    <!-- SCRIPTS - Utilities -->
+    <script src="assets/js/utils/Logger.js"></script>
+    <script src="assets/js/utils/FormUtils.js"></script>
+    <script src="assets/js/utils/DOMUtils.js"></script>
+    <script src="assets/js/utils/Result.js"></script>
+    <script src="assets/js/utils/DataGuard.js"></script>
+    <script src="assets/js/utils/AuthErrorMapper.js"></script>
+    <script src="assets/js/utils/HTMLTemplates.js"></script>
+    <script src="assets/js/utils/VersionManager.js"></script>
+
+    <!-- SCRIPTS - Core -->
+    <script src="assets/js/core/EventBus.js"></script>
+
+    <!--  SCRIPTS - Managers -->
+    <script src="assets/js/managers/UIManager.js"></script>
+    <script src="assets/js/managers/DashboardManager.js"></script>
+    <script src="assets/js/managers/FormStateManager.js"></script>
+    <script src="assets/js/managers/TabManager.js"></script>
+
+    <!-- Expenses Module -->
+    <script src="assets/js/modules/expenses/IncomePageHandler.js"></script>
+    <script src="assets/js/modules/expenses/BaseExpenseModule.js"></script>
+    <script src="assets/js/modules/expenses/FixedExpensesModule.js"></script>
+    <script src="assets/js/modules/expenses/CreditExpensesModule.js"></script>
+    <script src="assets/js/modules/expenses/ExpensesPageHandler.js"></script>
+    <script src="assets/js/modules/expenses/ReportPageHandler.js"></script>
+
+    <!-- Personal Module -->
+    <script src="assets/js/modules/personal/BasePersonalModule.js"></script>
+    <script src="assets/js/modules/personal/TasksModule.js"></script>
+    <script src="assets/js/modules/personal/LinksModule.js"></script>
+    <script src="assets/js/modules/personal/PasswordsModule.js"></script>
+    <script src="assets/js/modules/personal/ShoppingModule.js"></script>
+    <script src="assets/js/modules/personal/WishlistModule.js"></script>
+    <script src="assets/js/modules/personal/PersonalPageHandler.js"></script>
+
+    <!-- Documents Module -->
+    <script src="assets/js/modules/documents/DocumentsPageHandler.js"></script>
+
+    <!-- Exams Module -->
+    <script src="assets/js/modules/exams/ExamsPageHandler.js"></script>
+
+    <!-- Training Module -->
+    <script src="assets/js/modules/training/BaseTrainingModule.js"></script>
+    <script src="assets/js/modules/training/WorkoutModule.js"></script>
+    <script src="assets/js/modules/training/RunningModule.js"></script>
+    <script src="assets/js/modules/training/TrainingPageHandler.js"></script>
+
+    <!-- Settings Module -->
+    <script src="assets/js/modules/settings/BaseSettingsModule.js"></script>
+    <script src="assets/js/modules/settings/ProfileModule.js"></script>
+    <script src="assets/js/modules/settings/SecurityModule.js"></script>
+    <script src="assets/js/modules/settings/PreferencesModule.js"></script>
+    <script src="assets/js/modules/settings/AccountInfoModule.js"></script>
+    <script src="assets/js/modules/settings/SettingsPageHandler.js"></script>
+
+    <!-- Support Module -->
+    <script src="assets/js/modules/support/SupportPageHandler.js"></script>
+
+    <!-- SCRIPT - Dashboard Initialization (ES6 Module) -->
+    <script type="module" src="assets/js/managers/dashboard.js"></script>
+</body>
+
+</html>

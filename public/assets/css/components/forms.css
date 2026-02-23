@@ -1,0 +1,455 @@
+/**
+ * @file forms.css
+ * @description Form styling for authentication and general forms.
+ * 
+ * Contents:
+ * - Authentication forms (login, register, forgot password)
+ * - Form notices (info, success, warning)
+ * - Input field styling
+ * - Form footer and links
+ * - Form action buttons
+ * - Theme toggle button
+ * 
+ * Dependencies: base.css (variables), animations.css
+ * Used by: index.html (login/register pages)
+ * 
+ * @author Leandro Fialho Fernandes
+ */
+
+/* =========================================================
+   AUTHENTICATION FORMS
+   Multi-step auth forms with fade transitions
+   ========================================================= */
+
+.auth-form {
+    display: none;
+    flex-direction: column;
+    opacity: 0;
+    transform: translateY(15px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.auth-form.active {
+    display: flex;
+    opacity: 1;
+    transform: translateY(0);
+    animation: formFadeIn 0.5s ease;
+}
+
+/* =========================================================
+   FORM NOTICES
+   Info, success, and warning message boxes
+   ========================================================= */
+
+.form-title {
+    font-size: 1.5rem;
+    color: var(--text-light);
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.form-description {
+    text-align: center;
+    color: #9ca3af;
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+/* =========================================================
+   INPUT FIELDS
+   Standard text inputs with focus states
+   ========================================================= */
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.6rem;
+    color: #d1d5db;
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+.form-group label::before {
+    content: '';
+    width: 3px;
+    height: 14px;
+    background: linear-gradient(180deg, #3b82f6, #60a5fa);
+    border-radius: 2px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.95rem 1.1rem;
+    background: linear-gradient(165deg, rgba(31, 41, 55, 0.5) 0%, rgba(17, 24, 39, 0.7) 100%);
+    border: 2px solid rgba(75, 85, 99, 0.3);
+    border-radius: 12px;
+    color: var(--text-light);
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.form-group input::placeholder {
+    color: #6b7280;
+    font-weight: 400;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    background: linear-gradient(165deg, rgba(59, 130, 246, 0.08) 0%, rgba(17, 24, 39, 0.8) 100%);
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
+}
+
+.form-group input:hover:not(:focus) {
+    border-color: rgba(75, 85, 99, 0.5);
+}
+
+/* =========================================================
+   FORM FOOTER
+   Footer links and navigation between forms
+   ========================================================= */
+
+.form-footer {
+    text-align: center;
+    margin-top: 1.75rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(75, 85, 99, 0.2);
+}
+
+.link-action {
+    color: #60a5fa;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    font-weight: 600;
+}
+
+.link-action:hover {
+    color: #93c5fd;
+    text-decoration: none;
+}
+
+.form-switch {
+    margin-top: 1rem;
+    color: #9ca3af;
+    font-size: 0.9rem;
+}
+
+/* =========================================================
+   BACK BUTTON
+   Button to return to method selection
+   ========================================================= */
+
+.btn-back {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.1));
+    border: 2px solid rgba(59, 130, 246, 0.3);
+    border-radius: 8px;
+    color: #60a5fa;
+    cursor: pointer;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    width: auto;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.btn-back::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn-back:hover::before {
+    left: 100%;
+}
+
+.btn-back:hover {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(37, 99, 235, 0.2));
+    border-color: rgba(59, 130, 246, 0.5);
+    color: #93c5fd;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+}
+
+.btn-back:active {
+    transform: translateY(0);
+}
+
+/* =========================================================
+   METHOD SELECTION
+   Registration method selection screen
+   ========================================================= */
+
+.method-selection {
+    display: block;
+}
+
+.method-selection-text {
+    color: #9ca3af;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.method-selection-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.btn-method-select {
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.method-icon {
+    font-size: 1.25rem;
+}
+
+.method-notice {
+    background: #e0f2fe;
+    border: 1px solid #38bdf8;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 13px;
+    color: #075985;
+}
+
+.divider-method {
+    margin: 0.5rem 0;
+}
+
+/* =========================================================
+   FORM METHOD CONTENT
+   Form content container (hidden by default)
+   ========================================================= */
+
+.form-method-content {
+    display: none;
+}
+
+/* =========================================================
+   STEP-BY-STEP GUIDE
+   Visual guide for account linking process
+   ========================================================= */
+
+.step-by-step-guide {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.05));
+    border: 2px solid rgba(59, 130, 246, 0.3);
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.step-guide-title {
+    color: #60a5fa;
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin: 0 0 1rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.step-guide-icon {
+    font-size: 1.2rem;
+}
+
+.step-guide-list {
+    margin: 0;
+    padding-left: 1.5rem;
+    color: #9ca3af;
+    font-size: 0.875rem;
+    line-height: 1.8;
+}
+
+.step-guide-item {
+    margin-bottom: 0.5rem;
+}
+
+.step-guide-item:last-child {
+    margin-bottom: 0;
+}
+
+.step-guide-item strong {
+    color: #d1d5db;
+}
+
+.step-guide-tip {
+    margin: 1rem 0 0 0;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(59, 130, 246, 0.2);
+    color: #60a5fa;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+/* =========================================================
+   HIDDEN BUTTON
+   Hidden buttons triggered programmatically
+   ========================================================= */
+
+.hidden-btn {
+    display: none;
+}
+
+.form-switch .link-action {
+    margin-left: 0.25rem;
+}
+
+/* =========================================================
+   FORM ACTION BUTTONS
+   Submit and cancel button layout
+   ========================================================= */
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0;
+}
+
+.form-actions button {
+    flex: 1;
+    margin-top: 1rem;
+}
+
+/* =========================================================
+   THEME TOGGLE BUTTON
+   Dark/light mode toggle in top-right corner
+   ========================================================= */
+
+.theme-toggle-btn {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: linear-gradient(165deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.15) 100%);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    color: #60a5fa;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    transform: scale(1);
+    z-index: 10;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    will-change: transform, background-color;
+    overflow: hidden;
+}
+
+.theme-toggle-btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.5);
+    opacity: 0;
+    border-radius: 100%;
+    transform: scale(1, 1) translate(-50%);
+    transform-origin: 50% 50%;
+}
+
+.theme-toggle-btn:active::after {
+    animation: themeRipple 0.3s ease-out;
+}
+
+@keyframes themeRipple {
+    0% {
+        transform: scale(0, 0);
+        opacity: 0.5;
+    }
+    100% {
+        transform: scale(20, 20);
+        opacity: 0;
+    }
+}
+
+.theme-toggle-btn svg {
+    width: 22px;
+    height: 22px;
+    transition: transform 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
+    flex-shrink: 0;
+}
+
+.theme-toggle-btn:active {
+    transform: scale(0.88);
+    transition: transform 0.1s ease;
+}
+
+.theme-toggle-btn:hover {
+    background: linear-gradient(165deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.25) 100%);
+    border-color: rgba(59, 130, 246, 0.4);
+    transform: scale(1.05) rotate(10deg);
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.2);
+}
+
+@media (max-width: 768px) {
+    .theme-toggle-btn {
+        min-width: 48px;
+        min-height: 48px;
+        border-radius: 50%;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+}
+
+.theme-toggle-btn .sun-icon {
+    display: none;
+}
+
+.theme-toggle-btn .moon-icon {
+    display: block;
+}
+
+body.light-theme .theme-toggle-btn .sun-icon {
+    display: block;
+}
+
+body.light-theme .theme-toggle-btn .moon-icon {
+    display: none;
+}
+
+body.light-theme .theme-toggle-btn {
+    background: linear-gradient(165deg, rgba(245, 158, 11, 0.1) 0%, rgba(234, 179, 8, 0.15) 100%);
+    border-color: rgba(245, 158, 11, 0.2);
+    color: #f59e0b;
+}
+
+body.light-theme .theme-toggle-btn:hover {
+    background: linear-gradient(165deg, rgba(245, 158, 11, 0.2) 0%, rgba(234, 179, 8, 0.25) 100%);
+    border-color: rgba(245, 158, 11, 0.4);
+    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.2);
+}

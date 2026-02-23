@@ -1,0 +1,896 @@
+/**
+ * @file exams.css
+ * @description Medical exams module styling for health exam tracking.
+ * 
+ * Contents:
+ * - Hero and intro sections
+ * - Add exam button
+ * - Status filters (upcoming, completed, overdue)
+ * - Exam cards with status indicators
+ * - Exam details grid (date, doctor, location)
+ * - Card actions (edit, complete, delete)
+ * - Empty state
+ * 
+ * Dependencies: base.css, components.css, _containers.css, _hero.css, animations.css
+ * Used by: ExamsPageHandler.js
+ * 
+ * @author Leandro Fialho Fernandes
+ */
+
+/* =========================================================
+   INTRO SECTION
+   Centered intro text below hero
+   ========================================================= */
+
+.exams-intro {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.exams-intro .intro-text {
+    color: var(--text-gray);
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+/* =========================================================
+   ACTION BUTTONS
+   Add exam button
+   ========================================================= */
+
+.exams-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 2.5rem;
+    gap: 1rem;
+}
+
+.btn-add-exam {
+    padding: 1rem 2.5rem;
+    font-size: 1rem;
+    font-weight: 700;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.35);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.btn-add-exam::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn-add-exam:hover::before {
+    left: 100%;
+}
+
+.btn-add-exam:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 12px 32px rgba(59, 130, 246, 0.45);
+}
+
+/* =========================================================
+   CONTENT SECTION
+   Main content wrapper with glassmorphism effect
+   ========================================================= */
+
+.exams-content-section {
+    background: linear-gradient(165deg, rgba(255, 255, 255, 0.03) 0%, rgba(0, 0, 0, 0.12) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
+}
+
+.exams-content-section .content-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.exams-content-section .content-header h2 {
+    color: var(--text-light);
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+}
+
+.exams-content-section .content-header p {
+    color: var(--text-gray);
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+/* =========================================================
+   STATUS FILTERS
+   Filter buttons for exam status
+   ========================================================= */
+
+.exam-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: linear-gradient(165deg, rgba(59, 130, 246, 0.03) 0%, rgba(30, 58, 138, 0.05) 100%);
+    border-radius: 16px;
+    border: 1px solid rgba(59, 130, 246, 0.15);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.exam-filters .filter-btn {
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-gray);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 600;
+    font-size: 0.9rem;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(5px);
+}
+
+.exam-filters .filter-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.05));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.exam-filters .filter-btn span,
+.exam-filters .filter-btn::after {
+    position: relative;
+    z-index: 1;
+}
+
+.exam-filters .filter-btn:hover {
+    border-color: rgba(59, 130, 246, 0.4);
+    color: var(--text-light);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+}
+
+.exam-filters .filter-btn:hover::before {
+    opacity: 1;
+}
+
+.exam-filters .filter-btn.active {
+    background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+    border-color: rgba(59, 130, 246, 0.5);
+    color: white;
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.35);
+    transform: translateY(-2px);
+}
+
+.exam-filters .filter-btn.active::before {
+    opacity: 0;
+}
+
+/* =========================================================
+   EXAM LIST GRID
+   Container for exam cards
+   ========================================================= */
+
+.exams-list {
+    display: grid;
+    gap: 1.5rem;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.exams-list.hidden-for-edit {
+    display: none !important;
+}
+
+.exam-filters.hidden-for-edit {
+    display: none !important;
+}
+
+/* =========================================================
+   EXAM CARD
+   Individual exam card with status indicator bar
+   ========================================================= */
+
+.exam-card {
+    background: linear-gradient(165deg, rgba(255, 255, 255, 0.04) 0%, rgba(0, 0, 0, 0.15) 100%);
+    border: 2px solid rgba(255, 255, 255, 0.08);
+    padding: 2rem;
+    border-radius: 18px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+.exam-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #3b82f6, #60a5fa, #93c5fd);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+
+.exam-card:hover {
+    border-color: rgba(59, 130, 246, 0.4);
+    box-shadow: 0 16px 48px rgba(59, 130, 246, 0.15), 0 0 0 1px rgba(59, 130, 246, 0.1);
+    transform: translateY(-6px);
+}
+
+.exam-card:hover::before {
+    opacity: 1;
+}
+
+.exam-card.completed {
+    background: linear-gradient(165deg, rgba(16, 185, 129, 0.08) 0%, rgba(5, 150, 105, 0.12) 100%) !important;
+    border-color: rgba(16, 185, 129, 0.4) !important;
+    opacity: 0.85 !important;
+    position: relative !important;
+}
+
+.exam-card.completed::before {
+    background: linear-gradient(90deg, #10b981, #34d399, #6ee7b7) !important;
+    opacity: 1 !important;
+    height: 4px !important;
+}
+
+.exam-card.completed .exam-specialty h3,
+.exam-card.completed .info-content p {
+    opacity: 0.7 !important;
+    text-decoration: line-through !important;
+}
+
+.exam-card.overdue {
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.exam-card.overdue::before {
+    background: linear-gradient(90deg, #ef4444, #f87171, #fca5a5);
+    opacity: 1;
+}
+
+.exam-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem !important;
+    gap: 1.5rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 2px solid rgba(59, 130, 246, 0.15);
+}
+
+.exam-specialty {
+    flex: 1;
+}
+
+.exam-specialty h3 {
+    color: white !important;
+    font-size: 1.35rem !important;
+    margin: 0 0 0.75rem 0 !important;
+    font-weight: 700 !important;
+    line-height: 1.3 !important;
+    letter-spacing: -0.02em !important;
+}
+
+.exam-type {
+    display: inline-flex !important;
+    align-items: center !important;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.08)) !important;
+    color: #60a5fa !important;
+    padding: 0.4rem 0.85rem !important;
+    border-radius: 8px !important;
+    font-size: 0.85rem !important;
+    font-weight: 500 !important;
+    line-height: 1.4 !important;
+    border: 1px solid rgba(59, 130, 246, 0.25) !important;
+}
+
+.status-badge {
+    padding: 0.6rem 1.25rem !important;
+    border-radius: 12px !important;
+    font-size: 0.875rem !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+    line-height: 1.4 !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+}
+
+/* =========================================================
+   EXAM DETAILS & STATUS BADGES
+   Status badges and info grid
+   ========================================================= */
+
+.status-badge.upcoming {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(37, 99, 235, 0.15));
+    color: #60a5fa;
+    border: 2px solid rgba(59, 130, 246, 0.4);
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.25) !important;
+}
+
+.status-badge.completed {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(5, 150, 105, 0.2));
+    color: #10b981;
+    border: 2px solid rgba(16, 185, 129, 0.5);
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3) !important;
+    font-weight: 800 !important;
+}
+
+.status-badge.overdue {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.25), rgba(220, 38, 38, 0.2));
+    color: #ef4444;
+    border: 2px solid rgba(239, 68, 68, 0.5);
+    box-shadow: 0 4px 16px rgba(239, 68, 68, 0.3) !important;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.8;
+    }
+}
+
+.exam-details {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1.25rem !important;
+    margin-bottom: 1.5rem !important;
+    align-items: start !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+}
+
+.exam-info-row {
+    display: flex !important;
+    gap: 1rem !important;
+    align-items: flex-start !important;
+    min-width: 0 !important;
+    padding: 1rem 1.25rem !important;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.04), rgba(30, 58, 138, 0.06)) !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(59, 130, 246, 0.12) !important;
+    transition: all 0.3s ease !important;
+    backdrop-filter: blur(5px) !important;
+}
+
+.exam-info-row:hover {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(30, 58, 138, 0.1)) !important;
+    border-color: rgba(59, 130, 246, 0.25) !important;
+    transform: translateX(4px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15) !important;
+}
+
+.maps-link {
+    grid-column: 1 / -1 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.5rem !important;
+    color: white !important;
+    text-decoration: none !important;
+    padding: 0.75rem 1.25rem !important;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.12), rgba(59, 130, 246, 0.08)) !important;
+    border: 1px solid rgba(59, 130, 246, 0.25) !important;
+    border-radius: 10px !important;
+    transition: all 0.3s ease !important;
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    width: 100% !important;
+    margin-top: 0.25rem !important;
+}
+
+.maps-link:hover {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.12)) !important;
+    border-color: rgba(59, 130, 246, 0.4) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.25) !important;
+}
+
+.exam-info-grid {
+    display: contents !important;
+}
+
+.exam-info-item {
+    display: flex !important;
+    gap: 0.75rem !important;
+    align-items: flex-start !important;
+    min-width: 0 !important;
+    padding: 0.85rem 1rem !important;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.02), rgba(0, 0, 0, 0.05)) !important;
+    border-radius: 10px !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    transition: all 0.3s ease !important;
+}
+
+.exam-info-item:hover {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(0, 0, 0, 0.08)) !important;
+    border-color: rgba(59, 130, 246, 0.2) !important;
+    transform: translateY(-2px);
+}
+
+.info-icon {
+    font-size: 1.5rem !important;
+    width: 40px !important;
+    height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.08)) !important;
+    border-radius: 10px !important;
+    flex-shrink: 0 !important;
+    line-height: 1.4 !important;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2)) !important;
+}
+
+.info-content {
+    flex: 1 !important;
+    min-width: 0 !important;
+}
+
+.info-content strong {
+    display: block !important;
+    color: var(--light-blue) !important;
+    font-size: 0.75rem !important;
+    text-transform: uppercase !important;
+    margin-bottom: 0.35rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.05em !important;
+}
+
+.info-content p {
+    color: white !important;
+    margin: 0 !important;
+    font-size: 0.95rem !important;
+    line-height: 1.5 !important;
+    font-weight: 500 !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+}
+
+/* =========================================================
+   EXAM CARD ACTIONS
+   Edit, complete/uncomplete, and delete buttons
+   ========================================================= */
+
+.exam-actions {
+    display: flex !important;
+    gap: 0.75rem !important;
+    padding-top: 1.25rem !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+    margin-top: 0 !important;
+}
+
+.exam-actions .btn-action {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.5rem !important;
+    padding: 0.7rem 1rem !important;
+    border-radius: 10px !important;
+    cursor: pointer !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    font-size: 0.875rem !important;
+    position: relative !important;
+    overflow: hidden !important;
+    font-weight: 600 !important;
+    flex: 1 !important;
+    min-width: 0 !important;
+}
+
+.exam-actions .btn-edit {
+    background: linear-gradient(135deg, #f59e0b, #fbbf24) !important;
+    border: 2px solid rgba(251, 191, 36, 0.3) !important;
+    color: #ffffff !important;
+}
+
+.exam-actions .btn-edit::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: -100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent) !important;
+    transition: left 0.5s ease !important;
+}
+
+.exam-actions .btn-edit:hover::before {
+    left: 100% !important;
+}
+
+.exam-actions .btn-edit:hover {
+    background: linear-gradient(135deg, #d97706, #f59e0b) !important;
+    border-color: rgba(251, 191, 36, 0.6) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4) !important;
+}
+
+.exam-actions .btn-edit:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.5) !important;
+}
+
+.exam-actions .btn-delete {
+    background: linear-gradient(135deg, #dc2626, #ef4444) !important;
+    border: 2px solid rgba(239, 68, 68, 0.3) !important;
+    color: #ffffff !important;
+}
+
+.exam-actions .btn-delete::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: -100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent) !important;
+    transition: left 0.5s ease !important;
+}
+
+.exam-actions .btn-delete:hover::before {
+    left: 100% !important;
+}
+
+.exam-actions .btn-delete:hover {
+    background: linear-gradient(135deg, #b91c1c, #dc2626) !important;
+    border-color: rgba(239, 68, 68, 0.6) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4) !important;
+}
+
+.exam-actions .btn-delete:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.5) !important;
+}
+
+.exam-actions .btn-action svg {
+    pointer-events: none;
+    position: relative;
+    z-index: 1;
+    flex-shrink: 0 !important;
+    stroke: #ffffff !important;
+    fill: none !important;
+    width: 18px;
+    height: 18px;
+}
+
+.btn-complete {
+    background: linear-gradient(135deg, #059669, #10b981) !important;
+    border: 2px solid rgba(16, 185, 129, 0.3) !important;
+    color: #ffffff !important;
+}
+
+.btn-complete::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: -100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent) !important;
+    transition: left 0.5s ease !important;
+}
+
+.btn-complete:hover::before {
+    left: 100% !important;
+}
+
+.btn-complete:hover {
+    background: linear-gradient(135deg, #047857, #059669) !important;
+    border-color: rgba(16, 185, 129, 0.6) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4) !important;
+}
+
+.btn-complete:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.5) !important;
+}
+
+.btn-uncomplete {
+    background: linear-gradient(135deg, #8b5cf6, #a78bfa) !important;
+    border: 2px solid rgba(167, 139, 250, 0.3) !important;
+    color: #ffffff !important;
+}
+
+.btn-uncomplete::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: -100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent) !important;
+    transition: left 0.5s ease !important;
+}
+
+.btn-uncomplete:hover::before {
+    left: 100% !important;
+}
+
+.btn-uncomplete:hover {
+    background: linear-gradient(135deg, #7c3aed, #8b5cf6) !important;
+    border-color: rgba(167, 139, 250, 0.6) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4) !important;
+}
+
+.btn-uncomplete:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.5) !important;
+}
+
+.btn-delete {
+    background: rgba(239, 68, 68, 0.1) !important;
+    border: 1px solid rgba(239, 68, 68, 0.25) !important;
+    color: #f87171 !important;
+}
+
+.btn-delete:hover {
+    background: rgba(239, 68, 68, 0.2) !important;
+    border-color: rgba(239, 68, 68, 0.4) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+}
+
+/* =========================================================
+   EXAMS EMPTY STATE
+   Placeholder when no exams exist
+   ========================================================= */
+
+.exams-list .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: linear-gradient(165deg, rgba(255, 255, 255, 0.02) 0%, rgba(0, 0, 0, 0.08) 100%);
+    border: 2px dashed rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    transition: all 0.3s ease;
+}
+
+.exams-list .empty-state:hover {
+    border-color: rgba(59, 130, 246, 0.3);
+    background: linear-gradient(165deg, rgba(59, 130, 246, 0.03) 0%, rgba(0, 0, 0, 0.1) 100%);
+}
+
+.exams-list .empty-icon {
+    font-size: 5rem;
+    opacity: 0.6;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.exams-list .empty-state p {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-top: 1rem;
+    color: var(--text-light);
+}
+
+.exams-list .empty-state small {
+    display: block;
+    margin-top: 0.5rem;
+    opacity: 0.7;
+    color: var(--text-gray);
+}
+
+/* =========================================================
+   EXAM FORM SPACING
+   Improved spacing for the exam creation/edit form
+   ========================================================= */
+
+#examForm.personal-form {
+    gap: 0;
+}
+
+#examForm .form-row {
+    margin-bottom: 1.25rem;
+    gap: 1.75rem;
+}
+
+#examForm .form-input-group {
+    margin-bottom: 1rem;
+    gap: 0.5rem;
+}
+
+#examForm .form-input-group label {
+    margin-bottom: 0.25rem;
+}
+
+#examForm .form-input-group small {
+    color: var(--text-gray);
+    margin-top: 0.5rem;
+    display: block;
+    font-size: 0.82rem;
+    line-height: 1.4;
+}
+
+#examForm .form-actions {
+    margin-top: 1.75rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* =========================================================
+   EXAMS RESPONSIVE
+   Mobile adjustments for exams layout
+   ========================================================= */
+
+@media (max-width: 768px) {
+    .exams-container {
+        padding: 1.5rem;
+    }
+
+    .exams-hero {
+        padding: 1.5rem 1rem;
+    }
+
+    .exams-hero h1 {
+        font-size: 1.75rem;
+    }
+
+    .exams-hero p {
+        font-size: 0.9rem;
+    }
+
+    .exams-content-section {
+        padding: 1.5rem;
+    }
+
+    .exam-header {
+        flex-direction: column;
+    }
+
+    .exam-status {
+        align-self: flex-start;
+    }
+
+    .exam-details {
+        grid-template-columns: 1fr !important;
+        gap: 0.75rem !important;
+    }
+
+    .exam-actions {
+        flex-direction: column;
+    }
+
+    .exam-actions .btn-action {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .exam-filters {
+        flex-direction: column;
+    }
+
+    .exam-filters .filter-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    #examForm .form-row {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .exam-card.completed {
+        overflow: hidden;
+    }
+
+    .exam-card.completed .exam-specialty h3,
+    .exam-card.completed .info-content p {
+        word-break: break-word !important;
+        overflow-wrap: break-word !important;
+    }
+}
+
+/* =========================================================
+   EXAMS MOBILE <= 480px
+   Compact spacing for small screens
+   ========================================================= */
+
+@media (max-width: 480px) {
+    .exams-container {
+        padding: 0.875rem;
+    }
+
+    .exams-hero {
+        padding: 1.25rem 0.875rem;
+        border-radius: 14px;
+    }
+
+    .exams-hero h1 {
+        font-size: 1.35rem;
+    }
+
+    .exams-hero p {
+        font-size: 0.8rem;
+    }
+
+    .exams-content-section {
+        padding: 1rem;
+    }
+
+    .exam-card {
+        padding: 1rem;
+        border-radius: 12px;
+    }
+
+    /* Responsivo: garantir 1 coluna e overflow controlado */
+    .exam-details {
+        grid-template-columns: 1fr !important;
+        gap: 0.5rem !important;
+    }
+
+    .exam-info-row {
+        padding: 0.75rem !important;
+    }
+
+    .info-icon {
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 1rem !important;
+    }
+
+    .info-content p {
+        font-size: 0.85rem !important;
+    }
+
+    .exam-header h3 {
+        font-size: 1rem;
+    }
+
+    .exam-actions button {
+        min-height: 44px;
+    }
+
+    .exam-filters .filter-btn {
+        min-height: 44px;
+        font-size: 0.8rem;
+    }
+
+    #examForm.personal-form {
+        padding: 1.25rem;
+    }
+
+    #examForm .form-input-group {
+        margin-bottom: 0.75rem;
+    }
+
+    #examForm .form-actions {
+        flex-direction: column;
+    }
+
+    #examForm .form-actions button {
+        width: 100%;
+        min-height: 44px;
+    }
+}

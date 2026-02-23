@@ -1,0 +1,346 @@
+/**
+ * @file _version.css
+ * @description Version badge component styling for system version display.
+ * 
+ * Contents:
+ * - Version badge container in sidebar footer
+ * - Version info display (number and build date)
+ * - Changelog button styling
+ * - Changelog modal customization (SweetAlert2)
+ * - Light theme overrides
+ * - Responsive adjustments
+ * 
+ * Features:
+ * - Matches sidebar-footer styling
+ * - Vertical layout (version top, date bottom)
+ * - Interactive hover states
+ * - Shimmer animation effect
+ * 
+ * Dependencies: dashboard.css (sidebar styles), sweet-alert2.css
+ * Used by: VersionManager.js
+ * 
+ * @author Leandro Fialho Fernandes
+ */
+
+/* =========================================================
+   VERSION BADGE CONTAINER
+   Footer container for version display
+   ========================================================= */
+
+.version-badge-container {
+    margin-top: 1rem;
+}
+
+.version-badge {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.75rem 0.85rem;
+    background: rgba(59, 130, 246, 0.05);
+    border: 1px solid rgba(59, 130, 246, 0.15);
+    border-radius: 12px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+}
+
+/* =========================================================
+   VERSION BADGE ANIMATIONS
+   Shimmer effect on hover (matches sidebar buttons)
+   ========================================================= */
+
+.version-badge::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.08), transparent);
+    transition: left 0.5s ease;
+}
+
+.version-badge:hover::before {
+    left: 100%;
+}
+
+.version-badge:hover {
+    background: rgba(59, 130, 246, 0.08);
+    border-color: rgba(59, 130, 246, 0.25);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.2);
+}
+
+/* =========================================================
+   VERSION INFO DISPLAY
+   Vertical layout: version number on top, build date below
+   ========================================================= */
+
+.version-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    flex: 1;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.version-number {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 600;
+    color: #60a5fa;
+    font-family: 'Courier New', 'SF Mono', Monaco, monospace;
+    letter-spacing: 0.3px;
+}
+
+.version-number svg {
+    width: 14px;
+    height: 14px;
+    opacity: 0.85;
+    stroke-width: 2.5;
+}
+
+.version-separator {
+    display: none;
+}
+
+.build-date {
+    font-size: 0.7rem;
+    opacity: 0.7;
+    color: var(--text-gray);
+    font-weight: 400;
+    line-height: 1.3;
+}
+
+/* =========================================================
+   CHANGELOG BUTTON
+   Info icon button to open changelog modal
+   ========================================================= */
+
+.btn-changelog {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.45rem;
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: #60a5fa;
+    flex-shrink: 0;
+    align-self: center;
+}
+
+.btn-changelog:hover {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.35);
+    color: #93c5fd;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+}
+
+.btn-changelog:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(59, 130, 246, 0.3);
+}
+
+.btn-changelog svg {
+    width: 14px;
+    height: 14px;
+    stroke-width: 2.5;
+}
+
+/* =========================================================
+   CHANGELOG MODAL
+   SweetAlert2 custom styling for changelog display
+   ========================================================= */
+
+.changelog-modal {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+.changelog-content {
+    max-height: 500px;
+    overflow-y: auto;
+    text-align: left;
+}
+
+.changelog-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.changelog-entry {
+    padding: 1rem;
+    background: linear-gradient(135deg, rgba(108, 99, 255, 0.05) 0%, rgba(138, 43, 226, 0.05) 100%);
+    border-radius: 12px;
+    border-left: 3px solid var(--primary-color);
+}
+
+.changelog-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(108, 99, 255, 0.2);
+}
+
+.changelog-version {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    font-family: 'Courier New', monospace;
+}
+
+.changelog-date {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    opacity: 0.8;
+}
+
+.changelog-changes {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.changelog-changes li {
+    padding-left: 1.5rem;
+    position: relative;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--text-primary);
+}
+
+.changelog-changes li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--success-color);
+    font-weight: bold;
+}
+
+/* =========================================================
+   CHANGELOG EMOJI INDICATORS
+   Custom bullets for different change types
+   ========================================================= */
+
+.changelog-changes li:has(✨)::before {
+    content: '✨';
+    color: inherit;
+}
+
+.changelog-changes li:has(🐛)::before {
+    content: '🐛';
+    color: inherit;
+}
+
+.changelog-changes li:has(💄)::before {
+    content: '💄';
+    color: inherit;
+}
+
+.changelog-changes li:has(🚀)::before {
+    content: '🚀';
+    color: inherit;
+}
+
+.changelog-changes li:has(📝)::before {
+    content: '📝';
+    color: inherit;
+}
+
+.changelog-changes li:has(⚡)::before {
+    content: '⚡';
+    color: inherit;
+}
+
+/* =========================================================
+   RESPONSIVE ADJUSTMENTS
+   Mobile layout optimizations
+   ========================================================= */
+
+@media (max-width: 768px) {
+    .version-badge-container {
+        padding: 0.75rem 1rem;
+    }
+
+    .version-badge {
+        padding: 0.65rem 0.75rem;
+    }
+
+    .version-info {
+        font-size: 0.7rem;
+    }
+
+    .build-date {
+        display: none;
+    }
+
+    .btn-changelog {
+        padding: 0.4rem;
+    }
+
+    .changelog-modal {
+        width: 95% !important;
+        max-width: 95% !important;
+    }
+
+    .changelog-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+    }
+
+    .changelog-changes li {
+        font-size: 0.85rem;
+    }
+}
+
+/* =========================================================
+   LIGHT THEME SUPPORT
+   Overrides for light theme color scheme
+   ========================================================= */
+
+.light-theme .version-badge {
+    background: rgba(59, 130, 246, 0.08);
+    border-color: rgba(59, 130, 246, 0.2);
+}
+
+.light-theme .version-badge:hover {
+    background: rgba(59, 130, 246, 0.12);
+    border-color: rgba(59, 130, 246, 0.3);
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.15);
+}
+
+.light-theme .version-number {
+    color: #2563eb;
+}
+
+.light-theme .btn-changelog {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: rgba(59, 130, 246, 0.25);
+    color: #2563eb;
+}
+
+.light-theme .btn-changelog:hover {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.4);
+    color: #1d4ed8;
+}
+
+.light-theme .changelog-entry {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(96, 165, 250, 0.08) 100%);
+    border-left-color: #3b82f6;
+}

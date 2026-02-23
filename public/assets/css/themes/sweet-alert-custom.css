@@ -1,0 +1,304 @@
+/**
+ * @file sweet-alert-custom.css
+ * @description Custom theme overrides for SweetAlert2 modals.
+ * 
+ * Contents:
+ * - Popup container styling
+ * - Title and text colors
+ * - Confirm button (blue gradient)
+ * - Cancel button (gray gradient)
+ * - Deny button (red gradient)
+ * - Input field styling
+ * - Light theme overrides
+ * 
+ * Dependencies: sweet-alert2.css (base library)
+ * Used by: All modules that use SweetAlert2 dialogs
+ * 
+ * @author Leandro Fialho Fernandes
+ */
+
+/* =========================================================
+   POPUP
+   Modal container with dark theme styling
+   ========================================================= */
+
+.swal2-popup {
+    background: var(--card-bg) !important;
+    border: 1px solid rgba(59, 130, 246, 0.2) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* =========================================================
+   TEXT
+   ========================================================= */
+
+.swal2-title {
+    color: var(--text-light) !important;
+    font-weight: 600 !important;
+}
+
+.swal2-html-container {
+    color: var(--text-gray) !important;
+}
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.swal2-confirm {
+    background: linear-gradient(135deg, #2563eb, #3b82f6) !important;
+    border: 2px solid rgba(59, 130, 246, 0.3) !important;
+    border-radius: 8px !important;
+    padding: 0.75rem 2rem !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    position: relative !important;
+    overflow: hidden !important;
+    transition: all 0.3s ease !important;
+}
+
+.swal2-confirm::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: -100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent) !important;
+    transition: left 0.5s ease !important;
+}
+
+.swal2-confirm:hover::before {
+    left: 100% !important;
+}
+
+.swal2-confirm:hover {
+    background: linear-gradient(135deg, #1d4ed8, #2563eb) !important;
+    border-color: rgba(59, 130, 246, 0.6) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4) !important;
+}
+
+.swal2-confirm:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 5px 15px rgba(59, 130, 246, 0.5) !important;
+}
+
+.swal2-confirm:focus {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5) !important;
+}
+
+.swal2-cancel {
+    background: linear-gradient(135deg, #4b5563, #6b7280) !important;
+    border: 2px solid rgba(107, 114, 128, 0.3) !important;
+    border-radius: 8px !important;
+    padding: 0.75rem 2rem !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    color: var(--text-light) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    transition: all 0.3s ease !important;
+}
+
+.swal2-cancel::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: -100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent) !important;
+    transition: left 0.5s ease !important;
+}
+
+.swal2-cancel:hover::before {
+    left: 100% !important;
+}
+
+.swal2-cancel:hover {
+    background: linear-gradient(135deg, #374151, #4b5563) !important;
+    border-color: rgba(107, 114, 128, 0.6) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 10px 25px rgba(75, 85, 99, 0.4) !important;
+}
+
+.swal2-cancel:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 5px 15px rgba(75, 85, 99, 0.5) !important;
+}
+
+.swal2-deny {
+    background: linear-gradient(135deg, #dc2626, #ef4444) !important;
+    border: 2px solid rgba(239, 68, 68, 0.3) !important;
+    border-radius: 8px !important;
+    padding: 0.75rem 2rem !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    color: var(--text-light) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    transition: all 0.3s ease !important;
+}
+
+.swal2-deny::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: -100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent) !important;
+    transition: left 0.5s ease !important;
+}
+
+.swal2-deny:hover::before {
+    left: 100% !important;
+}
+
+.swal2-deny:hover {
+    background: linear-gradient(135deg, #b91c1c, #dc2626) !important;
+    border-color: rgba(239, 68, 68, 0.6) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 10px 25px rgba(239, 68, 68, 0.4) !important;
+}
+
+.swal2-deny:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 5px 15px rgba(239, 68, 68, 0.5) !important;
+}
+
+/* =========================================================
+   ICONS
+   ========================================================= */
+
+.swal2-icon.swal2-success {
+    border-color: #10b981 !important;
+}
+
+.swal2-icon.swal2-success [class^='swal2-success-line'] {
+    background-color: #10b981 !important;
+}
+
+.swal2-icon.swal2-success .swal2-success-ring {
+    border-color: rgba(16, 185, 129, 0.3) !important;
+}
+
+.swal2-icon.swal2-error {
+    border-color: #ef4444 !important;
+}
+
+.swal2-icon.swal2-error [class^='swal2-x-mark-line'] {
+    background-color: #ef4444 !important;
+}
+
+.swal2-icon.swal2-warning {
+    border-color: #f59e0b !important;
+    color: #f59e0b !important;
+}
+
+.swal2-icon.swal2-info {
+    border-color: var(--secondary-blue) !important;
+    color: var(--secondary-blue) !important;
+}
+
+.swal2-icon.swal2-question {
+    border-color: var(--light-blue) !important;
+    color: var(--light-blue) !important;
+}
+
+/* =========================================================
+   PROGRESS BAR
+   ========================================================= */
+
+.swal2-timer-progress-bar {
+    background: linear-gradient(90deg, var(--secondary-blue), var(--light-blue)) !important;
+}
+
+/* =========================================================
+   BACKDROP
+   ========================================================= */
+
+.swal2-container {
+    background: rgba(0, 0, 0, 0.8) !important;
+}
+
+/* =========================================================
+   INPUTS
+   ========================================================= */
+
+.swal2-input,
+.swal2-textarea {
+    background: var(--dark-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-light) !important;
+    border-radius: 8px !important;
+}
+
+.swal2-input:focus,
+.swal2-textarea:focus {
+    border-color: var(--secondary-blue) !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.swal2-footer {
+    border-top: 1px solid var(--border-color) !important;
+    color: var(--text-gray) !important;
+}
+
+.swal2-close {
+    color: var(--text-gray) !important;
+}
+
+.swal2-close:hover {
+    color: var(--text-light) !important;
+}
+
+/* =========================================================
+   SWAL HTML HELPERS
+   CSS classes for inline HTML content inside SweetAlert2 modals,
+   replacing inline style= attributes in JS template strings
+   ========================================================= */
+.swal-message {
+    color: #6b7280;
+    margin-top: 1rem;
+    font-size: 0.95rem;
+}
+
+.swal-info-box {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: rgba(59, 130, 246, 0.1);
+    border-radius: 8px;
+    border-left: 3px solid #3b82f6;
+    text-align: left;
+}
+
+.swal-info-title {
+    color: #60a5fa;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.swal-step-list {
+    color: #9ca3af;
+    text-align: left;
+    margin: 0;
+    padding-left: 1.5rem;
+    font-size: 0.875rem;
+    line-height: 1.6;
+}
+
+.swal-muted {
+    color: #9ca3af;
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+}

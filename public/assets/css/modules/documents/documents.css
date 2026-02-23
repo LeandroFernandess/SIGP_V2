@@ -1,0 +1,1182 @@
+/**
+ * @file documents.css
+ * @description Documents module styling for document management and file uploads.
+ * 
+ * Contents:
+ * - Hero and intro sections
+ * - Document actions (add button)
+ * - File upload area (drag & drop)
+ * - Category filters
+ * - Document cards grid
+ * - Card actions (view, edit, delete, print)
+ * - Empty state
+ * 
+ * Dependencies: base.css, components.css, _containers.css, _hero.css, animations.css
+ * Used by: DocumentsPageHandler.js
+ * 
+ * @author Leandro Fialho Fernandes
+ */
+
+/* =========================================================
+   INTRO SECTION
+   Centered intro text below hero
+   ========================================================= */
+
+.documents-intro {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.documents-intro .intro-text {
+    color: var(--text-gray);
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+/* =========================================================
+   ACTION BUTTONS
+   Add document button
+   ========================================================= */
+
+.documents-actions {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.btn-add-document {
+    padding: 0.9rem 2rem;
+    font-size: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
+}
+
+/* =========================================================
+   CONTENT SECTION
+   Main content wrapper with glassmorphism effect
+   ========================================================= */
+
+.documents-content-section {
+    background: linear-gradient(165deg, rgba(255, 255, 255, 0.03) 0%, rgba(0, 0, 0, 0.12) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
+}
+
+.documents-content-section .content-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.documents-content-section .content-header h2 {
+    color: var(--text-light);
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+}
+
+.documents-content-section .content-header p {
+    color: var(--text-gray);
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+/* =========================================================
+   FILE UPLOAD AREA
+   Drag and drop zone with file preview
+   ========================================================= */
+
+.file-upload-area {
+    position: relative;
+    width: 100%;
+}
+
+.file-upload-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 2rem;
+    border: 2px dashed rgba(59, 130, 246, 0.3);
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(30, 58, 138, 0.08));
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.file-upload-placeholder:hover {
+    border-color: var(--secondary-blue);
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(30, 58, 138, 0.12));
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.15);
+}
+
+.upload-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.file-upload-placeholder p {
+    color: var(--text-light);
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.file-upload-placeholder small {
+    color: var(--text-gray);
+    font-size: 0.85rem;
+}
+
+.file-preview {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(5, 150, 105, 0.12));
+    border: 2px solid rgba(16, 185, 129, 0.3);
+    border-radius: 12px;
+    gap: 1rem;
+    animation: slideInDown 0.3s ease;
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.15);
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.file-preview-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+    min-width: 0;
+}
+
+.file-preview-icon {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.25));
+    border-radius: 10px;
+    border: 2px solid rgba(16, 185, 129, 0.4);
+    color: #10b981;
+}
+
+.file-preview-icon svg {
+    stroke: currentColor;
+}
+
+.file-preview-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.file-preview-name {
+    color: var(--text-light);
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.file-preview-status {
+    color: #10b981;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.btn-remove-file {
+    flex-shrink: 0;
+    background: rgba(239, 68, 68, 0.15);
+    border: 2px solid rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.btn-remove-file:hover {
+    background: rgba(239, 68, 68, 0.25);
+    border-color: rgba(239, 68, 68, 0.5);
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.btn-remove-file:active {
+    transform: scale(0.95);
+}
+
+.btn-remove-file svg {
+    stroke: currentColor;
+}
+
+/* =========================================================
+   CATEGORY FILTERS
+   Filter buttons for document categories
+   ========================================================= */
+
+.document-filters,
+.filters-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+    padding: 1.25rem;
+    background: linear-gradient(165deg, rgba(255, 255, 255, 0.03) 0%, rgba(0, 0, 0, 0.08) 100%);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(10px);
+}
+
+.document-filters .filter-btn,
+.filters-container .filter-btn {
+    padding: 0.7rem 1.4rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--text-gray);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 500;
+    font-size: 0.9rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.document-filters .filter-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.05));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.document-filters .filter-btn span,
+.document-filters .filter-btn::after {
+    position: relative;
+    z-index: 1;
+}
+
+.document-filters .filter-btn:hover {
+    border-color: rgba(59, 130, 246, 0.4);
+    color: var(--text-light);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+}
+
+.document-filters .filter-btn:hover::before {
+    opacity: 1;
+}
+
+.document-filters .filter-btn.active {
+    background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+    border-color: rgba(59, 130, 246, 0.5);
+    color: white;
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.35);
+    transform: translateY(-2px);
+}
+
+.document-filters .filter-btn.active::before {
+    opacity: 0;
+}
+
+/* =========================================================
+   DOCUMENT CARDS GRID
+   Responsive grid layout for document cards
+   ========================================================= */
+
+.documents-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
+    gap: 1.75rem;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.documents-grid.hidden-for-edit {
+    display: none !important;
+}
+
+.filters-container.hidden-for-edit {
+    display: none !important;
+}
+
+/* =========================================================
+   DOCUMENT CARDS
+   Individual document card with header, body, and actions
+   ========================================================= */
+
+.document-card {
+    background: linear-gradient(165deg, rgba(255, 255, 255, 0.03) 0%, rgba(0, 0, 0, 0.12) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    animation: slideInUp 0.4s ease-out backwards;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.document-image-preview {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(30, 58, 138, 0.08));
+    position: relative;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.document-image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.document-card:hover .document-image-preview img {
+    transform: scale(1.05);
+}
+
+.document-image-preview::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.4), transparent);
+    pointer-events: none;
+}
+
+.document-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #3b82f6, #60a5fa, #93c5fd);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.document-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(59, 130, 246, 0.3);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.25);
+}
+
+.document-card:hover::before {
+    opacity: 1;
+}
+
+.document-card:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.document-card:nth-child(2) {
+    animation-delay: 0.05s;
+}
+
+.document-card:nth-child(3) {
+    animation-delay: 0.1s;
+}
+
+.document-card:nth-child(4) {
+    animation-delay: 0.15s;
+}
+
+.document-card:nth-child(n+5) {
+    animation-delay: 0.2s;
+}
+
+.document-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(59, 130, 246, 0.03));
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+body.light-theme .document-header {
+    background: rgba(59, 130, 246, 0.03);
+}
+
+.document-icon-wrapper {
+    flex-shrink: 0;
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(99, 102, 241, 0.1));
+    border-radius: 14px;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.document-icon-wrapper::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1), transparent);
+}
+
+.document-category-icon {
+    font-size: 2.5rem;
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.2));
+    position: relative;
+    z-index: 1;
+    animation: floatIcon 3s ease-in-out infinite;
+}
+
+@keyframes floatIcon {
+
+    0%,
+    100% {
+        transform: translateY(0) scale(1);
+    }
+
+    50% {
+        transform: translateY(-4px) scale(1.02);
+    }
+}
+
+.document-file-icon {
+    font-size: 2rem;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.document-header-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.document-name {
+    color: var(--text-light);
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.document-category-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.85rem;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.12), rgba(59, 130, 246, 0.06));
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #60a5fa;
+    width: fit-content;
+}
+
+body.light-theme .document-category-badge {
+    background: rgba(59, 130, 246, 0.08);
+    color: #0891b2;
+}
+
+.category-icon-badge {
+    font-size: 0.9rem;
+}
+
+.category-text {
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+.document-body {
+    padding: 1.5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.document-filename-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background: rgba(59, 130, 246, 0.05);
+    border-left: 3px solid var(--secondary-blue);
+    border-radius: 6px;
+}
+
+body.light-theme .document-filename-wrapper {
+    background: rgba(59, 130, 246, 0.03);
+}
+
+.file-icon-svg {
+    flex-shrink: 0;
+    color: var(--secondary-blue);
+}
+
+.document-filename {
+    color: var(--text-gray);
+    font-size: 0.85rem;
+    font-family: 'Courier New', monospace;
+    word-break: break-all;
+    line-height: 1.4;
+    margin: 0;
+    flex: 1;
+}
+
+.document-description {
+    color: var(--text-gray);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+}
+
+.document-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: auto;
+    padding-top: 0.5rem;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--text-gray);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.meta-item svg {
+    color: var(--secondary-blue);
+    flex-shrink: 0;
+}
+
+.document-icon-header {
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.document-icon-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.1) 100%);
+    pointer-events: none;
+}
+
+.category-icon {
+    font-size: 4.5rem;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+    animation: float 3s ease-in-out infinite;
+    position: relative;
+    z-index: 1;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+.document-info {
+    padding: 1.75rem 1.5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.document-info h4 {
+    color: var(--text-light);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.document-filename {
+    color: var(--text-gray);
+    font-size: 0.875rem;
+    word-break: break-all;
+    line-height: 1.5;
+    background: rgba(59, 130, 246, 0.05);
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    border-left: 3px solid var(--secondary-blue);
+    font-family: 'Courier New', monospace;
+}
+
+.document-description {
+    color: var(--text-gray);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 0.25rem;
+}
+
+.document-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: auto;
+    padding-top: 0.5rem;
+}
+
+.doc-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.4rem 0.85rem;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05));
+    border: 1px solid rgba(59, 130, 246, 0.15);
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-light);
+    white-space: nowrap;
+    transition: all 0.3s ease;
+}
+
+.doc-badge:hover {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.08));
+    border-color: rgba(59, 130, 246, 0.25);
+    transform: translateY(-2px);
+}
+
+/* =========================================================
+   DOCUMENT CARD ACTIONS
+   View, edit, delete, print buttons grid
+   ========================================================= */
+
+.document-actions {
+    display: flex !important;
+    gap: 0.75rem;
+    padding: 1.25rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.03), rgba(59, 130, 246, 0.01));
+}
+
+body.light-theme .document-actions {
+    background: rgba(59, 130, 246, 0.02);
+}
+
+.document-actions .btn-action {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.5rem !important;
+    padding: 0.7rem 1rem !important;
+    border-radius: 10px !important;
+    cursor: pointer !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    font-size: 0.875rem !important;
+    position: relative !important;
+    overflow: hidden !important;
+    font-weight: 600 !important;
+    flex: 1 !important;
+    min-width: 0 !important;
+}
+
+.document-actions .btn-action svg {
+    pointer-events: none;
+    position: relative;
+    z-index: 1;
+    transition: all 0.3s ease;
+    flex-shrink: 0 !important;
+    stroke: currentColor !important;
+    fill: none !important;
+    width: 16px;
+    height: 16px;
+}
+
+.document-actions .btn-delete {
+    background: linear-gradient(135deg, #dc2626, #ef4444) !important;
+    border: 2px solid rgba(239, 68, 68, 0.3) !important;
+    color: #ffffff !important;
+}
+
+.document-actions .btn-delete::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: -100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent) !important;
+    transition: left 0.5s ease !important;
+}
+
+.document-actions .btn-delete:hover::before {
+    left: 100% !important;
+}
+
+.document-actions .btn-delete:hover {
+    background: linear-gradient(135deg, #b91c1c, #dc2626) !important;
+    border-color: rgba(239, 68, 68, 0.6) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4) !important;
+}
+
+.document-actions .btn-delete:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.5) !important;
+}
+
+.document-actions .btn-action svg {
+    pointer-events: none;
+    position: relative;
+    z-index: 1;
+    transition: all 0.3s ease;
+    flex-shrink: 0 !important;
+    stroke: #ffffff !important;
+    fill: none !important;
+    width: 16px;
+    height: 16px;
+}
+
+.document-actions .btn-view {
+    background: linear-gradient(135deg, #0891b2, #06b6d4) !important;
+    border: 2px solid rgba(6, 182, 212, 0.3) !important;
+    color: #ffffff !important;
+}
+
+.document-actions .btn-view::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: -100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent) !important;
+    transition: left 0.5s ease !important;
+}
+
+.document-actions .btn-view:hover::before {
+    left: 100% !important;
+}
+
+.document-actions .btn-view:hover {
+    background: linear-gradient(135deg, #0e7490, #0891b2) !important;
+    border-color: rgba(6, 182, 212, 0.6) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 20px rgba(6, 182, 212, 0.4) !important;
+}
+
+.document-actions .btn-view:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 4px 12px rgba(6, 182, 212, 0.5) !important;
+}
+
+.document-actions .btn-print {
+    background: linear-gradient(135deg, #8b5cf6, #a78bfa) !important;
+    border: 2px solid rgba(167, 139, 250, 0.3) !important;
+    color: #ffffff !important;
+}
+
+.document-actions .btn-print::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: -100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent) !important;
+    transition: left 0.5s ease !important;
+}
+
+.document-actions .btn-print:hover::before {
+    left: 100% !important;
+}
+
+.document-actions .btn-print:hover {
+    background: linear-gradient(135deg, #7c3aed, #8b5cf6) !important;
+    border-color: rgba(167, 139, 250, 0.6) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4) !important;
+}
+
+.document-actions .btn-print:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.5) !important;
+}
+
+/* =========================================================
+   DRAG AND DROP
+   Drag handle, dragging states, drop target feedback
+   ========================================================= */
+
+.document-drag-handle {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    cursor: grab;
+    opacity: 0;
+    transition: all 0.2s ease;
+    z-index: 5;
+    color: var(--text-gray);
+}
+
+.document-card:hover .document-drag-handle {
+    opacity: 0.7;
+}
+
+.document-drag-handle:hover {
+    opacity: 1 !important;
+    background: rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.3);
+    color: var(--secondary-blue);
+}
+
+.document-card[draggable="true"] {
+    cursor: default;
+    user-select: none;
+}
+
+.document-card.dragging {
+    opacity: 0.4;
+    transform: scale(0.98);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    cursor: grabbing;
+}
+
+.document-card.drag-over {
+    transform: translateY(4px);
+    border: 2px dashed var(--primary-color) !important;
+    background: rgba(59, 130, 246, 0.05) !important;
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
+}
+
+/* Toast notification for drag actions */
+.drag-toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--primary-color);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 30px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    z-index: 10000;
+    font-size: 0.9rem;
+    font-weight: 600;
+    animation: dragToastIn 0.3s ease;
+    transition: opacity 0.3s ease;
+}
+
+.drag-toast.fade-out {
+    opacity: 0;
+}
+
+@keyframes dragToastIn {
+    from { transform: translate(-50%, 40px); opacity: 0; }
+    to { transform: translate(-50%, 0); opacity: 1; }
+}
+
+body.light-theme .document-drag-handle {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: rgba(0, 0, 0, 0.1);
+    color: var(--text-gray);
+}
+
+body.light-theme .document-drag-handle:hover {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+/* =========================================================
+   DESKTOP DROP ZONE
+   Full-page overlay shown when user drags a file from the OS
+   ========================================================= */
+
+.desktop-drop-zone {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.desktop-drop-zone.active {
+    display: flex;
+    pointer-events: all;
+}
+
+.desktop-drop-zone-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(165deg, rgba(59, 130, 246, 0.12) 0%, rgba(0, 0, 0, 0.25) 100%);
+    border: 3px dashed rgba(59, 130, 246, 0.7);
+    border-radius: 28px;
+    padding: 4rem 6rem;
+    text-align: center;
+    animation: desktopDropPulse 1.2s ease-in-out infinite alternate;
+    pointer-events: none;
+}
+
+.desktop-drop-zone-icon {
+    font-size: 5.5rem;
+    margin-bottom: 1.5rem;
+    animation: desktopDropBounce 0.9s ease-in-out infinite alternate;
+    filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.5));
+}
+
+.desktop-drop-zone-inner h3 {
+    color: #fff;
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0 0 0.75rem 0;
+    letter-spacing: -0.02em;
+}
+
+.desktop-drop-zone-inner p {
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 1rem;
+    margin: 0;
+}
+
+@keyframes desktopDropPulse {
+    from { box-shadow: 0 0 40px rgba(59, 130, 246, 0.15); border-color: rgba(59, 130, 246, 0.6); }
+    to   { box-shadow: 0 0 80px rgba(59, 130, 246, 0.4); border-color: rgba(96, 165, 250, 0.9); }
+}
+
+@keyframes desktopDropBounce {
+    from { transform: translateY(0) scale(1); }
+    to   { transform: translateY(-14px) scale(1.05); }
+}
+
+/* =========================================================
+   DOCUMENTS RESPONSIVE
+   Mobile adjustments for documents grid
+   ========================================================= */
+
+@media (max-width: 768px) {
+    .documents-container {
+        padding: 1.5rem;
+    }
+
+    .documents-hero {
+        padding: 1.5rem 1rem;
+    }
+
+    .documents-hero h1 {
+        font-size: 1.75rem;
+    }
+
+    .documents-hero p {
+        font-size: 0.9rem;
+    }
+
+    .documents-content-section {
+        padding: 1.5rem;
+    }
+
+    .documents-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .document-actions {
+        display: flex !important;
+        gap: 0.5rem;
+    }
+}
+
+/* =========================================================
+   DOCUMENTS EMPTY STATE
+   Placeholder when no documents exist 
+   ========================================================= */
+
+.documents-grid .empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 4rem 2rem;
+    background: linear-gradient(165deg, rgba(255, 255, 255, 0.02) 0%, rgba(0, 0, 0, 0.08) 100%);
+    border: 2px dashed rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    transition: all 0.3s ease;
+}
+
+.documents-grid .empty-state:hover {
+    border-color: rgba(59, 130, 246, 0.3);
+    background: linear-gradient(165deg, rgba(59, 130, 246, 0.03) 0%, rgba(0, 0, 0, 0.1) 100%);
+}
+
+.documents-grid .empty-icon {
+    font-size: 5rem;
+    opacity: 0.6;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.documents-grid .empty-state p {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-top: 1rem;
+}
+
+.documents-grid .empty-state small {
+    display: block;
+    margin-top: 0.5rem;
+    opacity: 0.7;
+}
+
+/* =========================================================
+   DOCUMENTS MOBILE <= 480px
+   Compact spacing for small screens
+   ========================================================= */
+
+@media (max-width: 480px) {
+    .documents-container {
+        padding: 0.875rem;
+    }
+
+    .documents-hero {
+        padding: 1.25rem 0.875rem;
+        border-radius: 14px;
+    }
+
+    .documents-hero h1 {
+        font-size: 1.35rem;
+    }
+
+    .documents-hero p {
+        font-size: 0.8rem;
+    }
+
+    .documents-content-section {
+        padding: 1rem;
+    }
+
+    .documents-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+
+    .document-card {
+        padding: 1rem;
+    }
+
+    .document-icon-wrapper {
+        width: 48px;
+        height: 48px;
+    }
+
+    .document-image-preview {
+        height: 140px;
+    }
+
+    .document-icon-header {
+        height: 100px;
+    }
+
+    .document-actions {
+        flex-direction: column;
+        gap: 0.375rem;
+    }
+
+    .document-actions button {
+        width: 100%;
+        min-height: 44px;
+    }
+
+    .documents-grid .empty-state {
+        padding: 2rem 1rem;
+    }
+
+    .documents-grid .empty-icon {
+        font-size: 3.5rem;
+    }
+
+    .documents-grid .empty-state p {
+        font-size: 1rem;
+    }
+}

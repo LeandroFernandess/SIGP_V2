@@ -1,0 +1,143 @@
+/**
+ * @file _containers.css
+ * @description Reusable page container components with responsive breakpoints.
+ * 
+ * Contents:
+ * - Base container (page-container)
+ * - Container variants (narrow, wide, extra-wide)
+ * - Module-specific aliases for backwards compatibility
+ * - Responsive padding adjustments
+ * 
+ * Usage:
+ * Add class "page-container" alongside module-specific class.
+ * 
+ * @example
+ * <div class="page-container expenses-container">
+ *     <div class="page-hero expenses-hero">...</div>
+ *     <div class="page-content">...</div>
+ * </div>
+ * 
+ * Available Variants:
+ * - .page-container: Default (max-width: 1600px)
+ * - .page-container--narrow: Narrower content (max-width: 1200px)
+ * - .page-container--wide: Full width with padding
+ * - .page-container--extra-wide: Extra large screens (max-width: 1800px)
+ * 
+ * Module Aliases (backwards compatibility):
+ * - .expenses-container, .income-container, .report-container
+ * - .training-container, .exams-container, .documents-container
+ * - .personal-container, .support-page-container, .settings-page-container
+ * 
+ * Dependencies: base.css (variables)
+ * Used by: All page modules
+ * 
+ * @author Leandro Fialho Fernandes
+ */
+
+/* =========================================================
+   BASE PAGE CONTAINER
+   Default container with max-width constraint
+   ========================================================= */
+
+.page-container,
+.expenses-container,
+.income-container,
+.report-container,
+.training-container,
+.exams-container,
+.documents-container,
+.personal-container,
+.support-page-container,
+.settings-page-container {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 2.5rem 3rem;
+    width: 100%;
+}
+
+/* =========================================================
+   CONTAINER WIDTH VARIANTS
+   Narrower and wider options for different content needs
+   ========================================================= */
+
+.page-container--narrow {
+    max-width: 1200px;
+}
+
+.page-container--wide {
+    max-width: none;
+    padding: 2.5rem 4rem;
+}
+
+.page-container--extra-wide {
+    max-width: 1800px;
+}
+
+/* =========================================================
+   CONTAINER RESPONSIVE BREAKPOINTS
+   Padding adjustments for different screen sizes
+   ========================================================= */
+
+@media (min-width: 1600px) {
+
+    .page-container--extra-wide,
+    .income-container {
+        max-width: 1800px;
+    }
+}
+
+@media (max-width: 1200px) {
+
+    .page-container,
+    .expenses-container,
+    .income-container,
+    .report-container,
+    .training-container,
+    .exams-container,
+    .documents-container,
+    .personal-container,
+    .support-page-container,
+    .settings-page-container {
+        padding: 1.5rem;
+    }
+
+    .page-container--wide {
+        padding: 1.5rem 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+
+    .page-container,
+    .expenses-container,
+    .income-container,
+    .report-container,
+    .training-container,
+    .exams-container,
+    .documents-container,
+    .personal-container,
+    .support-page-container,
+    .settings-page-container {
+        padding: 1rem;
+    }
+
+    .page-container--wide {
+        padding: 1rem 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .page-container,
+    .expenses-container,
+    .income-container,
+    .report-container,
+    .training-container,
+    .exams-container,
+    .documents-container,
+    .personal-container,
+    .support-page-container,
+    .settings-page-container {
+        padding: 0.75rem;
+    }
+}

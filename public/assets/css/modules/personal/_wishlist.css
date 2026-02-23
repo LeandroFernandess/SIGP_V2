@@ -1,0 +1,355 @@
+/**
+ * @file _wishlist.css
+ * @description Wishlist module styling for goal and wish tracking.
+ * 
+ * Contents:
+ * - Wishlist grid layout
+ * - Wish cards with priority indicator
+ * - Achieved state styling
+ * - Price and progress display
+ * - Action buttons (edit, delete, achieve)
+ * - Priority badges (high, medium, low)
+ * 
+ * Dependencies: _base.css
+ * Imported by: personal.css
+ * 
+ * @author Leandro Fialho Fernandes
+ */
+
+/* =========================================================
+   WISHLIST GRID
+   Responsive grid for wish cards
+   ========================================================= */
+
+.wishlist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+/* =========================================================
+   WISH CARD
+   ========================================================= */
+
+.wish-card {
+    background: linear-gradient(165deg, rgba(255, 255, 255, 0.03) 0%, rgba(0, 0, 0, 0.12) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    padding: 2rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 220px;
+    overflow: hidden;
+}
+
+.wish-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #f59e0b, #fbbf24, #fcd34d);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.wish-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(245, 158, 11, 0.3);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.25);
+}
+
+.wish-card:hover::before {
+    opacity: 1;
+}
+
+.wish-card.achieved {
+    opacity: 0.75;
+    border-color: rgba(16, 185, 129, 0.3);
+}
+
+.wish-card.achieved::before {
+    background: linear-gradient(90deg, #10b981, #34d399, #6ee7b7);
+    opacity: 1;
+}
+
+.wish-card.achieved::after {
+    content: '✅ Alcançado!';
+    position: absolute;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    padding: 0.35rem 1rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.wish-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+}
+
+.wish-priority {
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.btn-achieve {
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-achieve:hover {
+    background: rgba(16, 185, 129, 0.2);
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+}
+
+.wish-card h4 {
+    color: var(--text-light);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.wish-description {
+    color: var(--text-gray);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 1.25rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+/* =========================================================
+   WISH LINK
+   ========================================================= */
+
+.wish-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-light);
+    text-decoration: none;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    padding: 0.6rem 1.25rem;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.08));
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+    font-weight: 500;
+}
+
+.wish-link:hover {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(59, 130, 246, 0.15));
+    border-color: var(--secondary-blue);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+}
+
+/* =========================================================
+   WISH FOOTER
+   ========================================================= */
+
+.wish-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1.25rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    margin-top: auto;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.wish-price,
+.wish-date {
+    font-size: 0.85rem;
+    color: var(--text-gray);
+}
+
+.wish-price {
+    color: #3fb51b;
+    font-weight: 700;
+    font-size: 1rem;
+    background: rgba(16, 185, 129, 0.1);
+    padding: 0.35rem 0.75rem;
+    border-radius: 8px;
+}
+
+/* =========================================================
+   WISH ACTIONS
+   ========================================================= */
+
+.wish-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+}
+
+.btn-edit-wish {
+    background: linear-gradient(135deg, #f59e0b, #fbbf24) !important;
+    border: 2px solid rgba(251, 191, 36, 0.3) !important;
+    color: #ffffff !important;
+    padding: 0.5rem 1.5rem !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    position: relative !important;
+    overflow: hidden !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.5rem !important;
+}
+
+.btn-edit-wish svg {
+    pointer-events: none !important;
+    flex-shrink: 0 !important;
+    stroke: #ffffff !important;
+    fill: none !important;
+    width: 18px !important;
+    height: 18px !important;
+}
+
+.btn-edit-wish::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: -100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent) !important;
+    transition: left 0.5s ease !important;
+}
+
+.btn-edit-wish:hover::before {
+    left: 100% !important;
+}
+
+.btn-edit-wish:hover {
+    background: linear-gradient(135deg, #d97706, #f59e0b) !important;
+    border-color: rgba(251, 191, 36, 0.6) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4) !important;
+}
+
+.btn-edit-wish:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.5) !important;
+}
+
+.btn-delete-wish {
+    background: linear-gradient(135deg, #dc2626, #ef4444) !important;
+    border: 2px solid rgba(239, 68, 68, 0.3) !important;
+    color: #ffffff !important;
+    padding: 0.5rem 1.5rem !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    position: relative !important;
+    overflow: hidden !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.5rem !important;
+}
+
+.btn-delete-wish svg {
+    pointer-events: none !important;
+    flex-shrink: 0 !important;
+    stroke: #ffffff !important;
+    fill: none !important;
+    width: 18px !important;
+    height: 18px !important;
+}
+
+.btn-delete-wish::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: -100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent) !important;
+    transition: left 0.5s ease !important;
+}
+
+.btn-delete-wish:hover::before {
+    left: 100% !important;
+}
+
+.btn-delete-wish:hover {
+    background: linear-gradient(135deg, #b91c1c, #dc2626) !important;
+    border-color: rgba(239, 68, 68, 0.6) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4) !important;
+}
+
+.btn-delete-wish:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.5) !important;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 768px) {
+    .wishlist-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .wish-card {
+        min-height: auto;
+        padding: 1.5rem;
+    }
+
+    .wish-footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .wish-actions {
+        width: 100%;
+    }
+
+    .btn-edit-wish,
+    .btn-delete-wish {
+        flex: 1 !important;
+        min-height: 44px !important;
+        padding: 0.5rem 1rem !important;
+    }
+}

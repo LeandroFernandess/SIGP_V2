@@ -1,0 +1,569 @@
+/**
+ * @file animations.css
+ * @description Centralized keyframe animations and animation utility classes.
+ *              This file is the SINGLE SOURCE OF TRUTH for all @keyframes.
+ *              Do NOT define @keyframes in other CSS files.
+ *
+ * Contents:
+ * - Fade animations (fadeIn, fadeOut)
+ * - Slide animations (slideUp, slideDown, slideInUp, slideInRight)
+ * - Pulse animations (pulse, pulse-hero, pulse-dot, pulse-health)
+ * - Float animations (float, icon-float)
+ * - Rotation animations (spin)
+ * - Scale animations (grow-bar, checkbox-pop)
+ * - Feedback animations (checkmark, fade-out-pulse, success-pulse)
+ * - Modal animations (modal-slide-in, modal-slide-out)
+ * - Form animations (form-fade-in, field-slide-in)
+ * - Animation utility classes (.animate-*)
+ *
+ * Dependencies:
+ * - None (standalone, base-level file)
+ *
+ * Used by:
+ * - All pages and modules requiring animations
+ * - Components in /components
+ * - Modules in /modules
+ *
+ * @author Leandro Fialho Fernandes
+ */
+
+/* =========================================================
+   FADE ANIMATIONS
+   Simple opacity transitions
+   ========================================================= */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+/* =========================================================
+   SLIDE ANIMATIONS
+   Position-based entrance/exit with opacity
+   ========================================================= */
+
+/**
+ * slideUp - Full-height entrance from bottom
+ * Used for: overlays, bottom sheets
+ */
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/**
+ * slideDown - Subtle downward entrance
+ * Used for: dropdowns, tooltips
+ */
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/**
+ * slideInUp - Small upward entrance
+ * Used for: cards, list items
+ */
+@keyframes slideInUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/**
+ * slideInRight - Horizontal entrance from left
+ * Used for: side panels, notifications
+ */
+@keyframes slideInRight {
+    from {
+        transform: translateX(-20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/**
+ * slide-in-smooth - Subtle universal slide-in (consolidated from tabSlideIn/fadeInTab/formFadeIn)
+ * Used for: tabs, forms, general content transitions
+ */
+@keyframes slide-in-smooth {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/**
+ * field-slide-in - Horizontal field entrance
+ * Used for: form fields, input groups
+ */
+@keyframes field-slide-in {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* =========================================================
+   PULSE ANIMATIONS
+   Rhythmic scale + opacity variations
+   ========================================================= */
+
+/**
+ * pulse - Standard pulsing effect
+ * Used for: badges, notifications, alerts
+ */
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+    }
+}
+
+/**
+ * pulse-hero - Slow, subtle pulse for large backgrounds
+ * Used for: hero sections, decorative backgrounds
+ */
+@keyframes pulse-hero {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+}
+
+/**
+ * pulse-dot - Prominent pulse for indicators
+ * Used for: status dots, live indicators
+ */
+@keyframes pulse-dot {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.2);
+        opacity: 0.7;
+    }
+}
+
+/**
+ * pulse-health - Opacity-free pulse
+ * Used for: health bars, progress indicators
+ */
+@keyframes pulse-health {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+/* =========================================================
+   FLOAT ANIMATIONS
+   Vertical hovering effects
+   ========================================================= */
+
+/**
+ * float - Standard floating motion
+ * Used for: decorative elements, cards
+ */
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/**
+ * icon-float - Subtle icon hover (consolidated from floatIcon and iconFloat)
+ * Used for: icon buttons, small decorative elements
+ */
+@keyframes icon-float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-6px);
+    }
+}
+
+/* =========================================================
+   BOUNCE ANIMATION
+   Playful vertical bounce
+   ========================================================= */
+
+/**
+ * bounce - Simple bounce effect
+ * Used for: arrows, call-to-action elements
+ */
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* =========================================================
+   ROTATION ANIMATIONS
+   ========================================================= */
+
+/**
+ * spin - Continuous 360° rotation
+ * Used for: loading spinners, refresh icons
+ */
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* =========================================================
+   SCALE ANIMATIONS
+   Size-based transitions
+   ========================================================= */
+
+/**
+ * checkbox-pop - Quick scale pop for checkboxes
+ * Used for: checkbox interactions, toggle feedback
+ */
+@keyframes checkbox-pop {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/**
+ * grow-bar - Horizontal bar growth
+ * Used for: progress bars, loading indicators
+ */
+@keyframes grow-bar {
+    from {
+        transform: scaleX(0);
+        transform-origin: left;
+    }
+
+    to {
+        transform: scaleX(1);
+    }
+}
+
+/* =========================================================
+   SVG / STROKE ANIMATIONS
+   ========================================================= */
+
+/**
+ * checkmark - SVG stroke draw animation
+ * Used for: checkmark icons, success states
+ */
+@keyframes checkmark {
+    0% {
+        stroke-dashoffset: 50;
+    }
+
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+
+/* =========================================================
+   FEEDBACK ANIMATIONS
+   Module-specific: Expenses
+   ========================================================= */
+
+/**
+ * fade-out-pulse - Fade + scale down with red shadow
+ * Used by: Expenses module (deletion feedback)
+ */
+@keyframes fade-out-pulse {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.6;
+        transform: scale(0.98);
+        box-shadow: 0 0 24px rgba(239, 68, 68, 0.3);
+    }
+
+    100% {
+        opacity: 0.3;
+        transform: scale(0.95);
+    }
+}
+
+/**
+ * success-pulse - Scale pulse with green shadow
+ * Used by: Expenses module (success feedback)
+ */
+@keyframes success-pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    50% {
+        transform: scale(1.02);
+        box-shadow: 0 0 30px rgba(16, 185, 129, 0.4);
+        border-color: rgba(16, 185, 129, 0.5);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+}
+
+/* =========================================================
+   MODAL ANIMATIONS
+   Used by: modal overlays, dialogs
+   ========================================================= */
+
+@keyframes modal-slide-in {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes modal-slide-out {
+    from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(20px) scale(0.96);
+    }
+}
+
+/* =========================================================
+   ANIMATION UTILITY CLASSES
+   Prefixed with .animate-* for clarity
+   ========================================================= */
+
+.animate-fade-in {
+    animation: fadeIn 0.3s ease;
+}
+
+.animate-fade-out {
+    animation: fadeOut 0.3s ease;
+}
+
+.animate-slide-up {
+    animation: slideUp 0.4s ease;
+}
+
+.animate-slide-down {
+    animation: slideDown 0.3s ease;
+}
+
+.animate-slide-in-up {
+    animation: slideInUp 0.3s ease;
+}
+
+.animate-slide-in-smooth {
+    animation: slide-in-smooth 0.3s ease;
+}
+
+.animate-field-slide-in {
+    animation: field-slide-in 0.4s ease both;
+}
+
+.animate-pulse {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.animate-pulse-hero {
+    animation: pulse-hero 8s ease-in-out infinite;
+}
+
+.animate-float {
+    animation: float 3s ease-in-out infinite;
+}
+
+.animate-icon-float {
+    animation: icon-float 3s ease-in-out infinite;
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+.animate-bounce {
+    animation: bounce 1s ease-in-out infinite;
+}
+
+.animate-modal-slide-in {
+    animation: modal-slide-in 0.3s ease;
+}
+
+.animate-modal-slide-out {
+    animation: modal-slide-out 0.2s ease forwards;
+}
+
+/* =========================================================
+   DEPRECATED / LEGACY CLASSES
+   Kept for backward compatibility - do not use in new code
+   ========================================================= */
+
+.fade-in {
+    animation: fadeIn 0.3s ease;
+}
+
+.fade-out {
+    animation: fadeOut 0.3s ease;
+}
+
+.slide-up {
+    animation: slideUp 0.4s ease;
+}
+
+.slide-down {
+    animation: slideDown 0.3s ease;
+}
+
+.slide-in-up {
+    animation: slideInUp 0.3s ease;
+}
+
+.pulse-animation {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.pulse-hero-animation {
+    animation: pulse-hero 8s ease-in-out infinite;
+}
+
+.float-animation {
+    animation: float 3s ease-in-out infinite;
+}
+
+.spin-animation {
+    animation: spin 1s linear infinite;
+}
+
+.bounce-animation {
+    animation: bounce 1s ease-in-out infinite;
+}
+
+.modal-slide-in {
+    animation: modal-slide-in 0.3s ease;
+}
+
+.modal-slide-out {
+    animation: modal-slide-out 0.2s ease forwards;
+}
+
+.icon-float {
+    animation: icon-float 3s ease-in-out infinite;
+}
+
+.form-fade-in {
+    animation: slide-in-smooth 0.5s ease 0.1s both;
+}
+
+.field-slide-in {
+    animation: field-slide-in 0.4s ease both;
+}

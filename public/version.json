@@ -1,0 +1,57 @@
+﻿{
+    "version": "2.0.0",
+    "buildDate": "2026-02-22T22:14:16.198Z",
+    "changelog": [
+        {
+            "version": "2.0.0",
+            "date": "2026-02-22",
+            "changes": [
+                "Correção crítica: Exames médicos agora salvam e exibem corretamente no sistema",
+                "Correção crítica: Contas fixas agora resetam automaticamente no dia 1 de cada mês",
+                "Documentos: Reordenação dos cards por arrastar e soltar, com ordem salva no Firestore",
+                "Documentos: Arrastar arquivos do computador para a página faz upload automático",
+                "Tarefas: Botão Cancelar removido do modal de edição de tópico",
+                "Tema claro/escuro: Transição suave sem piscar e sem recarregar a página",
+                "Tema claro: Botão de alternância com animação e feedback tátil no mobile",
+                "Mobile: Layout responsivo revisado em todos os módulos (Senhas, Compras, Treinos, Exames, Abas)",
+                "Mobile: Área de toque mínima de 44px e prevenção de zoom em inputs iOS",
+                "Mobile: Suporte a safe-area para celulares com notch e Dynamic Island",
+                "CSS: Estilos inline extraídos de 9 arquivos JS para classes reutilizáveis (.form-hint, .info-box, .u-color-*, .swal-*)",
+                "Estilos: Refatoração completa do tema light",
+                "IA: Novo módulo DigestService — resumo diário/semanal por e-mail via OpenAI gpt-4o + EmailJS",
+                "IA: Modelo gpt-4o com system message, temperature 0.3 e max_tokens 700",
+                "Configurações: Painel de notificações com toggle, frequência (diária/semanal) e salvar preferências",
+                "Correção: PreferencesModule com classe duplicada foi corrigido",
+                "Correção: Valores financeiros no digest corrigidos (r.value / r.installmentValue)",
+                "Correção: Toggle de notificações sem ícones de sol/lua indevidos (.toggle-switch--plain)",
+                "Notificações: Painel de preferências completamente redesenhado com cards de frequência visual",
+                "Notificações: Seletor de horário de envio do digest (06:00–22:00)",
+                "Notificações: Grade de seções incluídas no digest (Finanças, Tarefas, Exames, Compras, Treinos)",
+                "Notificações: Barra de status com data/hora do último envio realizado",
+                "Notificações: Botão \"Enviar agora\" para disparo imediato do digest por e-mail",
+                "IA: Digest filtrado dinamicamente pelas seções selecionadas pelo usuário",
+                "IA: Agendamento por horário preferido — não envia antes do horário configurado"
+            ]
+        },
+        {
+            "version": "1.1.0",
+            "date": "2026-01-18",
+            "changes": [
+                "Módulo de Tarefas: Edição inline de tópicos ao clicar",
+                "Módulo de Tarefas: Remoção automática se o tópico ficar vazio",
+                "Módulo de Tarefas: Efeitos visuais hover nos tópicos",
+                "Módulo de Treinos: Botão de reset em massa de séries",
+                "Módulo de Treinos: Reset de todas as séries de um treino",
+                "Módulo de Treinos: Confirmação de segurança antes do reset"
+            ]
+        },
+        {
+            "version": "1.0.0",
+            "date": "2026-01-16",
+            "changes": [
+                "Correção de bugs gerais",
+                "Adicionado versão e data de build no rodapé do dashboard"
+            ]
+        }
+    ]
+}

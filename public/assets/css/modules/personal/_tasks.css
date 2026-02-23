@@ -1,0 +1,471 @@
+/**
+ * @file _tasks.css
+ * @description Tasks module styling for to-do items with topics.
+ * 
+ * Contents:
+ * - Task topics container
+ * - Topic items with checkboxes
+ * - Checkbox custom styling
+ * - Completed state (strikethrough)
+ * - Topic text styling
+ * - Light theme overrides
+ * 
+ * Dependencies: _base.css
+ * Imported by: personal.css
+ * 
+ * @author Leandro Fialho Fernandes
+ */
+
+/* =========================================================
+   TASK TOPICS CONTAINER
+   Wrapper for task topic items
+   ========================================================= */
+
+.task-topics {
+    margin-top: 1rem;
+    padding: 1.25rem 1.5rem;
+    background: linear-gradient(165deg, rgba(59, 130, 246, 0.05) 0%, rgba(0, 0, 0, 0.1) 100%);
+    border-radius: 12px;
+    border: 1px solid rgba(59, 130, 246, 0.1);
+}
+
+.task-topics-header {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(59, 130, 246, 0.15);
+}
+
+.btn-delete-completed-topics {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.1));
+    border: 1.5px solid rgba(239, 68, 68, 0.3);
+    border-radius: 8px;
+    color: #ef4444;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-delete-completed-topics:hover {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.25), rgba(220, 38, 38, 0.2));
+    border-color: rgba(239, 68, 68, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.btn-delete-completed-topics svg {
+    width: 14px;
+    height: 14px;
+}
+
+.topic-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 12px 16px;
+    transition: all 0.25s ease;
+    border-radius: 8px;
+    margin: 6px 0;
+}
+
+.topic-item:hover {
+    background: rgba(59, 130, 246, 0.08);
+}
+
+/* =========================================================
+   TASK CHECKBOXES
+   Custom checkbox styling with animations
+   ========================================================= */
+
+.topic-checkbox {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    border: 2px solid rgba(59, 130, 246, 0.4);
+    border-radius: 5px;
+    cursor: pointer;
+    position: relative;
+    background: rgba(59, 130, 246, 0.05);
+    transition: all 0.25s ease;
+    margin-top: 2px;
+}
+
+.topic-checkbox:hover {
+    border-color: var(--secondary-blue);
+    background: rgba(59, 130, 246, 0.15);
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.25);
+}
+
+.topic-checkbox:checked {
+    background: linear-gradient(135deg, #10b981, #34d399);
+    border-color: #10b981;
+    animation: checkboxPop 0.3s ease;
+}
+
+.topic-checkbox:checked::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+@keyframes checkboxPop {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.15);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* =========================================================
+   TEXT
+   ========================================================= */
+
+.topic-text {
+    flex: 1;
+    color: var(--text-light);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    word-break: break-word;
+    transition: all 0.25s ease;
+}
+
+.topic-text.editable-topic {
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 6px;
+}
+
+.topic-text.editable-topic:hover {
+    background: rgba(59, 130, 246, 0.15);
+    color: var(--light-blue);
+}
+
+.topic-item.completed .topic-text {
+    text-decoration: line-through;
+    color: var(--text-gray);
+    opacity: 0.7;
+}
+
+.topic-item.completed .topic-text.editable-topic:hover {
+    background: rgba(59, 130, 246, 0.1);
+    opacity: 0.85;
+}
+
+/* =========================================================
+   FILTERS
+   ========================================================= */
+
+.task-filters {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1.75rem;
+    padding: 1rem;
+    background: linear-gradient(165deg, rgba(255, 255, 255, 0.03) 0%, rgba(0, 0, 0, 0.1) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+    flex-wrap: wrap;
+}
+
+.task-filters.hidden {
+    display: none;
+}
+
+.filter-btn {
+    padding: 0.75rem 1.5rem;
+    background: rgba(59, 130, 246, 0.08);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 10px;
+    color: var(--text-gray);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.filter-btn:hover {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.4);
+    color: var(--light-blue);
+    transform: translateY(-2px);
+}
+
+.filter-btn.active {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    border-color: var(--secondary-blue);
+    color: #ffffff;
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.35);
+}
+
+/* =========================================================
+   ITEM-CARD INTEGRATION
+   ========================================================= */
+
+.item-card .task-topics {
+    margin-top: 1rem;
+}
+
+.item-card.completed .task-topics {
+    opacity: 0.6;
+}
+
+.item-card.completed .topic-checkbox {
+    border-color: var(--text-gray);
+}
+
+.item-card.completed .topic-checkbox:checked {
+    background: var(--text-gray);
+    border-color: var(--text-gray);
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 768px) {
+    .task-topics {
+        padding: 0.75rem;
+    }
+
+    .topic-item {
+        padding: 8px 10px;
+    }
+
+    .topic-checkbox {
+        width: 18px;
+        height: 18px;
+        min-width: 18px;
+    }
+
+    .topic-text {
+        font-size: 0.85rem;
+    }
+
+    .task-filters {
+        padding: 0.75rem;
+    }
+
+    .filter-btn {
+        flex: 1;
+        min-width: 100px;
+        text-align: center;
+        justify-content: center;
+    }
+}
+
+/* =========================================================
+   TOPICS INPUT CONTAINER
+   New interactive topic management interface
+   ========================================================= */
+
+.topics-input-container {
+    margin-top: 0.5rem;
+}
+
+.topics-add-row {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.topics-add-row input[type="text"] {
+    flex: 1;
+    padding: 0.875rem 1rem;
+    background: rgba(59, 130, 246, 0.05);
+    border: 1.5px solid rgba(59, 130, 246, 0.2);
+    border-radius: 10px;
+    color: var(--text-light);
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.topics-add-row input[type="text"]:focus {
+    outline: none;
+    border-color: var(--secondary-blue);
+    background: rgba(59, 130, 246, 0.1);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.topics-add-row input[type="text"]::placeholder {
+    color: var(--text-gray);
+    opacity: 0.7;
+}
+
+.btn-add-topic {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.25rem;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.btn-add-topic:hover {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.btn-add-topic:active {
+    transform: translateY(0);
+}
+
+.btn-add-topic svg {
+    width: 16px;
+    height: 16px;
+}
+
+.topics-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: linear-gradient(165deg, rgba(59, 130, 246, 0.03) 0%, rgba(0, 0, 0, 0.05) 100%);
+    border: 1px solid rgba(59, 130, 246, 0.15);
+    border-radius: 12px;
+    min-height: 60px;
+    align-items: flex-start;
+    align-content: flex-start;
+}
+
+.topics-empty-hint {
+    width: 100%;
+    text-align: center;
+    color: var(--text-gray);
+    opacity: 0.7;
+    font-size: 0.875rem;
+    font-style: italic;
+    margin: 0;
+    padding: 0.5rem;
+}
+
+.topic-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.08));
+    border: 1.5px solid rgba(59, 130, 246, 0.3);
+    border-radius: 8px;
+    color: var(--light-blue);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.25s ease;
+    animation: topicFadeIn 0.3s ease;
+}
+
+.topic-tag.completed {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.08));
+    border: 1.5px solid rgba(16, 185, 129, 0.4);
+    color: #10b981;
+}
+
+.topic-tag.completed .topic-tag-text {
+    text-decoration: line-through;
+    opacity: 0.8;
+}
+
+.topic-tag-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    background: #10b981;
+    color: white;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+@keyframes topicFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.topic-tag:hover {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.12));
+    border-color: rgba(59, 130, 246, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(59, 130, 246, 0.2);
+}
+
+.topic-tag-text {
+    line-height: 1.3;
+}
+
+.topic-tag-remove {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem;
+    background: rgba(239, 68, 68, 0.1);
+    border: none;
+    border-radius: 4px;
+    color: #ef4444;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.topic-tag-remove:hover {
+    background: rgba(239, 68, 68, 0.2);
+    transform: scale(1.1);
+}
+
+.topic-tag-remove svg {
+    display: block;
+}
+
+
+@media (max-width: 768px) {
+    .topics-add-row {
+        flex-direction: column;
+    }
+
+    .btn-add-topic {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .topics-list {
+        padding: 0.75rem;
+    }
+
+    .topic-tag {
+        font-size: 0.85rem;
+        padding: 0.5rem 0.75rem;
+    }
+}

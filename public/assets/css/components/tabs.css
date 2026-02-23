@@ -1,0 +1,716 @@
+/**
+ * @file tabs.css
+ * @description Multi-tab navigation system for dashboard pages.
+ * 
+ * Contents:
+ * - Tab bar (horizontal scrollable container)
+ * - Tab items (individual tabs with icons)
+ * - Tab action buttons (close, refresh, new tab)
+ * - Tab content areas
+ * - Main content layout
+ * - Empty state and new tab page
+ * 
+ * Features:
+ * - Horizontal scrolling with custom scrollbar
+ * - Active/hover states with gradient backgrounds
+ * - Unsaved changes indicator
+ * - Close all tabs functionality
+ * 
+ * Dependencies: base.css (variables), animations.css
+ * Used by: dashboard.html via TabManager.js
+ * 
+ * @author Leandro Fialho Fernandes
+ */
+
+/* =========================================================
+   TAB BAR SCROLLBAR
+   Custom thin scrollbar for horizontal tab overflow
+   ========================================================= */
+
+.tab-bar::-webkit-scrollbar {
+    height: 4px;
+}
+
+.tab-bar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.tab-bar::-webkit-scrollbar-thumb {
+    background: rgba(59, 130, 246, 0.3);
+    border-radius: 4px;
+}
+
+.tab-bar::-webkit-scrollbar-thumb:hover {
+    background: rgba(59, 130, 246, 0.5);
+}
+
+/* =========================================================
+   TAB ITEMS
+   Individual clickable tabs with icon and title
+   ========================================================= */
+
+.tab {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.55rem 0.85rem;
+    background: linear-gradient(165deg, rgba(30, 41, 59, 0.4) 0%, rgba(17, 24, 39, 0.6) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: none;
+    border-radius: 10px 10px 0 0;
+    cursor: pointer;
+    transition: background 0.25s ease, border-color 0.25s ease, margin-bottom 0.25s ease;
+    min-width: auto;
+    max-width: none;
+    width: auto;
+    position: relative;
+    flex-shrink: 0;
+    overflow: visible;
+}
+
+.tab::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: transparent;
+    transition: background 0.25s ease;
+    border-radius: 10px 10px 0 0;
+}
+
+.tab:hover {
+    background: linear-gradient(165deg, rgba(59, 130, 246, 0.08) 0%, rgba(30, 41, 59, 0.7) 100%);
+    border-color: rgba(59, 130, 246, 0.25);
+}
+
+.tab:hover::before {
+    background: rgba(59, 130, 246, 0.3);
+}
+
+.tab.active {
+    background: linear-gradient(165deg, rgba(59, 130, 246, 0.12) 0%, var(--card-bg) 100%);
+    border-color: rgba(59, 130, 246, 0.35);
+    border-bottom: 2px solid var(--card-bg);
+    margin-bottom: -2px;
+}
+
+.tab.active::before {
+    background: linear-gradient(90deg, #3b82f6, #60a5fa);
+}
+
+.tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: transparent;
+}
+
+.tab-icon {
+    font-size: 0.9rem;
+    flex-shrink: 0;
+    opacity: 0.85;
+}
+
+.tab.active .tab-icon {
+    opacity: 1;
+}
+
+.tab-title {
+    color: var(--text-light);
+    font-size: 0.85rem;
+    white-space: nowrap;
+    overflow: visible;
+    user-select: none;
+    opacity: 0.85;
+}
+
+.tab:hover .tab-title {
+    opacity: 1;
+}
+
+.tab.active .tab-title {
+    font-weight: 600;
+    color: #60a5fa;
+    opacity: 1;
+}
+
+.tab.has-unsaved-changes .tab-title::before {
+    content: '• ';
+    color: #f59e0b;
+}
+
+/* =========================================================
+   TAB ACTION BUTTONS
+   Refresh, close, new tab, and close all buttons
+   ========================================================= */
+
+.btn-refresh-tab {
+    background: transparent;
+    border: none;
+    color: var(--text-gray);
+    cursor: pointer;
+    padding: 3px;
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    min-height: 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    transition: background 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+    flex-shrink: 0;
+    margin-left: 2px;
+    opacity: 0;
+    vertical-align: middle;
+    line-height: 1;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.btn-refresh-tab svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    display: block;
+    pointer-events: none;
+    transform-origin: center center;
+    transition: none;
+    will-change: transform;
+}
+
+.btn-refresh-tab.spinning svg {
+    animation: spin-in-place 0.5s ease;
+}
+
+.tab:hover .btn-refresh-tab,
+.tab.active .btn-refresh-tab {
+    opacity: 0.7;
+}
+
+.btn-refresh-tab:hover {
+    opacity: 1;
+    background: rgba(59, 130, 246, 0.15);
+    color: #3b82f6;
+}
+
+.btn-refresh-tab:active {
+    opacity: 0.7;
+    background: rgba(59, 130, 246, 0.2);
+}
+
+.btn-refresh-tab:focus {
+    outline: none;
+}
+
+.btn-refresh-tab:focus-visible {
+    outline: 2px solid rgba(59, 130, 246, 0.5);
+    outline-offset: 1px;
+}
+
+.btn-close-tab {
+    background: transparent;
+    border: none;
+    color: var(--text-gray);
+    cursor: pointer;
+    padding: 3px;
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    min-height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    margin-left: 2px;
+    opacity: 0;
+    overflow: hidden;
+}
+
+.btn-close-tab svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+}
+
+.tab:hover .btn-close-tab,
+.tab.active .btn-close-tab {
+    opacity: 0.7;
+}
+
+.btn-close-tab:hover {
+    opacity: 1;
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+}
+
+.btn-close-tab:active {
+    opacity: 0.8;
+}
+
+.btn-close-tab:active svg {
+    transform: scale(0.85);
+}
+
+.btn-new-tab {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    color: var(--text-light-buttons);
+    padding: 0.5rem 0.9rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-left: auto;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.25);
+    margin-bottom: 1rem;
+}
+
+.btn-new-tab::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+    transition: left 0.4s ease;
+}
+
+.btn-new-tab:hover::before {
+    left: 100%;
+}
+
+.btn-new-tab:hover {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    border-color: rgba(59, 130, 246, 0.5);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.35);
+}
+
+.btn-new-tab:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+}
+
+.btn-close-all-tabs {
+    background: linear-gradient(145deg, rgb(239 68 68) 0%, rgb(217 18 18 / 49%) 100%);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    color: var(--text-light-buttons);
+    padding: 0.5rem 0.9rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-left: 0.4rem;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 1rem;
+}
+
+.btn-close-all-tabs::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.4s ease;
+}
+
+.btn-close-all-tabs:hover::before {
+    left: 100%;
+}
+
+.btn-close-all-tabs:hover {
+    background: linear-gradient(135deg, rgb(239, 68, 68) 0%, rgb(220, 38, 38) 100%);
+    border-color: rgba(239, 68, 68, 0.5);
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+}
+
+.btn-close-all-tabs:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(239, 68, 68, 0.3);
+}
+
+.btn-close-all-tabs:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    background: linear-gradient(165deg, rgba(107, 114, 128, 0.1) 0%, rgba(75, 85, 99, 0.2) 100%);
+    border-color: rgba(107, 114, 128, 0.15);
+    color: #9ca3af;
+}
+
+.btn-close-all-tabs:disabled:hover {
+    transform: none;
+    box-shadow: none;
+    background: linear-gradient(165deg, rgba(107, 114, 128, 0.1) 0%, rgba(75, 85, 99, 0.2) 100%);
+}
+
+/* =========================================================
+   MAIN CONTENT LAYOUT
+   Dashboard main area with sidebar offset
+   ========================================================= */
+
+.main-content {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    margin-left: 280px;
+    width: calc(100% - 280px);
+    transition: margin-left 0.3s ease, width 0.3s ease;
+    position: relative;
+}
+
+.dashboard-header {
+    flex-shrink: 0;
+    padding: 0.875rem 1.5rem;
+    background: linear-gradient(165deg, var(--dark-bg) 0%, rgba(17, 24, 39, 0.98) 100%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    box-sizing: border-box;
+}
+
+/* =========================================================
+   TAB BAR CONTAINER
+   Horizontal scrollable tab strip
+   ========================================================= */
+
+.tab-bar {
+    display: flex;
+    align-items: flex-end;
+    background: linear-gradient(180deg, rgba(17, 24, 39, 0.95) 0%, rgba(30, 41, 59, 0.85) 100%);
+    border-bottom: 1px solid rgba(59, 130, 246, 0.12);
+    padding: 0.6rem 1rem 0;
+    gap: 0.35rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    flex-wrap: nowrap;
+    flex-shrink: 0;
+    min-height: 48px;
+}
+
+/* =========================================================
+   TAB CONTENT PANELS
+   Content areas that display when tab is active
+   ========================================================= */
+
+.tabs-container {
+    position: relative;
+    flex: 1;
+    overflow: hidden;
+    width: 100%;
+    background: var(--darker-bg);
+}
+
+.tab-content {
+    display: none;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 2rem 3rem;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.tab-content .page-content,
+.tab-content .finance-cards,
+.tab-content .personal-modules,
+.tab-content .module-section {
+    max-width: 100%;
+    width: 100%;
+}
+
+.tab-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.tab-content::-webkit-scrollbar-track {
+    background: var(--dark-bg);
+}
+
+.tab-content::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+
+.tab-content::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-blue);
+}
+
+/* =========================================================
+   TAB RESPONSIVE ADJUSTMENTS
+   Mobile-friendly tab sizing 
+   ========================================================= */
+
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .tab-bar {
+        flex-wrap: wrap;
+        gap: 0.35rem;
+        padding: 0.5rem 0.625rem;
+        align-items: center;
+    }
+
+    .tab {
+        min-width: 100px;
+        max-width: 180px;
+        padding: 0.5rem 0.625rem;
+        gap: 0.25rem;
+    }
+
+    .tab-title {
+        font-size: 0.85rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 80px;
+    }
+
+    .btn-close-tab,
+    .btn-refresh-tab {
+        opacity: 0.7;
+    }
+
+    .btn-new-tab {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.8rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .btn-close-all-tabs {
+        margin-bottom: 0.25rem;
+    }
+
+    .tab-content {
+        padding: 1rem 1.5rem;
+    }
+
+    .dashboard-header {
+        padding: 1rem;
+    }
+}
+
+/* =========================================================
+   TAB MOBILE <= 480px
+   Compact tabs for small screens 
+   ========================================================= */
+
+@media (max-width: 480px) {
+    .tab-bar {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        flex-wrap: nowrap;
+        gap: 0.25rem;
+        padding: 0.25rem 0.375rem;
+    }
+
+    .tab {
+        min-width: 80px;
+        max-width: 130px;
+        padding: 0.375rem 0.5rem;
+        font-size: 0.75rem;
+        flex-shrink: 0;
+    }
+
+    .tab-title {
+        font-size: 0.75rem;
+        max-width: 55px;
+    }
+
+    .tab-icon {
+        font-size: 0.85rem;
+    }
+
+    .btn-new-tab {
+        padding: 0.35rem 0.625rem;
+        font-size: 0.7rem;
+    }
+
+    .btn-close-all-tabs {
+        padding: 0.35rem 0.625rem;
+        font-size: 0.7rem;
+    }
+
+    .btn-close-tab,
+    .btn-refresh-tab {
+        width: 18px;
+        height: 18px;
+    }
+
+    .tab-content {
+        padding: 0.75rem;
+    }
+
+    .empty-state {
+        min-height: 250px;
+        padding: 1.5rem 1rem;
+    }
+
+    .empty-state-icon {
+        font-size: 3.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .empty-state h2 {
+        font-size: 1.25rem;
+    }
+
+    .empty-state p {
+        font-size: 0.9rem;
+    }
+
+    .empty-state .btn-primary {
+        padding: 0.75rem 1.5rem;
+        font-size: 0.9rem;
+    }
+
+    .nova-aba-header {
+        padding: 1.25rem;
+    }
+
+    .nova-aba-header h2 {
+        font-size: 1.3rem;
+    }
+
+    .nova-aba-header p {
+        font-size: 0.85rem;
+    }
+}
+
+/* =========================================================
+   TAB ENTRANCE ANIMATION
+   Local animation for tab slide-in effect 
+   ========================================================= */
+
+@keyframes tabSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.tab {
+    animation: tabSlideIn 0.3s ease;
+}
+
+/* =========================================================
+   NEW TAB PAGE
+   Landing page shown when opening a new tab
+   ========================================================= */
+
+.nova-aba-page {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 1rem 0;
+}
+
+.nova-aba-header {
+    text-align: center;
+    padding: 2rem;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(147, 51, 234, 0.1));
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+.nova-aba-header h2 {
+    margin: 0 0 0.5rem 0;
+    color: var(--text-color);
+    font-size: 1.8rem;
+}
+
+.nova-aba-header p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+/* =========================================================
+   EMPTY STATE
+   Placeholder when no tabs are open
+   ========================================================= */
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 400px;
+    text-align: center;
+    padding: 3rem;
+}
+
+.empty-state-icon {
+    font-size: 5rem;
+    margin-bottom: 1.5rem;
+    opacity: 0.5;
+}
+
+.empty-state h2 {
+    margin: 0 0 1rem 0;
+    color: var(--text-color);
+    font-size: 1.8rem;
+}
+
+.empty-state p {
+    margin: 0 0 2rem 0;
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    max-width: 500px;
+}
+
+.empty-state .btn-primary {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes spin-in-place {
+    0% {
+        transform: rotate(0deg) translateZ(0);
+    }
+
+    100% {
+        transform: rotate(360deg) translateZ(0);
+    }
+}

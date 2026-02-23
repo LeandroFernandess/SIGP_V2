@@ -1,0 +1,144 @@
+/**
+ * @file _hero.css
+ * @description Reusable hero section component for page headers.
+ * 
+ * Contents:
+ * - Base hero section (gradient background with pulse animation)
+ * - Hero modifiers (small, no-animation)
+ * - Intro section (commonly paired with hero)
+ * - Responsive adjustments
+ * 
+ * Usage:
+ * Add class "page-hero" to any hero section.
+ * Module-specific class (e.g., "expenses-hero") can be used
+ * for additional customization if needed.
+ * 
+ * @example
+ * <div class="page-hero expenses-hero">
+ *     <h1>Page Title</h1>
+ *     <p>Page description</p>
+ * </div>
+ * 
+ * Available Modifiers:
+ * - .page-hero--small: Reduced padding for compact layouts
+ * - .page-hero--no-animation: Disables background animation
+ * 
+ * Dependencies: base.css (variables), animations.css (pulse-hero)
+ * Used by: All page modules
+ * 
+ * @author Leandro Fialho Fernandes
+ */
+
+/* =========================================================
+   BASE HERO SECTION
+   Full-width gradient header with animated background 
+   ========================================================= */
+
+.page-hero {
+    text-align: center;
+    padding: 2.5rem 2rem;
+    margin-bottom: 2rem;
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #60a5fa 100%);
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(59, 130, 246, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.page-hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    animation: pulse-hero 8s ease-in-out infinite;
+    will-change: transform, opacity;
+}
+
+.page-hero h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    color: #ffffff;
+    font-weight: 800;
+    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+    position: relative;
+    z-index: 1;
+}
+
+.page-hero p {
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 1.05rem;
+    position: relative;
+    z-index: 1;
+    margin: 0;
+}
+
+/* =========================================================
+   HERO SIZE MODIFIERS
+   Compact and animation-disabled variants
+   ========================================================= */
+
+.page-hero--small {
+    padding: 1.5rem 1rem;
+}
+
+.page-hero--small h1 {
+    font-size: 1.75rem;
+}
+
+.page-hero--small p {
+    font-size: 0.9rem;
+}
+
+.page-hero--no-animation::before {
+    animation: none;
+}
+
+/* =========================================================
+   PAGE INTRO SECTION
+   Subtitle text area commonly paired with hero
+   ========================================================= */
+
+.page-intro {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.page-intro .intro-text,
+.intro-text {
+    color: var(--text-gray);
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+/* =========================================================
+   HERO RESPONSIVE BREAKPOINTS
+   Size and padding adjustments for mobile
+   ========================================================= */
+
+@media (max-width: 768px) {
+    .page-hero {
+        padding: 1.5rem 1rem;
+    }
+    
+    .page-hero h1 {
+        font-size: 1.75rem;
+    }
+    
+    .page-hero p {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-hero {
+        padding: 1.25rem 1rem;
+        border-radius: 16px;
+    }
+    
+    .page-hero h1 {
+        font-size: 1.5rem;
+    }
+}

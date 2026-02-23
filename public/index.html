@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0f172a">
+    <title>SIGP - Sistema Inteligente de Gestão Pessoal</title>
+    <link rel="icon" type="image/png" href="assets/img/logo.png">
+    <link rel="stylesheet" href="assets/css/base/base.css">
+    <link rel="stylesheet" href="assets/css/base/components.css">
+    <link rel="stylesheet" href="assets/css/components/forms.css">
+    <link rel="stylesheet" href="assets/css/base/loader.css">
+    <link rel="stylesheet" href="assets/css/base/responsive.css">
+    <link rel="stylesheet" href="assets/css/themes/light-theme.css">
+
+    <!-- SweetAlert2 - Custom Alerts -->
+    <link rel="stylesheet" href="assets/css/themes/sweet-alert2.css">
+    <link rel="stylesheet" href="assets/css/themes/sweet-alert-custom.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="login-card">
+
+            <!-- Theme Toggle Button -->
+            <button id="themeToggle" class="theme-toggle-btn" title="Alternar tema">
+                <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+            </button>
+
+            <!-- Logo & Branding -->
+            <div class="logo-section">
+                <h1 class="logo-title">SIGP</h1>
+                <p class="logo-subtitle">Sistema Inteligente de Gestão Pessoal</p>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" class="auth-form active">
+                <h2 class="form-title">Acesse sua conta</h2>
+
+                <div class="form-group">
+                    <label for="login-username">Usuário</label>
+                    <input type="text" id="login-username" name="username"
+                        placeholder="Digite seu usuário (ex: SIGP000)" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="login-password">Senha</label>
+                    <input type="password" id="login-password" name="password" placeholder="Digite sua senha" required>
+                </div>
+
+                <button type="submit" class="btn-primary">Entrar</button>
+
+                <div class="divider">
+                    <span>ou</span>
+                </div>
+
+                <!-- Google Button -->
+                <button type="button" id="googleLoginBtn" class="btn-google">
+                    <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+                        <g fill="none" fill-rule="evenodd">
+                            <path
+                                d="M17.64 9.205c0-.639-.057-1.252-.164-1.841H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"
+                                fill="#4285F4" />
+                            <path
+                                d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"
+                                fill="#34A853" />
+                            <path
+                                d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"
+                                fill="#FBBC05" />
+                            <path
+                                d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"
+                                fill="#EA4335" />
+                        </g>
+                    </svg>
+                    <span>Continuar com Google</span>
+                </button>
+
+                <div class="form-footer">
+                    <a href="#" class="link-action" id="showForgotPassword">Esqueceu sua senha?</a>
+                    <p class="form-switch">
+                        Não tem uma conta?
+                        <a href="#" class="link-action" id="showRegister">Criar conta</a>
+                    </p>
+                </div>
+            </form>
+
+            <!-- Register Form -->
+            <form id="registerForm" class="auth-form">
+                <h2 class="form-title">Criar nova conta</h2>
+
+                <!-- Method Selection -->
+                <div id="methodSelection" class="method-selection">
+                    <p class="method-selection-text">Escolha como deseja criar sua conta:</p>
+
+                    <div class="method-selection-buttons">
+                        <button type="button" id="selectFormMethod" class="btn-primary btn-method-select">
+                            <span class="method-icon">📝</span>
+                            <span>Criar com Formulário</span>
+                        </button>
+
+                        <div class="method-notice method-notice-form">
+                            ℹ️ Você poderá fazer login com <strong>usuário/senha OU Google</strong>
+                        </div>
+
+                        <div class="divider divider-method">
+                            <span>ou</span>
+                        </div>
+
+                        <button type="button" id="selectGoogleMethod" class="btn-google btn-method-select">
+                            <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+                                <g fill="none" fill-rule="evenodd">
+                                    <path
+                                        d="M17.64 9.205c0-.639-.057-1.252-.164-1.841H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"
+                                        fill="#4285F4" />
+                                    <path
+                                        d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"
+                                        fill="#34A853" />
+                                    <path
+                                        d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"
+                                        fill="#FBBC05" />
+                                    <path
+                                        d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"
+                                        fill="#EA4335" />
+                                </g>
+                            </svg>
+                            Criar com Google
+                        </button>
+
+                        <div class="method-notice method-notice-google">
+                            ℹ️ Você só poderá fazer login com <strong>Google</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Email/Password Form (Hidden initially) -->
+                <div id="formMethodContent" class="form-method-content">
+                    <button type="button" id="backToMethodSelection" class="btn-back">
+                        <span>←</span>
+                        <span>Voltar</span>
+                    </button>
+
+                    <!-- Step-by-step guide -->
+                    <div class="step-by-step-guide">
+                        <h3 class="step-guide-title">
+                            <span class="step-guide-icon">🔗</span>
+                            <span>Como vincular o Google para login duplo</span>
+                        </h3>
+                        <ol class="step-guide-list">
+                            <li class="step-guide-item">
+                                <strong>Crie sua conta com o formulário</strong> - Preencha nome, e-mail e senha
+                            </li>
+                            <li class="step-guide-item">
+                                <strong>Anote seu usuário</strong> - Sistema gera automaticamente (ex: SIGP001)
+                            </li>
+                            <li class="step-guide-item">
+                                <strong>Faça login com usuário e senha</strong> - Use as credenciais recebidas
+                            </li>
+                            <li class="step-guide-item">
+                                <strong>Vá em Configurações → Segurança</strong> - Acesse as configurações da conta
+                            </li>
+                            <li class="step-guide-item">
+                                <strong>Clique em "Vincular Conta Google"</strong> - Conecte sua conta Google
+                            </li>
+                            <li class="step-guide-item">
+                                <strong>Pronto!</strong> - Agora pode fazer login com usuário/senha OU Google
+                            </li>
+                        </ol>
+                        <p class="step-guide-tip">
+                            💡 Após vincular, você terá flexibilidade total de login!
+                        </p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="register-name">Nome completo</label>
+                        <input type="text" id="register-name" name="name" placeholder="Digite seu nome completo"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="register-email">E-mail</label>
+                        <input type="email" id="register-email" name="email" placeholder="Digite seu e-mail" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="register-password">Senha</label>
+                        <input type="password" id="register-password" name="password"
+                            placeholder="Crie uma senha forte (mínimo 6 caracteres)" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="register-confirm-password">Confirmar senha</label>
+                        <input type="password" id="register-confirm-password" name="confirmPassword"
+                            placeholder="Confirme sua senha" required>
+                    </div>
+
+                    <button type="submit" class="btn-primary">Criar conta</button>
+                </div>
+
+                <!-- Hidden Google Button (triggered programmatically) -->
+                <button type="button" id="googleRegisterBtn" class="btn-google hidden-btn">
+                    <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+                        <g fill="none" fill-rule="evenodd">
+                            <path
+                                d="M17.64 9.205c0-.639-.057-1.252-.164-1.841H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"
+                                fill="#4285F4" />
+                            <path
+                                d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"
+                                fill="#34A853" />
+                            <path
+                                d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"
+                                fill="#FBBC05" />
+                            <path
+                                d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"
+                                fill="#EA4335" />
+                        </g>
+                    </svg>
+                    <span>Continuar com Google</span>
+                </button>
+
+                <div class="form-footer">
+                    <p class="form-switch">
+                        Já tem uma conta?
+                        <a href="#" class="link-action" id="showLogin">Fazer login</a>
+                    </p>
+                </div>
+            </form>
+
+            <!-- Password Recovery Form -->
+            <form id="forgotPasswordForm" class="auth-form">
+                <h2 class="form-title">Recuperar senha</h2>
+                <p class="form-description">
+                    Digite seu usuário (SIGP000, SIGP001...) para receber o link de recuperação no e-mail cadastrado.
+                </p>
+
+                <div class="form-group">
+                    <label for="forgot-identifier">Usuário</label>
+                    <input type="text" id="forgot-identifier" name="username"
+                        placeholder="Digite seu usuário (ex: SIGP000)" required>
+                </div>
+
+                <button type="submit" class="btn-primary">Enviar e-mail de recuperação</button>
+
+                <!-- Navigation Link -->
+                <div class="form-footer">
+                    <a href="#" class="link-action" id="backToLogin">Voltar ao login</a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>© 2026 Sistema Inteligente de Gestão Pessoal. Todos os direitos reservados.</p>
+    </footer>
+
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-content">
+            <!-- Spinner (displayed during login) -->
+            <div id="spinner" class="spinner">
+                <div class="spinner-ring"></div>
+                <div class="spinner-ring"></div>
+                <div class="spinner-ring"></div>
+                <div class="spinner-ring"></div>
+            </div>
+
+            <!-- Checkmark (displayed after success) -->
+            <svg id="checkmark" class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none" />
+                <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+            </svg>
+
+            <h2 id="loadingText" class="loading-text">Autenticando...</h2>
+            <p id="loadingSubtext" class="loading-subtext">Por favor, aguarde</p>
+
+            <div class="loading-progress">
+                <div id="loadingProgressBar" class="loading-progress-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS - Utilities & Managers -->
+    <script src="assets/js/utils/Logger.js"></script>
+    <script src="assets/js/utils/Validator.js"></script>
+    <script src="assets/js/utils/AuthErrorMapper.js"></script>
+    <script src="assets/js/managers/UIManager.js"></script>
+    <script src="assets/js/managers/LoadingManager.js"></script>
+    <script src="assets/js/managers/FormManager.js"></script>
+    <script src="assets/js/utils/ThemeManager.js"></script>
+
+    <!-- SweetAlert2 - Custom Alerts -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- FIREBASE & USER SERVICE - ES6 Modules -->
+    <script type="module" src="assets/js/core/firebaseConfig.js"></script>
+    <script type="module" src="assets/js/services/UserService.js"></script>
+
+    <!-- AUTH HANDLERS - ES6 Modules -->
+    <script type="module" src="assets/js/auth/LoginHandler.js"></script>
+    <script type="module" src="assets/js/auth/RegisterHandler.js"></script>
+    <script type="module" src="assets/js/auth/ForgotPasswordHandler.js"></script>
+
+    <!-- APP - General Initialization (ES6 Module) -->
+    <script type="module" src="assets/js/core/app.js"></script>
+</body>
+
+</html>

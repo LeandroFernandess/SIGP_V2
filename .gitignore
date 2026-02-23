@@ -1,0 +1,39 @@
+# Arquivos de Credenciais (NÃO COMMITAR)
+public/assets/js/core/firebase.env.js
+
+# Dependências Node.js
+node_modules/
+package-lock.json
+
+# Logs
+*.log
+npm-debug.log*
+
+# Arquivos de ambiente
+.env
+.env.local
+.env.*.local
+
+# Firebase (cache e debug)
+.firebase/
+firebase-debug.log
+firestore-debug.log
+
+# Sistema Operacional
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build e cache
+dist/
+build/
+.cache/
+
+# Cache do sistema
+.firebase/
