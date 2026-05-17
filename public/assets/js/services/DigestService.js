@@ -45,7 +45,7 @@ export class DigestService {
      * @param {string} _name     - kept for backwards compatibility (unused)
      * @returns {Promise<void>}
      */
-    async checkAndSend(userId, _email, _name) {
+    async checkAndSend(userId, userEmail, userName) {
         try {
             const prefs = await this.loadPrefs(userId);
             if (!prefs || !prefs.enabled) return;
@@ -56,7 +56,7 @@ export class DigestService {
             }
 
             const callable = httpsCallable(functionsClient, 'sendDigestOnLogin');
-            await callable({});
+            await callable({ userEmail: userEmail || undefined, userName: userName || undefined });
             Logger.info('[DigestService] Login digest dispatched via backend.');
         } catch (err) {
             Logger.error('[DigestService] Error during login digest:', err);
@@ -72,13 +72,13 @@ export class DigestService {
      * @param {string} _name   - kept for backwards compatibility (unused)
      * @returns {Promise<void>}
      */
-    async sendNow(_userId, _email, _name) {
+    async sendNow(userId, userEmail, userName) {
         if (!functionsClient || typeof httpsCallable !== 'function') {
             throw new Error('Cloud Functions client indisponível. Tente novamente em alguns instantes.');
         }
 
         const callable = httpsCallable(functionsClient, 'sendDigestNow');
-        await callable({});
+        await callable({ userEmail: userEmail || undefined, userName: userName || undefined });
         this._showToast();
     }
 

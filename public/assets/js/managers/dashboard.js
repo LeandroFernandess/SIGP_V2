@@ -59,10 +59,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             window.currentUserId = user.uid;
             window.digestService = new DigestService();
+            const sessionUser = (typeof FormUtils !== 'undefined' && FormUtils.getCurrentUser)
+                ? FormUtils.getCurrentUser()
+                : null;
             window.digestService.checkAndSend(
                 user.uid,
-                user.email,
-                user.displayName || user.email
+                sessionUser?.email || user.email,
+                sessionUser?.name || user.displayName || user.email
             );
         } else {
             window.location.href = 'index.html';

@@ -105,9 +105,8 @@ exports.sendDigestOnLogin = onCall(
             return { ok: true, skipped: true };
         }
 
-        const userEmail = request.auth.token.email;
-        const userName = request.auth.token.name || userEmail;
-        await buildAndSend(userId, userEmail, userName, prefs);
+        const { email, name } = await resolveDigestRecipient(request);
+        await buildAndSend(userId, email, name, prefs);
         return { ok: true };
     }
 );
@@ -127,11 +126,10 @@ exports.sendDigestNow = onCall(
             throw new HttpsError('unauthenticated', 'Login required');
         }
         const userId = request.auth.uid;
-        const userEmail = request.auth.token.email;
-        const userName = request.auth.token.name || userEmail;
+        const { email, name } = await resolveDigestRecipient(request);
 
         const prefs = (await loadPrefs(userId)) || {};
-        await buildAndSend(userId, userEmail, userName, prefs, { force: true });
+        await buildAndSend(userId, email, name, prefs, { force: true });
         return { ok: true };
     }
 );
@@ -166,9 +164,10 @@ exports.sendFeedback = onCall(
             throw new HttpsError('invalid-argument', 'feedbackType and message (≥10 chars) are required');
         }
 
-        const fromName = request.auth.token.name || request.auth.token.email || 'Usuário';
-        const fromEmail = replyEmail || request.auth.token.email || 'não informado';
         const userId = request.auth.uid;
+        const profile = await loadUserProfile(userId);
+        const fromName = profile.name || request.auth.token.name || request.auth.token.email || 'Usuário';
+        const fromEmail = replyEmail || profile.email || request.auth.token.email || 'não informado';
 
         const tipoFeedbackMap = {
             sugestao: '💡 Sugestão de Melhoria',
@@ -194,7 +193,6 @@ exports.sendFeedback = onCall(
                 accessToken: EMAILJS_PRIVATE_KEY.value(),
                 template_params: {
                     to_email: FEEDBACK_RECIPIENT_EMAIL.value(),
-                    to_name: 'Leandro Fernandes',
                     reply_to: fromEmail,
                     from_name: fromName,
                     from_email: fromEmail,
@@ -229,13 +227,48 @@ exports.sendFeedback = onCall(
  * @param {Object}  prefs  - User notification preferences document
  * @param {Object}  [opts] - Optional flags; `opts.force=true` skips prefs.enabled check
  * @returns {Promise<void>}
- */async function buildAndSend(userId, email, name, prefs, opts = {}) {
+ */
+async function buildAndSend(userId, email, name, prefs, opts = {}) {
     const data = await collectAllData(userId);
     const prompt = buildPrompt(name || 'Usuário', data, prefs);
     const summary = await callOpenAI(prompt);
+    console.log(`[digest] uid=${userId} email=${!!email} summaryLen=${summary?.length || 0} tasks=${data.tasks?.length} income=${data.income?.length}`);
     await sendEmail(email, name || 'Usuário', summary, data, prefs);
     await updateLastSentAt(userId);
     console.log(`[digest] sent to ${email} (force=${!!opts.force})`);
+}
+
+/**
+ * Resolves the digest recipient for the authenticated user.
+ * Source priority: Firestore user profile → Firebase Auth token.
+ * Throws HttpsError('failed-precondition') if no email can be found.
+ * @param {Object} request - Firebase callable request
+ * @returns {Promise<{email: string, name: string}>}
+ */
+async function resolveDigestRecipient(request) {
+    const userId = request.auth.uid;
+    const profile = await loadUserProfile(userId);
+    const email = profile.email || request.auth.token.email;
+    if (!email) {
+        throw new HttpsError('failed-precondition', 'User email not found for uid=' + userId);
+    }
+    const name = profile.name || request.auth.token.name || email;
+    return { email, name };
+}
+
+/**
+ * Loads the user profile document from Firestore.
+ * Returns an empty object on any error so missing profiles never crash.
+ * @param {string} userId - Firebase Auth uid
+ * @returns {Promise<{email?: string, name?: string, username?: string}>}
+ */
+async function loadUserProfile(userId) {
+    try {
+        const snap = await db.doc(`artifacts/${APP_ID}/users/${userId}`).get();
+        return snap.exists ? snap.data() : {};
+    } catch {
+        return {};
+    }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -494,6 +527,7 @@ async function sendEmail(email, name, aiSummary, data, prefs = {}) {
     const publicKey = EMAILJS_PUBLIC_KEY.value();
 
     const params = {
+        // Primary fields
         to_email: email,
         to_name: name,
         subject,
@@ -505,6 +539,18 @@ async function sendEmail(email, name, aiSummary, data, prefs = {}) {
         income_total: 'R$ ' + totalIncome.toFixed(2),
         expenses_total: 'R$ ' + totalExpenses.toFixed(2),
         balance: 'R$ ' + (totalIncome - totalExpenses).toFixed(2),
+        // Aliases for EmailJS template compatibility
+        user_name: name,
+        user_email: email,
+        name,
+        summary: aiSummary,
+        resumo_ia: aiSummary,
+        message: aiSummary,
+        tasks: pendingTasks,
+        exams: upcomingExams,
+        shopping: pendingShopping,
+        income: 'R$ ' + totalIncome.toFixed(2),
+        expenses: 'R$ ' + totalExpenses.toFixed(2),
     };
 
     const res = await fetch(EMAILJS_ENDPOINT, {
