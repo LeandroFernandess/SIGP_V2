@@ -1,7 +1,7 @@
 # SIGP — Sistema Inteligente de Gestão Pessoal
 
 <p align="center">
-  <strong>v2.0.0</strong> · Aplicação web modular para gestão pessoal completa
+  <strong>v2.1.0</strong> · Aplicação web modular para gestão pessoal completa
 </p>
 
 ---
