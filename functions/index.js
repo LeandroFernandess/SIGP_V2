@@ -12,7 +12,7 @@
  * is no scheduler component anymore.
  *
  * Contents:
- *  - Callable exports (sendDigestOnLogin, sendDigestNow)
+ *  - Callable exports (sendDigestOnLogin, sendDigestNow, sendFeedback)
  *  - Build & send pipeline (buildAndSend)
  *  - Firestore helpers (loadPrefs, updateLastSentAt, collectAllData, fetchCollection)
  *  - Prompt builder (buildPrompt, parseLocalDate, classifyReminders)
@@ -23,27 +23,26 @@
  * Dependencies:
  *  - firebase-functions/v2/https (onCall, HttpsError)
  *  - firebase-functions/params (defineSecret)
- *  - firebase-functions (logger, config)
  *  - firebase-admin (Firestore)
  *  - Node.js built-in fetch (Node 18+)
  *
- * Required runtime config / secrets:
+ * Required runtime secrets (set via Firebase CLI):
  *   firebase functions:secrets:set OPENAI_API_KEY
  *   firebase functions:secrets:set EMAILJS_PRIVATE_KEY
- *   firebase functions:config:set emailjs.service_id="service_oyf1zei" \
- *                                 emailjs.template_id="template_lqll858" \
- *                                 emailjs.public_key="5JgttFH7TW0i34yAr"
+ *   firebase functions:secrets:set EMAILJS_SERVICE_ID
+ *   firebase functions:secrets:set EMAILJS_TEMPLATE_ID          # digest template
+ *   firebase functions:secrets:set EMAILJS_FEEDBACK_TEMPLATE_ID  # feedback template
+ *   firebase functions:secrets:set EMAILJS_PUBLIC_KEY
  *
- * Note: EmailJS REST endpoint requires an "accessToken" (private key) when
- * called from a server. Create it in the EmailJS dashboard → Account → API
- * Keys → Private Key, and store it as the EMAILJS_PRIVATE_KEY secret.
+ * All EmailJS identifiers (including the non-sensitive service/template/public
+ * IDs) are stored in Secret Manager so no credential or identifier is ever
+ * versioned in the repository.
  *
  * @author Leandro Fialho Fernandes
  */
 
 const { onCall, HttpsError } = require('firebase-functions/v2/https');
 const { defineSecret } = require('firebase-functions/params');
-const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 
 admin.initializeApp();
@@ -51,6 +50,10 @@ const db = admin.firestore();
 
 const OPENAI_API_KEY = defineSecret('OPENAI_API_KEY');
 const EMAILJS_PRIVATE_KEY = defineSecret('EMAILJS_PRIVATE_KEY');
+const EMAILJS_SERVICE_ID = defineSecret('EMAILJS_SERVICE_ID');
+const EMAILJS_TEMPLATE_ID = defineSecret('EMAILJS_TEMPLATE_ID');
+const EMAILJS_FEEDBACK_TEMPLATE_ID = defineSecret('EMAILJS_FEEDBACK_TEMPLATE_ID');
+const EMAILJS_PUBLIC_KEY = defineSecret('EMAILJS_PUBLIC_KEY');
 
 const APP_ID = 'sigp-app';
 const OPENAI_ENDPOINT = 'https://api.openai.com/v1/chat/completions';
@@ -58,13 +61,28 @@ const OPENAI_MODEL = 'gpt-4o';
 const EMAILJS_ENDPOINT = 'https://api.emailjs.com/api/v1.0/email/send';
 const DEFAULT_TIMEZONE = 'America/Sao_Paulo';
 
+const DIGEST_SECRETS = [
+    OPENAI_API_KEY,
+    EMAILJS_PRIVATE_KEY,
+    EMAILJS_SERVICE_ID,
+    EMAILJS_TEMPLATE_ID,
+    EMAILJS_PUBLIC_KEY,
+];
+
+const FEEDBACK_SECRETS = [
+    EMAILJS_PRIVATE_KEY,
+    EMAILJS_SERVICE_ID,
+    EMAILJS_FEEDBACK_TEMPLATE_ID,
+    EMAILJS_PUBLIC_KEY,
+];
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Callable function: send on user login (only if prefs.enabled)
 // ─────────────────────────────────────────────────────────────────────────────
 
 exports.sendDigestOnLogin = onCall(
     {
-        secrets: [OPENAI_API_KEY, EMAILJS_PRIVATE_KEY],
+        secrets: DIGEST_SECRETS,
         timeoutSeconds: 120,
     },
     async (request) => {
@@ -90,7 +108,7 @@ exports.sendDigestOnLogin = onCall(
 
 exports.sendDigestNow = onCall(
     {
-        secrets: [OPENAI_API_KEY, EMAILJS_PRIVATE_KEY],
+        secrets: DIGEST_SECRETS,
         timeoutSeconds: 120,
     },
     async (request) => {
@@ -103,6 +121,82 @@ exports.sendDigestNow = onCall(
 
         const prefs = (await loadPrefs(userId)) || {};
         await buildAndSend(userId, userEmail, userName, prefs, { force: true });
+        return { ok: true };
+    }
+);
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Callable function: send user feedback via EmailJS (no OpenAI)
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * HTTPS callable invoked by the Feedback form in the Support page.
+ * Forwards the feedback payload to EmailJS server-side so no EmailJS
+ * identifiers or credentials ever reach the browser.
+ *
+ * Expected payload: { feedbackType, message, replyEmail? }
+ * @throws {HttpsError} unauthenticated — if the caller is not signed in
+ * @throws {HttpsError} invalid-argument — if required fields are missing
+ * @returns {Promise<{ok: boolean}>}
+ */
+exports.sendFeedback = onCall(
+    {
+        secrets: FEEDBACK_SECRETS,
+        timeoutSeconds: 30,
+    },
+    async (request) => {
+        if (!request.auth) {
+            throw new HttpsError('unauthenticated', 'Login required');
+        }
+
+        const { feedbackType, message, replyEmail } = request.data || {};
+        if (!feedbackType || !message || message.trim().length < 10) {
+            throw new HttpsError('invalid-argument', 'feedbackType and message (≥10 chars) are required');
+        }
+
+        const fromName = request.auth.token.name || request.auth.token.email || 'Usuário';
+        const fromEmail = replyEmail || request.auth.token.email || 'não informado';
+        const userId = request.auth.uid;
+
+        const tipoFeedbackMap = {
+            sugestao: '💡 Sugestão de Melhoria',
+            bug: '🐛 Reportar Bug/Erro',
+            elogio: '⭐ Elogio',
+            duvida: '❓ Dúvida',
+            outro: '📝 Outro',
+        };
+
+        const timestamp = new Date().toLocaleString('pt-BR', {
+            day: '2-digit', month: '2-digit', year: 'numeric',
+            hour: '2-digit', minute: '2-digit',
+            timeZone: DEFAULT_TIMEZONE,
+        });
+
+        const res = await fetch(EMAILJS_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                service_id: EMAILJS_SERVICE_ID.value(),
+                template_id: EMAILJS_FEEDBACK_TEMPLATE_ID.value(),
+                user_id: EMAILJS_PUBLIC_KEY.value(),
+                accessToken: EMAILJS_PRIVATE_KEY.value(),
+                template_params: {
+                    from_name: fromName,
+                    from_email: fromEmail,
+                    user_id: userId,
+                    feedback_type: tipoFeedbackMap[feedbackType] || feedbackType,
+                    message: message.trim(),
+                    timestamp,
+                },
+            }),
+        });
+
+        if (!res.ok) {
+            const errText = await res.text();
+            throw new HttpsError('internal', `EmailJS ${res.status}: ${errText}`);
+        }
+
+        console.log(`[feedback] sent from uid=${userId} type=${feedbackType}`);
         return { ok: true };
     }
 );
@@ -126,7 +220,7 @@ exports.sendDigestNow = onCall(
     const summary = await callOpenAI(prompt);
     await sendEmail(email, name || 'Usuário', summary, data, prefs);
     await updateLastSentAt(userId);
-    functions.logger.info(`[digest] sent to ${email} (force=${!!opts.force})`);
+    console.log(`[digest] sent to ${email} (force=${!!opts.force})`);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -342,9 +436,9 @@ async function callOpenAI(prompt) {
 
 /**
  * Sends the digest email via the EmailJS REST API.
- * Reads `emailjs.service_id`, `emailjs.template_id`, and `emailjs.public_key`
- * from Firebase Functions runtime config, and the private key from the
- * `EMAILJS_PRIVATE_KEY` secret. Throws on missing config or HTTP errors.
+ * All EmailJS values (service id, template id, public key and private key)
+ * are read from Firebase Secret Manager via `.value()` so no identifier or
+ * credential lives in source code.
  * @param {string}  email     - Recipient email address
  * @param {string}  name      - Recipient display name
  * @param {string}  aiSummary - AI-generated digest text
@@ -380,14 +474,9 @@ async function sendEmail(email, name, aiSummary, data, prefs = {}) {
         + data.creditExpenses.reduce((s, r) => s + (Number(r.installmentValue) || 0), 0)
         : 0;
 
-    const cfg = functions.config().emailjs || {};
-    const serviceId = cfg.service_id;
-    const templateId = cfg.template_id;
-    const publicKey = cfg.public_key;
-
-    if (!serviceId || !templateId || !publicKey) {
-        throw new Error('EmailJS config missing — set emailjs.service_id/template_id/public_key.');
-    }
+    const serviceId = EMAILJS_SERVICE_ID.value();
+    const templateId = EMAILJS_TEMPLATE_ID.value();
+    const publicKey = EMAILJS_PUBLIC_KEY.value();
 
     const params = {
         to_email: email,

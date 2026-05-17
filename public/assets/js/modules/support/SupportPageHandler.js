@@ -782,39 +782,29 @@ class SupportPageHandler {
     }
 
     /**
-     * Sends feedback by email via EmailJS
+     * Sends feedback by email via the `sendFeedback` Cloud Function.
+     * No EmailJS credentials are exposed to the browser — the callable
+     * handles all EmailJS API communication server-side.
      * @private
-     * @param {Object} feedbackData - Feedback data
+     * @param {Object} feedbackData - Validated feedback data
      */
     _sendFeedbackEmail(feedbackData) {
-        const currentUser = typeof FormUtils !== 'undefined' && FormUtils.getCurrentUser
-            ? FormUtils.getCurrentUser()
-            : null;
-        const tipoFeedbackMap = {
-            'sugestao': '💡 Sugestão de Melhoria',
-            'bug': '🐛 Reportar Bug/Erro',
-            'elogio': '⭐ Elogio',
-            'duvida': '❓ Dúvida',
-            'outro': '📝 Outro'
-        };
+        const { functionsClient, httpsCallable } = window.firebaseGlobals || {};
+        if (!functionsClient || typeof httpsCallable !== 'function') {
+            console.error('[SupportPageHandler] Cloud Functions client not available.');
+            this._showFeedbackError();
+            return;
+        }
 
-        emailjs.send('service_oyf1zei', 'template_4hizx1e', {
-            from_name: currentUser.name || currentUser.username || 'Usuário',
-            from_email: feedbackData.email || currentUser.email || 'não informado',
-            user_id: currentUser.username || currentUser.id,
-            feedback_type: tipoFeedbackMap[feedbackData.type] || feedbackData.type,
+        const callable = httpsCallable(functionsClient, 'sendFeedback');
+        callable({
+            feedbackType: feedbackData.type,
             message: feedbackData.message,
-            timestamp: new Date().toLocaleString('pt-BR', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            })
+            replyEmail: feedbackData.email || undefined,
         }).then(
             () => this._showFeedbackSuccess(),
             (error) => {
-                console.error('EmailJS Error:', error);
+                console.error('sendFeedback error:', error);
                 this._showFeedbackError();
             }
         );

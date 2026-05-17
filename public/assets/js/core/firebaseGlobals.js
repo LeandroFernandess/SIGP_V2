@@ -47,7 +47,9 @@ import {
     where,
     orderBy,
     serverTimestamp,
-    appId
+    appId,
+    functionsClient,
+    httpsCallable
 } from './firebaseConfig.js';
 
 import { FirebaseDataService } from './firebaseDataService.js';
@@ -79,7 +81,9 @@ window.firebaseGlobals = {
     where,
     orderBy,
     serverTimestamp,
-    appId
+    appId,
+    functionsClient,
+    httpsCallable
 };
 
 window.firebase = firebaseCompat;

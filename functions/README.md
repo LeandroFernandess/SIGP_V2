@@ -10,6 +10,7 @@ the user has the option enabled, plus on demand via the "Enviar agora" button.
 | --- | --- | --- |
 | `sendDigestOnLogin` | HTTPS callable | Invoked by the dashboard right after the user signs in. Sends the digest only when `prefs.enabled` is true; otherwise returns `{ ok: true, skipped: true }`. |
 | `sendDigestNow` | HTTPS callable | Used by the "Enviar agora" button — sends immediately for the calling user. |
+| `sendFeedback` | HTTPS callable | Receives feedback from the Support page form and forwards it to EmailJS server-side. Accepts `{ feedbackType, message, replyEmail? }`. |
 
 ## Pre-deploy setup
 
@@ -19,15 +20,14 @@ the user has the option enabled, plus on demand via the "Enviar agora" button.
 cd functions
 npm install
 
-# Secrets
+# All EmailJS values and the OpenAI key are stored in Firebase Secret Manager
+# so no credential or identifier is versioned in the repository.
 firebase functions:secrets:set OPENAI_API_KEY
-firebase functions:secrets:set EMAILJS_PRIVATE_KEY    # EmailJS dashboard → Account → API Keys → Private Key
-
-# Runtime config (non-secret EmailJS identifiers)
-firebase functions:config:set \
-  emailjs.service_id="service_oyf1zei" \
-  emailjs.template_id="template_lqll858" \
-  emailjs.public_key="5JgttFH7TW0i34yAr"
+firebase functions:secrets:set EMAILJS_PRIVATE_KEY            # EmailJS → Account → API Keys → Private Key
+firebase functions:secrets:set EMAILJS_SERVICE_ID             # EmailJS → Email Services → Service ID
+firebase functions:secrets:set EMAILJS_TEMPLATE_ID            # EmailJS → Email Templates → digest template ID
+firebase functions:secrets:set EMAILJS_FEEDBACK_TEMPLATE_ID   # EmailJS → Email Templates → feedback template ID
+firebase functions:secrets:set EMAILJS_PUBLIC_KEY             # EmailJS → Account → API Keys → Public Key
 ```
 
 ## Deploy
