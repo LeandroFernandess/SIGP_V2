@@ -37,3 +37,6 @@ build/
 
 # Cache do sistema
 .firebase/
+
+# Chaves de API
+keys.keys
