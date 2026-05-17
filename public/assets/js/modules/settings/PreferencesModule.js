@@ -1,19 +1,21 @@
 /**
  * @file PreferencesModule.js
  * @description User preferences and system customization.
- * 
+ *
  * Contents:
- * - Dark/Light theme toggle
- * - Theme persistence (localStorage)
- * - Notifications (future implementation)
- * - Event listeners setup
- * 
+ * - Dark/Light theme toggle (with localStorage persistence)
+ * - AI email digest preferences (enable/disable + section toggles)
+ * - Auto-saves `enabled:false` the instant the master toggle is turned off
+ *   (the Save button lives inside the panel that gets hidden)
+ * - "Enviar agora" button that invokes the `sendDigestNow` Cloud Function
+ *
  * Extends: BaseSettingsModule
- * 
+ *
  * Dependencies:
+ * - DigestService (window.digestService) — wraps the digest callables
  * - UserService
  * - localStorage (theme persistence)
- * 
+ *
  * @author Leandro Fialho Fernandes
  */
 
@@ -33,6 +35,17 @@ class PreferencesModule extends BaseSettingsModule {
      * @example
      * const module = new PreferencesModule(userService);
      */
+    /**
+     * @type {boolean}
+     * @description Guard flag used by `_onNotifToggle()` to skip the automatic
+     * Firestore write when the toggle state is being set programmatically
+     * (e.g. while applying loaded preferences from Firestore). Set to `true`
+     * before any programmatic `toggle.checked` assignment and reset to `false`
+     * immediately after so that real user interactions are still persisted.
+     * @private
+     */
+    _suppressAutoToggleSave = false;
+
     constructor(userService) {
         super('preferences', userService);
     }
@@ -95,64 +108,6 @@ class PreferencesModule extends BaseSettingsModule {
                     <!-- Painel de opções -->
                     <div id="notificationOptions" class="notification-options" style="display:none;">
 
-                        <!-- Frequência -->
-                        <div class="notif-section">
-                            <div class="notif-section-header">📅 Frequência</div>
-                            <div class="notif-freq-grid">
-                                <label class="notif-freq-card">
-                                    <input type="radio" name="digestFrequency" value="daily" checked>
-                                    <span class="notif-freq-icon">📆</span>
-                                    <span class="notif-freq-title">Diário</span>
-                                    <span class="notif-freq-desc">Uma vez por dia</span>
-                                </label>
-                                <label class="notif-freq-card">
-                                    <input type="radio" name="digestFrequency" value="weekly">
-                                    <span class="notif-freq-icon">📅</span>
-                                    <span class="notif-freq-title">Semanal</span>
-                                    <span class="notif-freq-desc">Uma vez por semana</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Dia da semana (semanal) -->
-                        <div id="weekdayField" class="notif-section" style="display:none;">
-                            <div class="notif-section-header">📌 Dia da semana</div>
-                            <select id="digestWeekday" class="notification-select">
-                                <option value="0">Domingo</option>
-                                <option value="1" selected>Segunda-feira</option>
-                                <option value="2">Terça-feira</option>
-                                <option value="3">Quarta-feira</option>
-                                <option value="4">Quinta-feira</option>
-                                <option value="5">Sexta-feira</option>
-                                <option value="6">Sábado</option>
-                            </select>
-                        </div>
-
-                        <!-- Horário preferido -->
-                        <div class="notif-section">
-                            <div class="notif-section-header">⏰ Horário preferido de envio</div>
-                            <select id="digestSendHour" class="notification-select">
-                                <option value="6">06:00</option>
-                                <option value="7">07:00</option>
-                                <option value="8" selected>08:00</option>
-                                <option value="9">09:00</option>
-                                <option value="10">10:00</option>
-                                <option value="11">11:00</option>
-                                <option value="12">12:00</option>
-                                <option value="13">13:00</option>
-                                <option value="14">14:00</option>
-                                <option value="15">15:00</option>
-                                <option value="16">16:00</option>
-                                <option value="17">17:00</option>
-                                <option value="18">18:00</option>
-                                <option value="19">19:00</option>
-                                <option value="20">20:00</option>
-                                <option value="21">21:00</option>
-                                <option value="22">22:00</option>
-                            </select>
-                            <p class="notif-section-hint">O resumo é enviado na primeira vez que você abre o sistema após esse horário.</p>
-                        </div>
-
                         <!-- Conteúdo incluído -->
                         <div class="notif-section">
                             <div class="notif-section-header">📋 Incluir no resumo</div>
@@ -182,7 +137,18 @@ class PreferencesModule extends BaseSettingsModule {
                                     <span class="notif-include-icon">🏋️</span>
                                     <span>Treinos</span>
                                 </label>
+                                <label class="notif-include-item">
+                                    <input type="checkbox" id="inclNotes" checked>
+                                    <span class="notif-include-icon">📝</span>
+                                    <span>Anotações</span>
+                                </label>
+                                <label class="notif-include-item">
+                                    <input type="checkbox" id="inclReminders" checked>
+                                    <span class="notif-include-icon">⏰</span>
+                                    <span>Lembretes</span>
+                                </label>
                             </div>
+                            <p class="notif-section-hint">O resumo é enviado automaticamente quando você entra no sistema, se a opção estiver ativa. Use o botão "Enviar agora" para um envio imediato.</p>
                         </div>
 
                         <!-- Status + Enviar agora -->
@@ -321,10 +287,6 @@ class PreferencesModule extends BaseSettingsModule {
             notifToggle.addEventListener('change', () => this._onNotifToggle());
         }
 
-        document.querySelectorAll('input[name="digestFrequency"]').forEach(radio => {
-            radio.addEventListener('change', () => this._onFrequencyChange());
-        });
-
         const saveBtn = document.getElementById('btnSaveNotifPrefs');
         if (saveBtn) {
             saveBtn.addEventListener('click', () => this._saveNotifPrefs());
@@ -340,18 +302,67 @@ class PreferencesModule extends BaseSettingsModule {
 
     // ── Notification Logic ─────────────────────────────────────────────────
 
+    /**
+     * Reacts to the master "enable digest" toggle.
+     *
+     * - Shows/hides the options panel.
+     * - When the user turns the toggle OFF we persist `enabled:false`
+     *   immediately, otherwise the save button (inside the panel) would
+     *   disappear before the change reaches Firestore and the next reload
+     *   would re-enable the digest from the stale stored value.
+     * - When the user turns it ON we only reveal the panel; the user is
+     *   expected to press "Salvar Preferências" after picking the sections.
+     */
     _onNotifToggle() {
-        const enabled = document.getElementById('notificationsToggle')?.checked;
+        const toggle = document.getElementById('notificationsToggle');
+        const enabled = !!toggle?.checked;
         const options = document.getElementById('notificationOptions');
         if (options) options.style.display = enabled ? 'block' : 'none';
+
+        if (!enabled && !this._suppressAutoToggleSave) {
+            this._persistDisabledState(toggle);
+        }
     }
 
-    _onFrequencyChange() {
-        const freq      = document.querySelector('input[name="digestFrequency"]:checked')?.value;
-        const weekField = document.getElementById('weekdayField');
-        if (weekField) weekField.style.display = freq === 'weekly' ? 'block' : 'none';
+    /**
+     * Writes `enabled:false` to Firestore as soon as the user turns the
+     * digest off. Reverts the UI on failure so the user is never lied to
+     * about the persisted state.
+     * @param {HTMLInputElement|null} toggle
+     * @returns {Promise<void>}
+     * @private
+     */
+    async _persistDisabledState(toggle) {
+        if (!window.digestService || !window.currentUserId) return;
+
+        try {
+            await window.digestService.savePrefs(window.currentUserId, { enabled: false });
+            Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 2500, timerProgressBar: true })
+                .fire({ icon: 'info', title: 'Resumo por email desativado' });
+        } catch (err) {
+            Logger.error('[PreferencesModule] Failed to persist disabled state:', err);
+            if (toggle) {
+                this._suppressAutoToggleSave = true;
+                toggle.checked = true;
+                this._onNotifToggle();
+                this._suppressAutoToggleSave = false;
+            }
+            Swal.fire({ icon: 'error', title: 'Não foi possível salvar', text: 'A preferência não pôde ser desativada. Tente novamente.' });
+        }
     }
 
+    /**
+     * Reads all digest-preference checkboxes from the DOM and persists the
+     * complete set to Firestore via `DigestService.savePrefs()`. Uses
+     * `{ merge: true }` internally so that the backend's `lastSentAt` writes
+     * never overwrite the full document and vice-versa.
+     *
+     * Disables the save button while the write is in flight and restores it
+     * afterwards, regardless of success or failure.
+     *
+     * @returns {Promise<void>}
+     * @private
+     */
     async _saveNotifPrefs() {
         if (!window.digestService) {
             Swal.fire({ icon: 'error', title: 'Serviço indisponível', text: 'Por favor recarregue a página.' });
@@ -361,25 +372,24 @@ class PreferencesModule extends BaseSettingsModule {
         const userId = window.currentUserId;
         if (!userId) return;
 
-        const enabled   = document.getElementById('notificationsToggle')?.checked ?? false;
-        const frequency = document.querySelector('input[name="digestFrequency"]:checked')?.value || 'daily';
-        const weekday   = frequency === 'weekly'
-            ? parseInt(document.getElementById('digestWeekday')?.value ?? '1', 10)
-            : null;
-        const sendHour     = parseInt(document.getElementById('digestSendHour')?.value ?? '8', 10);
-        const inclFinance  = document.getElementById('inclFinance')?.checked  ?? true;
-        const inclTasks    = document.getElementById('inclTasks')?.checked    ?? true;
-        const inclExams    = document.getElementById('inclExams')?.checked    ?? true;
+        const enabled = document.getElementById('notificationsToggle')?.checked ?? false;
+        const inclFinance = document.getElementById('inclFinance')?.checked ?? true;
+        const inclTasks = document.getElementById('inclTasks')?.checked ?? true;
+        const inclExams = document.getElementById('inclExams')?.checked ?? true;
         const inclShopping = document.getElementById('inclShopping')?.checked ?? true;
         const inclTraining = document.getElementById('inclTraining')?.checked ?? true;
+        const inclNotes = document.getElementById('inclNotes')?.checked ?? true;
+        const inclReminders = document.getElementById('inclReminders')?.checked ?? true;
 
         const saveBtn = document.getElementById('btnSaveNotifPrefs');
         if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Salvando...'; }
 
         try {
             await window.digestService.savePrefs(userId, {
-                enabled, frequency, weekday, sendHour,
-                inclFinance, inclTasks, inclExams, inclShopping, inclTraining
+                enabled,
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                inclFinance, inclTasks, inclExams, inclShopping, inclTraining,
+                inclNotes, inclReminders
             });
             Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 3000, timerProgressBar: true })
                 .fire({ icon: 'success', title: 'Preferências de notificação salvas!' });
@@ -390,6 +400,18 @@ class PreferencesModule extends BaseSettingsModule {
         }
     }
 
+    /**
+     * Loads digest preferences from Firestore and applies them to the UI.
+     *
+     * Sets `_suppressAutoToggleSave = true` before programmatically updating
+     * `notificationsToggle.checked` so that `_onNotifToggle()` does **not**
+     * trigger an unwanted Firestore write while the state is being restored.
+     * Also populates section-include checkboxes and the `lastSentDisplay` badge
+     * when a `lastSentAt` timestamp is present in the prefs document.
+     *
+     * @returns {Promise<void>}
+     * @private
+     */
     async _loadNotifPrefs() {
         if (!window.digestService) return;
 
@@ -403,25 +425,16 @@ class PreferencesModule extends BaseSettingsModule {
             const notifToggle = document.getElementById('notificationsToggle');
             if (notifToggle) {
                 notifToggle.checked = !!prefs.enabled;
+                this._suppressAutoToggleSave = true;
                 this._onNotifToggle();
+                this._suppressAutoToggleSave = false;
             }
 
-            if (prefs.frequency) {
-                const radio = document.querySelector(`input[name="digestFrequency"][value="${prefs.frequency}"]`);
-                if (radio) { radio.checked = true; this._onFrequencyChange(); }
-            }
-
-            if (prefs.weekday != null) {
-                const sel = document.getElementById('digestWeekday');
-                if (sel) sel.value = String(prefs.weekday);
-            }
-
-            if (prefs.sendHour != null) {
-                const hourSel = document.getElementById('digestSendHour');
-                if (hourSel) hourSel.value = String(prefs.sendHour);
-            }
-
-            const inclMap = { inclFinance: true, inclTasks: true, inclExams: true, inclShopping: true, inclTraining: true };
+            const inclMap = {
+                inclFinance: true, inclTasks: true, inclExams: true,
+                inclShopping: true, inclTraining: true,
+                inclNotes: true, inclReminders: true
+            };
             for (const [key, def] of Object.entries(inclMap)) {
                 const el = document.getElementById(key);
                 if (el) el.checked = prefs[key] !== false ? true : false;
@@ -437,6 +450,18 @@ class PreferencesModule extends BaseSettingsModule {
         }
     }
 
+    /**
+     * Triggers an on-demand digest by calling `DigestService.sendNow()`, which
+     * in turn invokes the `sendDigestNow` HTTPS Cloud Function callable. The
+     * function handles OpenAI prompt generation and EmailJS delivery server-side;
+     * no credentials are read or sent by this method.
+     *
+     * Updates the `#lastSentDisplay` badge on success and shows a SweetAlert2
+     * error dialog on failure. Disables the button during the request.
+     *
+     * @returns {Promise<void>}
+     * @private
+     */
     async _sendNow() {
         if (!window.digestService) {
             Swal.fire({ icon: 'error', title: 'Serviço indisponível', text: 'Por favor recarregue a página.' });
@@ -449,7 +474,7 @@ class PreferencesModule extends BaseSettingsModule {
         const currentUser = typeof FormUtils !== 'undefined' && FormUtils.getCurrentUser
             ? FormUtils.getCurrentUser() : null;
         const email = currentUser?.email || '';
-        const name  = currentUser?.name  || currentUser?.displayName || 'Usuário';
+        const name = currentUser?.name || currentUser?.displayName || 'Usuário';
 
         if (!email) {
             Swal.fire({ icon: 'warning', title: 'Email não encontrado', text: 'Não foi possível obter o email do usuário logado.' });

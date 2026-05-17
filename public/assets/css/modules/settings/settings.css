@@ -544,51 +544,6 @@ body.light-theme .settings-card-header {
     border-radius: 0 6px 6px 0;
 }
 
-.notif-freq-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.75rem;
-}
-
-.notif-freq-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.2rem;
-    padding: 0.85rem 0.5rem;
-    border-radius: 10px;
-    border: 2px solid rgba(255, 255, 255, 0.08);
-    cursor: pointer;
-    transition: all 0.18s ease;
-    text-align: center;
-    user-select: none;
-}
-
-.notif-freq-card input[type="radio"] {
-    display: none;
-}
-
-.notif-freq-card:has(input:checked) {
-    border-color: #6366f1;
-    background: rgba(99, 102, 241, 0.12);
-}
-
-.notif-freq-icon {
-    font-size: 1.4rem;
-    line-height: 1;
-}
-
-.notif-freq-title {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--text-light);
-}
-
-.notif-freq-desc {
-    font-size: 0.75rem;
-    color: var(--text-gray);
-}
-
 .notif-include-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
@@ -677,12 +632,10 @@ body.light-theme .notif-section {
     border-bottom-color: rgba(0, 0, 0, 0.07);
 }
 
-body.light-theme .notif-freq-card,
 body.light-theme .notif-include-item {
     border-color: rgba(0, 0, 0, 0.1);
 }
 
-body.light-theme .notif-freq-card:has(input:checked),
 body.light-theme .notif-include-item:has(input:checked) {
     background: rgba(99, 102, 241, 0.08);
 }

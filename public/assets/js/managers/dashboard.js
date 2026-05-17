@@ -59,9 +59,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             window.currentUserId = user.uid;
             window.digestService = new DigestService();
-            
-            const userName = user.displayName || user.email?.split('@')[0] || 'Usuário';
-            window.digestService.checkAndSend(user.uid, user.email, userName);
+            window.digestService.checkAndSend(
+                user.uid,
+                user.email,
+                user.displayName || user.email
+            );
         } else {
             window.location.href = 'index.html';
         }

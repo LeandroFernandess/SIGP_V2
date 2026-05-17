@@ -75,11 +75,13 @@ js/
 │   │   └── ReportPageHandler.js
 │   ├── personal/
 │   │   ├── BasePersonalModule.js
+│   │   ├── NotesModule.js
 │   │   ├── TasksModule.js
 │   │   ├── LinksModule.js
 │   │   ├── PasswordsModule.js
 │   │   ├── ShoppingModule.js
 │   │   ├── WishlistModule.js
+│   │   ├── RemindersModule.js
 │   │   └── PersonalPageHandler.js
 │   ├── settings/
 │   │   ├── BaseSettingsModule.js
@@ -185,7 +187,7 @@ modules/{modulo}/
 | Módulo | Arquivos | Descrição |
 |---|---|---|
 | **expenses** | 6 arquivos | `BaseExpenseModule` → `FixedExpensesModule`, `CreditExpensesModule`. `IncomePageHandler`, `ExpensesPageHandler`, `ReportPageHandler` orquestram páginas. Cartão de crédito calcula `installmentValue` e `endDate`. Contas fixas resetam automaticamente no dia 1. |
-| **personal** | 7 arquivos | `BasePersonalModule` → `TasksModule`, `LinksModule`, `PasswordsModule`, `ShoppingModule`, `WishlistModule`. `PersonalPageHandler` gerencia abas internas do módulo pessoal. |
+| **personal** | 9 arquivos | `BasePersonalModule` → `NotesModule`, `TasksModule`, `LinksModule`, `PasswordsModule`, `ShoppingModule`, `WishlistModule`, `RemindersModule`. `PersonalPageHandler` gerencia abas internas do módulo pessoal. |
 | **training** | 4 arquivos | `BaseTrainingModule` → `WorkoutModule` (exercícios e séries), `RunningModule` (corridas). `TrainingPageHandler` orquestra. Usa `TrainingService` (script clássico via `window.firebaseGlobals`). |
 | **settings** | 6 arquivos | `BaseSettingsModule` → `ProfileModule`, `SecurityModule` (alteração de senha, vinculação Google), `PreferencesModule` (digest/notificações), `AccountInfoModule`. `SettingsPageHandler` orquestra. |
 | **documents** | 1 arquivo | `DocumentsPageHandler` — upload, listagem, reordenação drag & drop com persistência no Firestore. |
@@ -200,9 +202,9 @@ Camada de serviços que abstrai a comunicação com Firebase e APIs externas.
 |---|---|---|
 | `UserService.js` | ES Module | Firebase Auth: criação de conta, login (e-mail/senha + Google), recuperação de senha. Geração sequencial de usernames (`SIGP000`, `SIGP001`...). Gerenciamento de perfis no Firestore. Detecção e merge de conflitos de conta Google. ~914 linhas. |
 | `FinanceService.js` | ES Module | CRUD para renda (doc único `userIncome`), gastos fixos e cartão de crédito. Cache em memória com flags `loaded`. Cálculo automático de parcelas e valor por parcela. Reset mensal de status de pagamento. ~764 linhas. |
-| `PersonalDataService.js` | ES Module | Interface unificada para 5 sub-módulos: `getAll(module)`, `add(module, data)`, `update(module, id, data)`, `delete(module, id)`. Despacha para métodos privados por módulo. Cache em memória. ~760 linhas. |
+| `PersonalDataService.js` | ES Module | Interface unificada para 7 sub-módulos (notes, tasks, links, passwords, shopping, wishlist, reminders): `getAll(module)`, `add(module, data)`, `update(module, id, data)`, `delete(module, id)`. Despacha para métodos privados por módulo. Cache em memória. ~760 linhas. |
 | `TrainingService.js` | Script clássico | CRUD para treinos de academia e corrida. Usa `window.firebaseGlobals` para acessar Firebase. Inicialização lazy com retry. Collection: `training-{moduleName}`. ~504 linhas. |
-| `DigestService.js` | ES Module | Coleta todos os dados do usuário → monta prompt para GPT-4o (`temperature: 0.3`, `max_tokens: 700`) → recebe resumo → envia por e-mail via EmailJS. Respeita frequência (diária/semanal), horário preferido e seções selecionadas. ~420 linhas. |
+| `DigestService.js` | ES Module | Cliente fino das Cloud Functions: invoca a callable `sendDigestOnLogin` logo após o login (quando o usuário tem o digest ativo) e `sendDigestNow` no botão "Enviar agora". Também carrega/salva as preferências em `artifacts/{appId}/users/{uid}/notifications/preferences`. Toda a chamada à OpenAI e ao EmailJS acontece no backend. ~135 linhas. |
 
 #### `utils/` — Funções Utilitárias
 
@@ -693,7 +695,7 @@ modules/{module}/
 | Module | Files | Description |
 |---|---|---|
 | **expenses** | 6 files | `BaseExpenseModule` → `FixedExpensesModule`, `CreditExpensesModule`. `IncomePageHandler`, `ExpensesPageHandler`, `ReportPageHandler` orchestrate pages. Credit card auto-calculates `installmentValue` and `endDate`. Fixed bills auto-reset on the 1st of each month. |
-| **personal** | 7 files | `BasePersonalModule` → `TasksModule`, `LinksModule`, `PasswordsModule`, `ShoppingModule`, `WishlistModule`. `PersonalPageHandler` manages internal tabs. |
+| **personal** | 9 files | `BasePersonalModule` → `NotesModule`, `TasksModule`, `LinksModule`, `PasswordsModule`, `ShoppingModule`, `WishlistModule`, `RemindersModule`. `PersonalPageHandler` manages internal tabs. |
 | **training** | 4 files | `BaseTrainingModule` → `WorkoutModule` (exercises and sets), `RunningModule` (runs). `TrainingPageHandler` orchestrates. Uses `TrainingService` (classic script via `window.firebaseGlobals`). |
 | **settings** | 6 files | `BaseSettingsModule` → `ProfileModule`, `SecurityModule` (password change, Google linking), `PreferencesModule` (digest/notifications), `AccountInfoModule`. `SettingsPageHandler` orchestrates. |
 | **documents** | 1 file | `DocumentsPageHandler` — upload, listing, drag & drop reordering with Firestore persistence. |
@@ -708,9 +710,9 @@ Service layer that abstracts Firebase and external API communication.
 |---|---|---|
 | `UserService.js` | ES Module | Firebase Auth: account creation, login (email/password + Google), password recovery. Sequential username generation (`SIGP000`, `SIGP001`...). Firestore profile management. Google account conflict detection and merging. ~914 lines. |
 | `FinanceService.js` | ES Module | CRUD for income (single doc `userIncome`), fixed expenses, and credit card. In-memory cache with `loaded` flags. Auto-calculation of installments and per-installment value. Monthly payment status reset. ~764 lines. |
-| `PersonalDataService.js` | ES Module | Unified interface for 5 sub-modules: `getAll(module)`, `add(module, data)`, `update(module, id, data)`, `delete(module, id)`. Dispatches to module-specific private methods. In-memory cache. ~760 lines. |
+| `PersonalDataService.js` | ES Module | Unified interface for 7 sub-modules (notes, tasks, links, passwords, shopping, wishlist, reminders): `getAll(module)`, `add(module, data)`, `update(module, id, data)`, `delete(module, id)`. Dispatches to module-specific private methods. In-memory cache. ~760 lines. |
 | `TrainingService.js` | Classic script | CRUD for gym workouts and running. Uses `window.firebaseGlobals` for Firebase access. Lazy initialization with retry. Collection: `training-{moduleName}`. ~504 lines. |
-| `DigestService.js` | ES Module | Collects all user data → builds GPT-4o prompt (`temperature: 0.3`, `max_tokens: 700`) → receives summary → sends by email via EmailJS. Respects frequency (daily/weekly), preferred time, and selected sections. ~420 lines. |
+| `DigestService.js` | ES Module | Thin client over the Cloud Functions: invokes the `sendDigestOnLogin` callable right after login (when the user has the digest enabled) and `sendDigestNow` from the "Send now" button. Also loads/saves preferences at `artifacts/{appId}/users/{uid}/notifications/preferences`. All OpenAI and EmailJS calls happen on the backend. ~135 lines. |
 
 #### `utils/` — Utility Functions
 

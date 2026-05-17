@@ -1,0 +1,351 @@
+/**
+ * @file _reminders.css
+ * @description Reminders module styling for periodic reminders with status-based visual feedback.
+ *
+ * Contents:
+ * - Reminders grid layout
+ * - Reminder cards with status-coded left border
+ * - Card header, title and category badge
+ * - Action buttons (edit, delete, mark-as-done — absolute top-right)
+ * - Dates block (last date, interval, next due date)
+ * - Status pills (overdue / today / soon / upcoming / ok / unknown)
+ * - Notes section
+ * - Form: interval input row
+ * - Empty state SVG icon
+ * - Responsive layout (single column below 600 px)
+ *
+ * Dependencies: _base.css
+ * Imported by: personal.css
+ * Light theme overrides: themes/light-theme.css
+ *
+ * @author Leandro Fialho Fernandes
+ */
+
+/* =========================================================
+   REMINDERS MODULE
+   Periodic reminders with status badges (overdue/today/soon/ok).
+   Aligned with the personal modules pattern (gradient cards,
+   blue accent strip, semantic tokens). Status colours stay
+   semantic so meaning is consistent across themes — light theme
+   overrides live in themes/light-theme.css.
+   ========================================================= */
+
+.reminders-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+/* =========================================================
+   CARD BASE
+   ========================================================= */
+
+.reminder-card {
+    background: linear-gradient(165deg, rgba(255, 255, 255, 0.03) 0%, rgba(0, 0, 0, 0.12) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-left: 4px solid rgba(59, 130, 246, 0.55);
+    border-radius: 16px;
+    padding: 1.5rem;
+    padding-right: 7rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.reminder-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #3b82f6, #60a5fa, #93c5fd);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.reminder-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(59, 130, 246, 0.3);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.25);
+}
+
+.reminder-card:hover::before {
+    opacity: 1;
+}
+
+.reminder-overdue {
+    border-left-color: #ef4444;
+}
+
+.reminder-today {
+    border-left-color: #f59e0b;
+}
+
+.reminder-soon {
+    border-left-color: #f59e0b;
+}
+
+.reminder-upcoming {
+    border-left-color: #3b82f6;
+}
+
+.reminder-ok {
+    border-left-color: #10b981;
+}
+
+.reminder-unknown {
+    border-left-color: rgba(148, 163, 184, 0.5);
+}
+
+/* =========================================================
+   HEADER + TITLE
+   ========================================================= */
+
+.reminder-card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+.reminder-card-title {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    flex: 1;
+    min-width: 0;
+}
+
+.reminder-card-title h4 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-light);
+    word-break: break-word;
+}
+
+.reminder-category {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 0.3rem 0.85rem;
+    border-radius: 20px;
+    background: rgba(59, 130, 246, 0.12);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    color: var(--light-blue);
+}
+
+/* =========================================================
+   ACTIONS (absolute top-right corner)
+   ========================================================= */
+
+.reminder-card .item-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-shrink: 0;
+    position: absolute;
+    top: 0.85rem;
+    right: 0.85rem;
+    z-index: 2;
+}
+
+.reminder-card .btn-mark-paid {
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    color: #34d399;
+    border-radius: 8px;
+    padding: 0.4rem 0.55rem;
+    min-width: 34px;
+    min-height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.reminder-card .btn-mark-paid:hover {
+    background: rgba(16, 185, 129, 0.22);
+    border-color: #10b981;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+}
+
+.reminder-card .btn-mark-paid svg {
+    stroke: currentColor;
+    fill: none;
+}
+
+/* =========================================================
+   DATES BLOCK
+   ========================================================= */
+
+.reminder-dates {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 0.9rem 1rem;
+    background: linear-gradient(165deg, rgba(59, 130, 246, 0.06) 0%, rgba(0, 0, 0, 0.12) 100%);
+    border: 1px solid rgba(59, 130, 246, 0.12);
+    border-radius: 12px;
+}
+
+.reminder-date-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+}
+
+.reminder-date-label {
+    color: var(--text-gray);
+    font-weight: 500;
+}
+
+.reminder-date-value {
+    color: var(--text-light);
+    font-weight: 600;
+    text-align: right;
+    word-break: break-word;
+}
+
+.reminder-date-next {
+    padding-top: 0.5rem;
+    margin-top: 0.25rem;
+    border-top: 1px dashed rgba(255, 255, 255, 0.08);
+    font-size: 0.95rem;
+}
+
+.reminder-adjusted {
+    display: inline-block;
+    margin-left: 0.4rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.15rem 0.55rem;
+    border-radius: 20px;
+    background: rgba(245, 158, 11, 0.15);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.35);
+    vertical-align: middle;
+}
+
+/* =========================================================
+   STATUS PILL
+   ========================================================= */
+
+.reminder-status-row {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.reminder-status {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 0.35rem 0.85rem;
+    border-radius: 20px;
+}
+
+.reminder-status-overdue {
+    background: rgba(239, 68, 68, 0.15);
+    color: #fca5a5;
+    border: 1px solid rgba(239, 68, 68, 0.35);
+}
+
+.reminder-status-today {
+    background: rgba(245, 158, 11, 0.15);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.35);
+}
+
+.reminder-status-soon,
+.reminder-status-upcoming {
+    background: rgba(59, 130, 246, 0.15);
+    color: var(--light-blue);
+    border: 1px solid rgba(59, 130, 246, 0.35);
+}
+
+.reminder-status-ok {
+    background: rgba(16, 185, 129, 0.15);
+    color: #6ee7b7;
+    border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+.reminder-status-unknown {
+    background: rgba(148, 163, 184, 0.12);
+    color: var(--text-gray);
+    border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+/* =========================================================
+   NOTES
+   ========================================================= */
+
+.reminder-notes {
+    color: var(--text-gray);
+    font-size: 0.88rem;
+    line-height: 1.55;
+    padding-top: 0.5rem;
+    border-top: 1px dashed rgba(255, 255, 255, 0.08);
+}
+
+/* =========================================================
+   FORM: interval row
+   ========================================================= */
+
+.reminder-interval-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+}
+
+.form-hint {
+    display: block;
+    margin-top: 0.4rem;
+    font-size: 0.78rem;
+    color: var(--text-gray);
+    opacity: 0.85;
+    line-height: 1.4;
+}
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+#remindersList .empty-icon svg {
+    stroke: var(--text-gray);
+    fill: none;
+    opacity: 0.85;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 600px) {
+    .reminders-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .reminder-card {
+        padding-right: 1.5rem;
+    }
+
+    .reminder-card .item-actions {
+        position: static;
+        margin-top: 0.5rem;
+    }
+
+    .reminder-interval-row {
+        grid-template-columns: 1fr;
+    }
+}

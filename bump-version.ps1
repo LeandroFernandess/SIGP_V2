@@ -27,7 +27,7 @@ Write-Output "==============================================="
 Write-Output ""
 
 # Caminho do arquivo version.json
-$versionFile = Join-Path $PSScriptRoot "public\version.json"
+$versionFile = Join-Path (Join-Path $PSScriptRoot "public") "version.json"
 
 if (-not (Test-Path $versionFile)) {
     Write-ColorOutput Red "Erro: Arquivo version.json nao encontrado!"
@@ -108,11 +108,9 @@ try {
     Write-Output "   Versão anterior: v$currentVersion"
     Write-Output "   Nova versão:     v$newVersion"
     Write-Output "   Data do build:   $(Get-Date -Format 'dd/MM/yyyy HH:mm:ss')"
-    if ($Messages -and $Messages.Count -gt 0) {
+    if ($Message -and $Message.Length -gt 0) {
         Write-Output "   Alterações:"
-        foreach ($msg in $Messages) {
-            Write-Output "     - $msg"
-        }
+        Write-Output "     - $Message"
     }
 
     Write-Output "==============================================="

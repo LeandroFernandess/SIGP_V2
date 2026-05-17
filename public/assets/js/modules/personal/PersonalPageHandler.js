@@ -1,18 +1,19 @@
 /**
  * @file PersonalPageHandler.js
  * @description Orchestrator for Personal Management page.
- * 
+ *
  * Contents:
- * - Module switching (tasks, links, passwords, shopping, wishlist)
+ * - Module switching (notes, tasks, links, passwords, shopping, wishlist, reminders)
  * - Hero section and navigation tabs
  * - Module rendering and initialization
- * 
- * Modules: TasksModule, LinksModule, PasswordsModule, ShoppingModule, WishlistModule
- * 
+ *
+ * Modules: NotesModule, TasksModule, LinksModule, PasswordsModule,
+ *          ShoppingModule, WishlistModule, RemindersModule
+ *
  * Dependencies:
  * - PageManager
  * - PersonalDataService
- * 
+ *
  * @author Leandro Fialho Fernandes
  */
 
@@ -36,14 +37,16 @@ class PersonalPageHandler {
     constructor(pageManager, personalDataService) {
         this.pageManager = pageManager;
         this.personalDataService = personalDataService;
-        this.currentModule = 'tasks';
-        
+        this.currentModule = 'notes';
+
         this.modules = {
+            notes: new NotesModule(personalDataService),
             tasks: new TasksModule(personalDataService),
             links: new LinksModule(personalDataService),
             passwords: new PasswordsModule(personalDataService),
             shopping: new ShoppingModule(personalDataService),
-            wishlist: new WishlistModule(personalDataService)
+            wishlist: new WishlistModule(personalDataService),
+            reminders: new RemindersModule(personalDataService)
         };
     }
 
@@ -73,8 +76,8 @@ class PersonalPageHandler {
                 <!-- Conteúdo dos Módulos -->
                 <div class="personal-content-section">
                     <div class="content-header">
-                        <h2 id="moduleTitle">✅ Tarefas</h2>
-                        <p id="moduleSubtitle">Gerencie suas tarefas diárias</p>
+                        <h2 id="moduleTitle">📝 Anotações</h2>
+                        <p id="moduleSubtitle">Suas anotações pessoais</p>
                     </div>
                     <div id="personalModuleContent" class="personal-module-content">
                         ${this.modules[this.currentModule].render()}
@@ -90,11 +93,13 @@ class PersonalPageHandler {
      */
     renderModuleCards() {
         const moduleConfigs = [
+            { id: 'notes', icon: '📝', title: 'Anotações', description: 'Suas anotações pessoais' },
             { id: 'tasks', icon: '✅', title: 'Tarefas', description: 'Gerenciar tarefas diárias' },
             { id: 'links', icon: '🔗', title: 'Links Úteis', description: 'Links favoritos e importantes' },
             { id: 'passwords', icon: '🔐', title: 'Senhas', description: 'Gerenciar credenciais' },
             { id: 'shopping', icon: '🛒', title: 'Compras', description: 'Lista de compras' },
-            { id: 'wishlist', icon: '⭐', title: 'Desejos', description: 'Objetivos e sonhos' }
+            { id: 'wishlist', icon: '⭐', title: 'Desejos', description: 'Objetivos e sonhos' },
+            { id: 'reminders', icon: '⏰', title: 'Lembretes', description: 'Serviços periódicos com cálculo automático' }
         ];
 
         return moduleConfigs.map(module => `
@@ -127,13 +132,15 @@ class PersonalPageHandler {
         });
 
         const titles = {
+            notes: { icon: '📝', title: 'Anotações', subtitle: 'Suas anotações pessoais' },
             tasks: { icon: '✅', title: 'Tarefas', subtitle: 'Gerencie suas tarefas diárias' },
             links: { icon: '🔗', title: 'Links Úteis', subtitle: 'Seus links favoritos e importantes' },
             passwords: { icon: '🔐', title: 'Senhas', subtitle: 'Gerencie suas credenciais com segurança' },
             shopping: { icon: '🛒', title: 'Lista de Compras', subtitle: 'Organize suas compras' },
-            wishlist: { icon: '⭐', title: 'Lista de Desejos', subtitle: 'Seus objetivos e sonhos' }
+            wishlist: { icon: '⭐', title: 'Lista de Desejos', subtitle: 'Seus objetivos e sonhos' },
+            reminders: { icon: '⏰', title: 'Lembretes', subtitle: 'Serviços periódicos com próxima data em dia útil' }
         };
-        
+
         const moduleTitle = document.getElementById('moduleTitle');
         const moduleSubtitle = document.getElementById('moduleSubtitle');
         if (moduleTitle && titles[moduleName]) {
@@ -144,7 +151,7 @@ class PersonalPageHandler {
         const content = document.getElementById('personalModuleContent');
         if (content) {
             content.innerHTML = this.modules[moduleName].render();
-            
+
             await this.modules[moduleName].loadAndRender();
         }
     }
@@ -154,7 +161,7 @@ class PersonalPageHandler {
      * Called when tab is refreshed
      */
     resetState() {
-        this.currentModule = 'tasks';
+        this.currentModule = 'notes';
     }
 
     /**

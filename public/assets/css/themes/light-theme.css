@@ -1,31 +1,43 @@
 /**
  * @file light-theme.css
- * @description Light theme overrides for the application.
- * 
+ * @description Light theme overrides for the entire application.
+ *
  * Contents:
- * - Finance module overrides
- * - Expense cards and summary cards
- * - Form styling for light mode
- * - Button color adjustments
- * - Status indicators (warning, success, danger)
- * - Icon and text color mappings
- * 
+ * - Finance module (list/summary, form, expense cards, expense card actions)
+ * - Global action buttons (edit, delete, reset — all modules)
+ * - Navigation tabs (expense, finance, generic)
+ * - Multi-tab system (tab bar, active states, close/refresh controls)
+ * - Personal — Tasks (filters, checkboxes)
+ * - Personal — Medical Exams (cards, status badges, filters)
+ * - Personal — General Modules (module cards, item cards)
+ * - Documents (document cards, action buttons)
+ * - Training (stats, calendar, running)
+ * - Settings (preferences, notifications)
+ * - Notes & Reminders
+ * - Wishlist & Shopping (SVG buttons, shopping summary, categories, items)
+ * - Home page (welcome hero, intro)
+ * - Reports (income, bar chart)
+ * - Modals and dialogs
+ *
  * CSS Variables Used (defined in base.css body.light-theme):
- * - Text: --lt-text-primary, --lt-text-secondary, --lt-text-tertiary
+ * - Text: --lt-text-primary, --lt-text-secondary, --lt-text-tertiary, --lt-text-muted
  * - Blue: --blue-overlay-*, --blue-border-*, --blue-shadow-*
  * - Status: --lt-warning-*, --lt-success-*, --lt-danger-*, --lt-purple-*
  * - Buttons: --lt-btn-edit-*, --lt-btn-delete-*, --lt-btn-reset-*
- * 
+ * - Icons: --lt-icon-stroke
+ * - Cards: --light-card-solid, --light-card-semi, --light-card-trans
+ *
  * Dependencies: base.css (CSS custom properties)
  * Toggled by: ThemeManager.js
- * 
+ *
  * @author Leandro Fialho Fernandes
  */
 
 /* =========================================================
    FINANCE
-   Light theme overrides for expense tracking module 
+   Light theme overrides for expense tracking module
    ========================================================= */
+
 
 body.light-theme .expense-item:hover {
     background: var(--blue-overlay-light);
@@ -42,6 +54,7 @@ body.light-theme .finance-form {
     border: 1px solid var(--blue-border-medium);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
 }
+
 
 body.light-theme .expense-card {
     background: var(--card-bg);
@@ -1720,11 +1733,80 @@ body.light-theme .bar-value {
    ========================================================= */
 
 body.light-theme .btn-edit-wish svg {
-    stroke: #000000 !important;
+    stroke: var(--lt-icon-stroke) !important;
 }
 
 body.light-theme .btn-delete-wish svg {
-    stroke: #000000 !important;
+    stroke: var(--lt-icon-stroke) !important;
+}
+
+/* =========================================================
+   SHOPPING - LIGHT THEME
+   Re-skin the dark gradients/borders used in _shopping.css
+   ========================================================= */
+
+body.light-theme .shopping-summary {
+    background: var(--light-card-solid) !important;
+    border-color: var(--blue-border-light) !important;
+}
+
+body.light-theme .summary-item {
+    background: var(--blue-overlay-light) !important;
+    border: 1px solid var(--blue-border-light);
+}
+
+body.light-theme .summary-item span {
+    color: var(--lt-text-secondary) !important;
+}
+
+body.light-theme .summary-item strong {
+    color: var(--lt-text-primary) !important;
+}
+
+body.light-theme .shopping-category {
+    background: var(--light-card-solid) !important;
+    border-color: var(--blue-border-light) !important;
+}
+
+body.light-theme .category-header {
+    background: var(--blue-overlay-light) !important;
+}
+
+body.light-theme .category-header:hover {
+    background: var(--blue-overlay-medium) !important;
+}
+
+body.light-theme .category-info h4 {
+    color: var(--lt-text-primary) !important;
+}
+
+body.light-theme .category-count {
+    color: var(--primary-blue) !important;
+    background: var(--blue-overlay-medium) !important;
+}
+
+body.light-theme .category-arrow {
+    color: var(--lt-text-tertiary) !important;
+}
+
+body.light-theme .shopping-item {
+    border-top-color: var(--blue-border-light) !important;
+}
+
+body.light-theme .shopping-item:hover {
+    background: var(--blue-overlay-light) !important;
+}
+
+body.light-theme .shopping-item-name {
+    color: var(--lt-text-primary) !important;
+}
+
+body.light-theme .shopping-item-quantity {
+    color: var(--lt-text-secondary) !important;
+}
+
+body.light-theme .shopping-item.completed .shopping-item-name {
+    color: var(--lt-text-muted) !important;
 }
 
 /* =========================================================
@@ -1989,4 +2071,172 @@ body.light-theme .coming-soon-notice {
         padding: 1.5rem 1.25rem;
         min-width: unset;
     }
+}
+
+/* =========================================================
+   PERSONAL — NOTES & REMINDERS
+   Light-theme overrides for the Notes and Reminders modules,
+   harmonized with the other personal tabs (Tasks/Links/Shopping).
+   ========================================================= */
+
+body.light-theme .note-card {
+    background: var(--light-card-solid);
+    border: 1px solid var(--blue-border-light);
+    box-shadow: var(--blue-shadow-light);
+}
+
+body.light-theme .note-card:hover {
+    border-color: var(--blue-border-strong);
+    box-shadow: var(--blue-shadow-medium);
+}
+
+body.light-theme .note-title {
+    color: var(--lt-text-primary);
+}
+
+body.light-theme .note-content {
+    color: var(--lt-text-secondary);
+}
+
+body.light-theme .note-meta {
+    color: var(--lt-text-muted);
+    border-top-color: var(--blue-border-light);
+}
+
+body.light-theme .note-address .maps-link {
+    background: var(--blue-overlay-light);
+    border-color: var(--blue-border-medium);
+    color: var(--lt-text-primary);
+}
+
+body.light-theme .note-address .maps-link:hover {
+    background: var(--blue-overlay-medium);
+    border-color: var(--blue-border-strong);
+    color: var(--lt-text-primary);
+    box-shadow: var(--blue-shadow-medium);
+}
+
+body.light-theme #notesList .empty-icon svg {
+    stroke: var(--lt-text-tertiary);
+}
+
+body.light-theme .reminder-card {
+    background: var(--light-card-solid);
+    border: 1px solid var(--blue-border-light);
+    box-shadow: var(--blue-shadow-light);
+}
+
+body.light-theme .reminder-card:hover {
+    border-color: var(--blue-border-strong);
+    box-shadow: var(--blue-shadow-medium);
+}
+
+body.light-theme .reminder-overdue {
+    border-left-color: var(--lt-danger-border, #dc2626);
+}
+
+body.light-theme .reminder-today,
+body.light-theme .reminder-soon {
+    border-left-color: var(--lt-warning-border, #d97706);
+}
+
+body.light-theme .reminder-upcoming {
+    border-left-color: var(--blue-border-strong);
+}
+
+body.light-theme .reminder-ok {
+    border-left-color: var(--lt-success-border, #059669);
+}
+
+body.light-theme .reminder-unknown {
+    border-left-color: rgba(100, 116, 139, 0.5);
+}
+
+body.light-theme .reminder-card-title h4 {
+    color: var(--lt-text-primary);
+}
+
+body.light-theme .reminder-category {
+    background: var(--blue-overlay-light);
+    border-color: var(--blue-border-medium);
+    color: var(--lt-text-primary);
+}
+
+body.light-theme .reminder-dates {
+    background: var(--blue-overlay-light);
+    border: 1px solid var(--blue-border-light);
+}
+
+body.light-theme .reminder-date-label {
+    color: var(--lt-text-secondary);
+}
+
+body.light-theme .reminder-date-value {
+    color: var(--lt-text-primary);
+}
+
+body.light-theme .reminder-date-next {
+    border-top-color: var(--blue-border-light);
+}
+
+body.light-theme .reminder-adjusted {
+    background: var(--lt-warning-bg);
+    color: var(--lt-warning-text);
+    border-color: var(--lt-warning-border);
+}
+
+body.light-theme .reminder-status-overdue {
+    background: var(--lt-danger-bg);
+    color: var(--lt-danger-text);
+    border-color: var(--lt-danger-border);
+}
+
+body.light-theme .reminder-status-today {
+    background: var(--lt-warning-bg);
+    color: var(--lt-warning-text);
+    border-color: var(--lt-warning-border);
+}
+
+body.light-theme .reminder-status-soon,
+body.light-theme .reminder-status-upcoming {
+    background: var(--blue-overlay-medium);
+    color: var(--lt-text-primary);
+    border-color: var(--blue-border-strong);
+}
+
+body.light-theme .reminder-status-ok {
+    background: var(--lt-success-bg);
+    color: var(--lt-success-text);
+    border-color: var(--lt-success-border);
+}
+
+body.light-theme .reminder-status-unknown {
+    background: rgba(100, 116, 139, 0.1);
+    color: var(--lt-text-secondary);
+    border-color: rgba(100, 116, 139, 0.3);
+}
+
+body.light-theme .reminder-notes {
+    color: var(--lt-text-secondary);
+    border-top-color: var(--blue-border-light);
+}
+
+body.light-theme .reminder-card .btn-mark-paid {
+    background: var(--lt-success-bg);
+    border-color: var(--lt-success-border);
+    color: var(--lt-success-text);
+}
+
+body.light-theme .reminder-card .btn-mark-paid:hover {
+    background: var(--lt-success-bg);
+    border-color: var(--lt-success-text);
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
+}
+
+body.light-theme #remindersList .empty-icon svg {
+    stroke: var(--lt-text-tertiary);
+}
+
+body.light-theme .form-hint {
+    color: var(--lt-text-tertiary);
 }

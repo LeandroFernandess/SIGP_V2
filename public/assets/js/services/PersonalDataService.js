@@ -1,22 +1,24 @@
 /**
  * @file PersonalDataService.js
  * @description Service layer for personal data modules with Firebase.
- * 
+ *
  * Manages:
+ * - Notes (rich-text personal notes)
  * - Tasks (to-do items with priority and completion)
  * - Links (bookmarked URLs with categories)
  * - Passwords (encrypted credentials storage)
  * - Shopping (shopping list with categories)
  * - Wishlist (desired items with priority)
- * 
+ * - Reminders (recurring reminders with due dates)
+ *
  * Features:
  * - Unified interface (getAll, add, update, delete)
  * - Local caching per module
  * - Automatic cache invalidation
- * 
+ *
  * Dependencies: FirebaseDataService, FormUtils
  * Used by: PersonalPageHandler and all Personal sub-modules
- * 
+ *
  * @author Leandro Fialho Fernandes
  */
 
@@ -27,7 +29,7 @@ import { FirebaseDataService } from '../core/firebaseDataService.js';
  * @description Service for managing personal data modules with Firebase
  */
 class PersonalDataService {
-    
+
     /**
      * @constructor
      * @description Initializes the service with collections and caching system
@@ -38,7 +40,9 @@ class PersonalDataService {
             links: 'links',
             passwords: 'passwords',
             shopping: 'shopping',
-            wishlist: 'wishlist'
+            wishlist: 'wishlist',
+            notes: 'notes',
+            reminders: 'reminders'
         };
 
         this.cache = {
@@ -46,7 +50,9 @@ class PersonalDataService {
             links: [],
             passwords: [],
             shopping: [],
-            wishlist: []
+            wishlist: [],
+            notes: [],
+            reminders: []
         };
 
         this.loaded = {
@@ -54,7 +60,9 @@ class PersonalDataService {
             links: false,
             passwords: false,
             shopping: false,
-            wishlist: false
+            wishlist: false,
+            notes: false,
+            reminders: false
         };
     }
 
@@ -64,22 +72,22 @@ class PersonalDataService {
      * @private
      */
     _getCurrentUser() {
-        return typeof FormUtils !== 'undefined' && FormUtils.getCurrentUser 
-            ? FormUtils.getCurrentUser() 
+        return typeof FormUtils !== 'undefined' && FormUtils.getCurrentUser
+            ? FormUtils.getCurrentUser()
             : null;
     }
 
     /**
      * @description Gets all items from a specific module
-     * @param {string} moduleName - Module name ('tasks', 'links', 'passwords', 'shopping', 'wishlist')
+     * @param {string} moduleName - Module name ('notes', 'tasks', 'links', 'passwords', 'shopping', 'wishlist', 'reminders')
      * @returns {Promise<Array<Object>>} Array of module items
      * @throws {Error} If the module is unknown
      */
     async getAll(moduleName) {
         const currentUser = this._getCurrentUser();
         const userId = currentUser.id;
-        
-        switch(moduleName) {
+
+        switch (moduleName) {
             case 'tasks':
                 return await this.getTasks(userId);
             case 'links':
@@ -90,6 +98,10 @@ class PersonalDataService {
                 return await this.getShoppingItems(userId);
             case 'wishlist':
                 return await this.getWishlistItems(userId);
+            case 'notes':
+                return await this.getNotes(userId);
+            case 'reminders':
+                return await this.getReminders(userId);
             default:
                 Logger.error(`Módulo desconhecido: ${moduleName}`);
                 return [];
@@ -98,7 +110,7 @@ class PersonalDataService {
 
     /**
      * @description Adds a new item to a specific module
-     * @param {string} moduleName - Module name ('tasks', 'links', 'passwords', 'shopping', 'wishlist')
+     * @param {string} moduleName - Module name ('notes', 'tasks', 'links', 'passwords', 'shopping', 'wishlist', 'reminders')
      * @param {Object} itemData - Item data to be created
      * @returns {Promise<string>} Document ID created in Firestore
      * @throws {Error} If the module is unknown
@@ -113,8 +125,8 @@ class PersonalDataService {
     async add(moduleName, itemData) {
         const currentUser = this._getCurrentUser();
         const userId = currentUser.id;
-        
-        switch(moduleName) {
+
+        switch (moduleName) {
             case 'tasks':
                 return await this.saveTask(userId, itemData);
             case 'links':
@@ -125,6 +137,10 @@ class PersonalDataService {
                 return await this.saveShoppingItem(userId, itemData);
             case 'wishlist':
                 return await this.saveWishlistItem(userId, itemData);
+            case 'notes':
+                return await this.saveNote(userId, itemData);
+            case 'reminders':
+                return await this.saveReminder(userId, itemData);
             default:
                 throw new Error(`Módulo desconhecido: ${moduleName}`);
         }
@@ -132,7 +148,7 @@ class PersonalDataService {
 
     /**
      * @description Updates an existing item in a module
-     * @param {string} moduleName - Module name ('tasks', 'links', 'passwords', 'shopping', 'wishlist')
+     * @param {string} moduleName - Module name ('notes', 'tasks', 'links', 'passwords', 'shopping', 'wishlist', 'reminders')
      * @param {string} itemId - Document ID in Firestore
      * @param {Object} itemData - Updated data (partial or complete)
      * @returns {Promise<void>}
@@ -144,8 +160,8 @@ class PersonalDataService {
     async update(moduleName, itemId, itemData) {
         const currentUser = this._getCurrentUser();
         const userId = currentUser.id;
-        
-        switch(moduleName) {
+
+        switch (moduleName) {
             case 'tasks':
                 return await this.saveTask(userId, { ...itemData, id: itemId });
             case 'links':
@@ -156,6 +172,10 @@ class PersonalDataService {
                 return await this.saveShoppingItem(userId, { ...itemData, id: itemId });
             case 'wishlist':
                 return await this.saveWishlistItem(userId, { ...itemData, id: itemId });
+            case 'notes':
+                return await this.saveNote(userId, { ...itemData, id: itemId });
+            case 'reminders':
+                return await this.saveReminder(userId, { ...itemData, id: itemId });
             default:
                 throw new Error(`Módulo desconhecido: ${moduleName}`);
         }
@@ -163,7 +183,7 @@ class PersonalDataService {
 
     /**
      * @description Deletes an item from a specific module
-     * @param {string} moduleName - Module name ('tasks', 'links', 'passwords', 'shopping', 'wishlist')
+     * @param {string} moduleName - Module name ('notes', 'tasks', 'links', 'passwords', 'shopping', 'wishlist', 'reminders')
      * @param {string} itemId - Document ID in Firestore to be deleted
      * @returns {Promise<void>}
      * @throws {Error} If the module is unknown
@@ -174,8 +194,8 @@ class PersonalDataService {
     async delete(moduleName, itemId) {
         const currentUser = this._getCurrentUser();
         const userId = currentUser.id;
-        
-        switch(moduleName) {
+
+        switch (moduleName) {
             case 'tasks':
                 return await this.deleteTask(userId, itemId);
             case 'links':
@@ -186,6 +206,10 @@ class PersonalDataService {
                 return await this.deleteShoppingItem(userId, itemId);
             case 'wishlist':
                 return await this.deleteWishlistItem(userId, itemId);
+            case 'notes':
+                return await this.deleteNote(userId, itemId);
+            case 'reminders':
+                return await this.deleteReminder(userId, itemId);
             default:
                 throw new Error(`Módulo desconhecido: ${moduleName}`);
         }
@@ -267,10 +291,10 @@ class PersonalDataService {
             const tasks = await FirebaseDataService.getCollectionDocuments(
                 this.collections.tasks
             );
-            
+
             this.cache.tasks = tasks || [];
             this.loaded.tasks = true;
-            
+
             return this.cache.tasks;
         } catch (error) {
             Logger.error('Erro ao buscar tarefas:', error);
@@ -372,10 +396,10 @@ class PersonalDataService {
             const links = await FirebaseDataService.getCollectionDocuments(
                 this.collections.links
             );
-            
+
             this.cache.links = links || [];
             this.loaded.links = true;
-            
+
             return this.cache.links;
         } catch (error) {
             Logger.error('Erro ao buscar links:', error);
@@ -480,10 +504,10 @@ class PersonalDataService {
             const passwords = await FirebaseDataService.getCollectionDocuments(
                 this.collections.passwords
             );
-            
+
             this.cache.passwords = passwords || [];
             this.loaded.passwords = true;
-            
+
             return this.cache.passwords;
         } catch (error) {
             Logger.error('Erro ao buscar senhas:', error);
@@ -585,10 +609,10 @@ class PersonalDataService {
             const items = await FirebaseDataService.getCollectionDocuments(
                 this.collections.shopping
             );
-            
+
             this.cache.shopping = items || [];
             this.loaded.shopping = true;
-            
+
             return this.cache.shopping;
         } catch (error) {
             Logger.error('Erro ao buscar itens de compra:', error);
@@ -692,10 +716,10 @@ class PersonalDataService {
             const items = await FirebaseDataService.getCollectionDocuments(
                 this.collections.wishlist
             );
-            
+
             this.cache.wishlist = items || [];
             this.loaded.wishlist = true;
-            
+
             return this.cache.wishlist;
         } catch (error) {
             Logger.error('Erro ao buscar itens da wishlist:', error);
@@ -725,6 +749,148 @@ class PersonalDataService {
     }
 
     /**
+     * @description Saves or updates a note in Firestore
+     */
+    async saveNote(userId, noteData) {
+        try {
+            const noteId = noteData.id || Date.now().toString();
+            const noteToSave = {
+                ...noteData,
+                id: noteId,
+                userId,
+                createdAt: noteData.createdAt || new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+
+            await FirebaseDataService.saveDocument(
+                this.collections.notes,
+                noteToSave,
+                noteId
+            );
+
+            const index = this.cache.notes.findIndex(n => n.id === noteId);
+            if (index >= 0) {
+                this.cache.notes[index] = noteToSave;
+            } else {
+                this.cache.notes.push(noteToSave);
+            }
+
+            return noteId;
+        } catch (error) {
+            Logger.error('Erro ao salvar anotação:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * @description Gets all user notes with caching system
+     */
+    async getNotes(userId) {
+        try {
+            if (this.loaded.notes) {
+                return this.cache.notes;
+            }
+
+            const notes = await FirebaseDataService.getCollectionDocuments(
+                this.collections.notes
+            );
+
+            this.cache.notes = notes || [];
+            this.loaded.notes = true;
+
+            return this.cache.notes;
+        } catch (error) {
+            Logger.error('Erro ao buscar anotações:', error);
+            this.loaded.notes = false;
+            return [];
+        }
+    }
+
+    /**
+     * @description Removes a note from Firestore and updates cache
+     */
+    async deleteNote(userId, noteId) {
+        try {
+            await FirebaseDataService.deleteDocument(this.collections.notes, noteId);
+            this.cache.notes = this.cache.notes.filter(n => String(n.id) !== String(noteId));
+        } catch (error) {
+            Logger.error('Erro ao deletar anotação:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * @description Saves or updates a reminder in Firestore
+     */
+    async saveReminder(userId, reminderData) {
+        try {
+            const reminderId = reminderData.id || Date.now().toString();
+            const reminderToSave = {
+                ...reminderData,
+                id: reminderId,
+                userId,
+                createdAt: reminderData.createdAt || new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+
+            await FirebaseDataService.saveDocument(
+                this.collections.reminders,
+                reminderToSave,
+                reminderId
+            );
+
+            const index = this.cache.reminders.findIndex(r => r.id === reminderId);
+            if (index >= 0) {
+                this.cache.reminders[index] = reminderToSave;
+            } else {
+                this.cache.reminders.push(reminderToSave);
+            }
+
+            return reminderId;
+        } catch (error) {
+            Logger.error('Erro ao salvar lembrete:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * @description Gets all user reminders with caching system
+     */
+    async getReminders(userId) {
+        try {
+            if (this.loaded.reminders) {
+                return this.cache.reminders;
+            }
+
+            const reminders = await FirebaseDataService.getCollectionDocuments(
+                this.collections.reminders
+            );
+
+            this.cache.reminders = reminders || [];
+            this.loaded.reminders = true;
+
+            return this.cache.reminders;
+        } catch (error) {
+            Logger.error('Erro ao buscar lembretes:', error);
+            this.loaded.reminders = false;
+            return [];
+        }
+    }
+
+    /**
+     * @description Removes a reminder from Firestore and updates cache
+     */
+    async deleteReminder(userId, reminderId) {
+        try {
+            await FirebaseDataService.deleteDocument(this.collections.reminders, reminderId);
+            this.cache.reminders = this.cache.reminders.filter(r => String(r.id) !== String(reminderId));
+        } catch (error) {
+            Logger.error('Erro ao deletar lembrete:', error);
+            throw error;
+        }
+    }
+
+    /**
      * @description Clears all in-memory cache and resets loading flags
      * 
      * Useful when logging out or switching users to prevent data leakage
@@ -743,7 +909,9 @@ class PersonalDataService {
             links: [],
             passwords: [],
             shopping: [],
-            wishlist: []
+            wishlist: [],
+            notes: [],
+            reminders: []
         };
 
         this.loaded = {
@@ -751,7 +919,9 @@ class PersonalDataService {
             links: false,
             passwords: false,
             shopping: false,
-            wishlist: false
+            wishlist: false,
+            notes: false,
+            reminders: false
         };
     }
 }

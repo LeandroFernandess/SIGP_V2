@@ -239,78 +239,6 @@ class TrainingPageHandler {
     }
 
     /**
-     * Renders statistics section (legacy, replaced by renderTrackingSection)
-     */
-    renderStats() {
-        if (!this.stats) {
-            return `
-                <div class="training-stats-section">
-                    <div class="loading-state">
-                        <div class="loading-spinner"></div>
-                        <p>Carregando estatísticas...</p>
-                    </div>
-                </div>
-            `;
-        }
-
-        const { trainedDays, totalDays, percentage, completeWeeks, longestStreak } = this.stats;
-
-        return `
-            <div class="training-stats-section">
-                <div class="stats-header">
-                    <h3>📊 Minhas Estatísticas</h3>
-                    <div class="stats-period-selector">
-                        <button class="stats-period-btn ${this.currentPeriod === 'month' ? 'active' : ''}" 
-                                onclick="trainingHandler.changePeriod('month')">Mês</button>
-                        <button class="stats-period-btn ${this.currentPeriod === 'year' ? 'active' : ''}" 
-                                onclick="trainingHandler.changePeriod('year')">Ano</button>
-                    </div>
-                </div>
-
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-card-header">
-                            <span class="stat-icon">🔥</span>
-                        </div>
-                        <div class="stat-label">Dias Treinados</div>
-                        <div class="stat-value">${trainedDays}</div>
-                        <div class="stat-subtitle">de ${totalDays} dias</div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-card-header">
-                            <span class="stat-icon">📈</span>
-                        </div>
-                        <div class="stat-label">Frequência</div>
-                        <div class="stat-value">${percentage}%</div>
-                        <div class="stat-subtitle">${this.getFrequencyMessage(percentage)}</div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-card-header">
-                            <span class="stat-icon">🏆</span>
-                        </div>
-                        <div class="stat-label">Semanas Completas</div>
-                        <div class="stat-value">${completeWeeks}</div>
-                        <div class="stat-subtitle">${completeWeeks === 1 ? 'semana' : 'semanas'} de 7 dias</div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-card-header">
-                            <span class="stat-icon">⚡</span>
-                        </div>
-                        <div class="stat-label">Maior Sequência</div>
-                        <div class="stat-value">${longestStreak}</div>
-                        <div class="stat-subtitle">${longestStreak === 1 ? 'dia consecutivo' : 'dias consecutivos'}</div>
-                    </div>
-                </div>
-
-                ${this.renderCalendar()}
-            </div>
-        `;
-    }
-
-    /**
      * Renders monthly calendar with trained days
      */
     renderCalendar() {
@@ -367,8 +295,8 @@ class TrainingPageHandler {
             if (isToday) classes.push('today');
 
             const dateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-            const clickHandler = isTrained 
-                ? `onclick="trainingHandler.removeTrainingDay('${dateString}')"` 
+            const clickHandler = isTrained
+                ? `onclick="trainingHandler.removeTrainingDay('${dateString}')"`
                 : `onclick="trainingHandler.markSpecificDay('${dateString}')"`;
             const title = isTrained ? 'Clique para remover este dia de treino' : 'Clique para marcar este dia como treino';
 
@@ -450,8 +378,8 @@ class TrainingPageHandler {
             if (isToday) classes.push('today');
 
             const dateString = `${year}-${String(monthIndex + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-            const clickHandler = isTrained 
-                ? `onclick="trainingHandler.removeTrainingDay('${dateString}')"` 
+            const clickHandler = isTrained
+                ? `onclick="trainingHandler.removeTrainingDay('${dateString}')"`
                 : `onclick="trainingHandler.markSpecificDay('${dateString}')"`;
             const title = isTrained ? 'Clique para remover' : 'Clique para marcar';
 
@@ -624,7 +552,7 @@ class TrainingPageHandler {
 
             const alreadyMarked = this.stats.sessions.some(s => {
                 let sessionDate = s.date;
-                
+
                 if (typeof sessionDate === 'string' && sessionDate.includes('T')) {
                     const d = new Date(sessionDate);
                     sessionDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -632,7 +560,7 @@ class TrainingPageHandler {
                     const d = new Date(sessionDate);
                     sessionDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
                 }
-                
+
                 return sessionDate === dateString;
             });
 
@@ -647,10 +575,10 @@ class TrainingPageHandler {
             }
 
             const [year, month, day] = dateString.split('-').map(Number);
-            const displayDate = new Date(year, month - 1, day).toLocaleDateString('pt-BR', { 
-                day: 'numeric', 
-                month: 'long', 
-                year: 'numeric' 
+            const displayDate = new Date(year, month - 1, day).toLocaleDateString('pt-BR', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
             });
 
             const sessionData = {
@@ -712,7 +640,7 @@ class TrainingPageHandler {
 
             const sessionsToDelete = this.stats.sessions.filter(s => {
                 let sessionDate = s.date;
-                
+
                 if (typeof sessionDate === 'string' && sessionDate.includes('T')) {
                     const d = new Date(sessionDate);
                     sessionDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -721,7 +649,7 @@ class TrainingPageHandler {
                     const d = new Date(sessionDate);
                     sessionDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
                 }
-                
+
                 return sessionDate === dateString;
             });
 

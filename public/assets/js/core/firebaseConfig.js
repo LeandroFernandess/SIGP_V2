@@ -44,8 +44,9 @@ import {
     linkWithPopup,
     deleteUser
 } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-import { getFirestore, setDoc, getDoc, getDocs, deleteDoc, doc, collection, query, onSnapshot, where, orderBy, addDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import { getFirestore, initializeFirestore, setDoc, getDoc, getDocs, deleteDoc, doc, collection, query, onSnapshot, where, orderBy, addDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
+import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-functions.js";
 import { firebaseConfig as envConfig } from './firebase.env.js';
 
 const USE_FIREBASE = true;
@@ -61,25 +62,36 @@ if (typeof __firebase_config !== 'undefined' && __firebase_config !== '{}') {
 
 const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
-let app, db, auth, storage;
+let app, db, auth, storage, functionsClient;
 
 if (!USE_FIREBASE) {
     db = null;
     auth = null;
     storage = null;
+    functionsClient = null;
 } else {
     try {
         app = initializeApp(firebaseConfig);
 
-        db = getFirestore(app);
+        try {
+            db = initializeFirestore(app, {
+                experimentalAutoDetectLongPolling: true,
+                useFetchStreams: false
+            });
+        } catch (initErr) {
+            console.warn('initializeFirestore fallback to getFirestore:', initErr?.message || initErr);
+            db = getFirestore(app);
+        }
         auth = getAuth(app);
         storage = getStorage(app);
+        functionsClient = getFunctions(app);
 
     } catch (error) {
         console.error('❌ Erro ao inicializar Firebase:', error);
         db = null;
         auth = null;
         storage = null;
+        functionsClient = null;
     }
 }
 
@@ -132,5 +144,7 @@ export {
     updateEmail,
     updatePassword,
     linkWithPopup,
-    deleteUser
+    deleteUser,
+    functionsClient,
+    httpsCallable
 };

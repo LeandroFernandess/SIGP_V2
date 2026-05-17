@@ -1,0 +1,166 @@
+/**
+ * @file _notes.css
+ * @description Notes module styling for freeform text notes with optional address/maps links.
+ *
+ * Contents:
+ * - Notes grid layout
+ * - Note cards (gradient background, blue accent strip on hover)
+ * - Note card header and title
+ * - Note content area and address/maps link
+ * - Action buttons (edit, delete — absolute top-right)
+ * - Note metadata / timestamp
+ * - Empty state SVG icon
+ * - Responsive layout (single column below 600 px)
+ *
+ * Dependencies: _base.css
+ * Imported by: personal.css
+ * Light theme overrides: themes/light-theme.css
+ *
+ * @author Leandro Fialho Fernandes
+ */
+
+/* =========================================================
+   NOTES MODULE
+   Aligned with personal modules pattern (gradient cards,
+   blue accent strip, semantic tokens). Light theme overrides
+   live in themes/light-theme.css.
+   ========================================================= */
+
+.notes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.note-card {
+    background: linear-gradient(165deg, rgba(255, 255, 255, 0.03) 0%, rgba(0, 0, 0, 0.12) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    padding: 1.5rem;
+    padding-right: 5.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.note-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #3b82f6, #60a5fa, #93c5fd);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.note-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(59, 130, 246, 0.3);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.25);
+}
+
+.note-card:hover::before {
+    opacity: 1;
+}
+.note-card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+.note-title {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-light);
+    word-break: break-word;
+    flex: 1;
+}
+
+.note-content {
+    color: var(--text-gray);
+    font-size: 0.92rem;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 220px;
+    overflow-y: auto;
+}
+
+.note-address {
+    margin-top: 0.2rem;
+}
+
+.note-address .maps-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--light-blue);
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 500;
+    padding: 0.4rem 0.85rem;
+    border-radius: 20px;
+    background: rgba(59, 130, 246, 0.12);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    transition: all 0.3s ease;
+    word-break: break-word;
+}
+
+.note-address .maps-link svg {
+    flex-shrink: 0;
+    stroke: currentColor;
+    fill: none;
+}
+
+.note-address .maps-link:hover {
+    background: rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.45);
+    color: var(--text-light);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+}
+
+.note-card .item-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-shrink: 0;
+    position: absolute;
+    top: 0.85rem;
+    right: 0.85rem;
+    z-index: 2;
+}
+
+.note-card .item-actions .btn-edit-small svg,
+.note-card .item-actions .btn-delete-small svg {
+    stroke: currentColor;
+    fill: none;
+}
+
+#notesList .empty-icon svg {
+    stroke: var(--text-gray);
+    fill: none;
+    opacity: 0.85;
+}
+
+.note-meta {
+    color: var(--text-gray);
+    opacity: 0.75;
+    font-size: 0.75rem;
+    margin-top: auto;
+    padding-top: 0.5rem;
+    border-top: 1px dashed rgba(255, 255, 255, 0.08);
+}
+
+@media (max-width: 600px) {
+    .notes-grid {
+        grid-template-columns: 1fr;
+    }
+}

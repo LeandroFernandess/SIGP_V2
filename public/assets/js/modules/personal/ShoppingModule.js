@@ -33,6 +33,8 @@ class ShoppingModule extends BasePersonalModule {
      */
     constructor(personalDataService) {
         super(personalDataService, 'shopping');
+        this.expandedCategories = new Set();
+        this.tempBulkItems = [];
     }
 
     /**
@@ -69,7 +71,8 @@ class ShoppingModule extends BasePersonalModule {
                     </div>
                     <div class="form-input-group">
                         <label>Quantidade</label>
-                        <input type="text" id="shoppingQuantity" placeholder="Ex: 2 pacotes">
+                        <input type="number" id="shoppingQuantity"
+                               placeholder="Ex: 2" inputmode="numeric" min="1" step="1">
                     </div>
                 </div>
                 <div class="form-input-group">
@@ -85,6 +88,37 @@ class ShoppingModule extends BasePersonalModule {
                         <option value="Farmácia">💊 Farmácia</option>
                         <option value="Outros">📦 Outros</option>
                     </select>
+                </div>
+                <div class="form-input-group shopping-bulk-builder" id="shoppingBulkBuilder">
+                    <label>Montar lista em massa (opcional)</label>
+                    <div class="shopping-bulk-add-row">
+                        <input type="text" id="shoppingBulkItemName"
+                               placeholder="Item (ex: Arroz)" maxlength="120">
+                        <input type="number" id="shoppingBulkItemQuantity"
+                               placeholder="Qtd" inputmode="numeric" min="1" step="1">
+                        <button type="button" class="btn-add-bulk-item"
+                                onclick="personalHandler.modules.shopping.addBulkItemToList()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            Adicionar à lista
+                        </button>
+                    </div>
+                    <div id="shoppingBulkList" class="shopping-bulk-list"></div>
+                    <small class="form-hint">
+                        Vá montando a lista item a item. Quando estiver pronta, clique em "Salvar lista" e tudo será adicionado de uma vez na categoria selecionada acima.
+                    </small>
+                    <div class="shopping-bulk-actions">
+                        <button type="button" class="btn-secondary"
+                                onclick="personalHandler.modules.shopping.clearBulkList()">
+                            Limpar lista
+                        </button>
+                        <button type="button" class="btn-primary"
+                                onclick="personalHandler.modules.shopping.saveBulkItems()">
+                            Salvar lista
+                        </button>
+                    </div>
                 </div>
                 <div class="form-actions">
                     <button class="btn-secondary" onclick="personalHandler.modules.shopping.cancelForm()">Cancelar</button>
@@ -158,9 +192,16 @@ class ShoppingModule extends BasePersonalModule {
      * Extracts and returns form data
      */
     getFormData() {
+        const rawQty = document.getElementById('shoppingQuantity').value || '';
+        const cleanedQty = String(rawQty).replace(/\D/g, '');
+        const parsedQty = parseInt(cleanedQty, 10);
+        const quantity = (Number.isFinite(parsedQty) && parsedQty > 0)
+            ? String(parsedQty)
+            : '1';
+
         return {
             item: document.getElementById('shoppingItem').value.trim(),
-            quantity: document.getElementById('shoppingQuantity').value.trim() || '1',
+            quantity,
             category: document.getElementById('shoppingCategory').value,
             purchased: this.editingId ? (this.items.find(i => i.id === this.editingId)?.purchased || false) : false
         };
@@ -172,7 +213,10 @@ class ShoppingModule extends BasePersonalModule {
     fillForm(item) {
         document.getElementById('shoppingFormTitle').textContent = 'Editar Item';
         document.getElementById('shoppingItem').value = item.item;
-        document.getElementById('shoppingQuantity').value = item.quantity || '1';
+        const legacyQty = String(item.quantity ?? '1');
+        const numericMatch = legacyQty.match(/\d+/);
+        document.getElementById('shoppingQuantity').value = numericMatch ? numericMatch[0] : '1';
+
         document.getElementById('shoppingCategory').value = item.category;
     }
 
@@ -244,6 +288,15 @@ class ShoppingModule extends BasePersonalModule {
                                 </svg>
                             </button>
                             ` : ''}
+                            <button class="btn-delete-category-all" onclick="event.stopPropagation(); personalHandler.modules.shopping.deleteCategory('${categoryName}')" title="Excluir toda a lista (${categoryTotal} item(ns))">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="3 6 5 6 21 6"/>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                    <line x1="10" y1="11" x2="10" y2="17"/>
+                                    <line x1="14" y1="11" x2="14" y2="17"/>
+                                    <line x1="4" y1="20" x2="20" y2="4"/>
+                                </svg>
+                            </button>
                             <span class="category-arrow">▼</span>
                         </div>
                     </div>
@@ -256,6 +309,14 @@ class ShoppingModule extends BasePersonalModule {
         }
 
         container.innerHTML = html;
+
+        this.expandedCategories.forEach(categoryId => {
+            const categoryContent = document.getElementById(`category-${categoryId}`);
+            if (!categoryContent) return;
+            categoryContent.classList.add('open');
+            const arrow = categoryContent.previousElementSibling?.querySelector('.category-arrow');
+            if (arrow) arrow.classList.add('rotated');
+        });
     }
 
     /**
@@ -284,7 +345,8 @@ class ShoppingModule extends BasePersonalModule {
     }
 
     /**
-     * Toggles category expansion
+     * Toggles category expansion and persists the state in memory so the
+     * accordion does not collapse on the next re-render.
      */
     toggleCategory(categoryId) {
         const categoryContent = document.getElementById(`category-${categoryId}`);
@@ -293,6 +355,12 @@ class ShoppingModule extends BasePersonalModule {
 
         if (categoryContent) categoryContent.classList.toggle('open');
         if (arrow) arrow.classList.toggle('rotated');
+
+        if (this.expandedCategories.has(categoryId)) {
+            this.expandedCategories.delete(categoryId);
+        } else {
+            this.expandedCategories.add(categoryId);
+        }
     }
 
     /**
@@ -344,6 +412,228 @@ class ShoppingModule extends BasePersonalModule {
     }
 
     /**
+     * Deletes ALL items from a category, regardless of purchased state.
+     * Allows the user to remove a whole shopping list even when it's incomplete.
+     */
+    async deleteCategory(categoryName) {
+        const categoryItems = this.items.filter(item => item.category === categoryName);
+
+        if (categoryItems.length === 0) {
+            this.showValidation('Categoria já está vazia');
+            return;
+        }
+
+        const result = await Swal.fire({
+            title: `Excluir lista "${categoryName}"?`,
+            text: `Todos os ${categoryItems.length} item(ns) serão removidos, independente de estarem comprados ou não.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sim, excluir tudo',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#ef4444'
+        });
+
+        if (!result.isConfirmed) return;
+
+        for (const item of categoryItems) {
+            await this.personalDataService.delete(this.moduleName, item.id);
+        }
+
+        const categoryId = categoryName.toLowerCase().replace(/\s/g, '-');
+        this.expandedCategories.delete(categoryId);
+
+        await this.loadAndRender();
+        this.showSuccess(`Lista "${categoryName}" removida (${categoryItems.length} item(ns))`);
+    }
+
+    /* ============================================================================
+       BULK BUILDER (item + quantity rows reviewed before saving)
+       ============================================================================ */
+
+    /**
+     * Adds an item + quantity pair to the temporary bulk list. Mirrors the
+     * topic builder used by TasksModule, but stores name and quantity
+     * separately so the user can compose a structured shopping list.
+     */
+    addBulkItemToList() {
+        if (!Array.isArray(this.tempBulkItems)) this.tempBulkItems = [];
+
+        const nameInput = document.getElementById('shoppingBulkItemName');
+        const qtyInput = document.getElementById('shoppingBulkItemQuantity');
+        if (!nameInput) return;
+
+        const itemName = (nameInput.value || '').trim();
+        const rawQty = (qtyInput?.value || '').replace(/\D/g, '');
+        const parsedQty = parseInt(rawQty, 10);
+        const quantity = (Number.isFinite(parsedQty) && parsedQty > 0)
+            ? String(parsedQty)
+            : '1';
+
+        if (!itemName) {
+            this.showValidation('Informe o nome do item');
+            return;
+        }
+
+        const duplicateInTemp = this.tempBulkItems.some(
+            row => row.item.toLowerCase() === itemName.toLowerCase()
+                && row.quantity === quantity
+        );
+        if (duplicateInTemp) {
+            this.showValidation('Esse item já está na lista temporária');
+            return;
+        }
+
+        this.tempBulkItems.push({
+            id: `bulk_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+            item: itemName,
+            quantity
+        });
+
+        nameInput.value = '';
+        if (qtyInput) qtyInput.value = '';
+        this.renderBulkItemsList();
+        nameInput.focus();
+    }
+
+    /**
+     * Removes one row from the temporary bulk list.
+     * @param {string} rowId
+     */
+    removeBulkItemFromList(rowId) {
+        if (!Array.isArray(this.tempBulkItems)) this.tempBulkItems = [];
+        this.tempBulkItems = this.tempBulkItems.filter(row => row.id !== rowId);
+        this.renderBulkItemsList();
+    }
+
+    /**
+     * Renders the preview tags showing all rows pending in the temporary list.
+     */
+    renderBulkItemsList() {
+        if (!Array.isArray(this.tempBulkItems)) this.tempBulkItems = [];
+
+        const container = document.getElementById('shoppingBulkList');
+        if (!container) return;
+
+        if (this.tempBulkItems.length === 0) {
+            container.innerHTML = '<p class="shopping-bulk-empty">Nenhum item adicionado à lista ainda</p>';
+            return;
+        }
+
+        container.innerHTML = this.tempBulkItems.map(row => {
+            const safeItem = DataGuard.escapeHtml(row.item);
+            const safeQty = DataGuard.escapeHtml(row.quantity);
+            return `
+                <div class="shopping-bulk-tag">
+                    <span class="shopping-bulk-tag-text">
+                        <strong>${safeItem}</strong>
+                        <span class="shopping-bulk-tag-qty">× ${safeQty}</span>
+                    </span>
+                    <button type="button" class="shopping-bulk-remove"
+                            onclick="personalHandler.modules.shopping.removeBulkItemFromList('${row.id}')"
+                            title="Remover item da lista">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+            `;
+        }).join('');
+    }
+
+    /**
+     * Wires Enter-key shortcuts on the builder inputs:
+     *  - Enter in the item input: jumps focus to quantity (if empty) or adds.
+     *  - Enter in the quantity input: adds the current pair to the list.
+     */
+    setupBulkItemInputListeners() {
+        const nameInput = document.getElementById('shoppingBulkItemName');
+        const qtyInput = document.getElementById('shoppingBulkItemQuantity');
+
+        if (nameInput && !nameInput.dataset.bulkListenerAttached) {
+            nameInput.addEventListener('keydown', (e) => {
+                if (e.key !== 'Enter') return;
+                e.preventDefault();
+                if (qtyInput && !qtyInput.value.trim()) {
+                    qtyInput.focus();
+                } else {
+                    this.addBulkItemToList();
+                }
+            });
+            nameInput.dataset.bulkListenerAttached = '1';
+        }
+
+        if (qtyInput && !qtyInput.dataset.bulkListenerAttached) {
+            qtyInput.addEventListener('keydown', (e) => {
+                if (e.key !== 'Enter') return;
+                e.preventDefault();
+                this.addBulkItemToList();
+            });
+            qtyInput.addEventListener('input', () => {
+                const cleaned = qtyInput.value.replace(/\D/g, '');
+                if (cleaned !== qtyInput.value) qtyInput.value = cleaned;
+            });
+            qtyInput.dataset.bulkListenerAttached = '1';
+        }
+    }
+
+    /**
+     * Discards all rows from the temporary bulk list (does not touch Firestore).
+     */
+    clearBulkList() {
+        if (!Array.isArray(this.tempBulkItems)) this.tempBulkItems = [];
+        if (this.tempBulkItems.length === 0) return;
+        this.tempBulkItems = [];
+        this.renderBulkItemsList();
+    }
+
+    /**
+     * Persists every row of the temporary bulk list into the currently
+     * selected category, then resets the builder UI and keeps the category
+     * expanded so the user can see the result.
+     */
+    async saveBulkItems() {
+        if (!Array.isArray(this.tempBulkItems)) this.tempBulkItems = [];
+
+        const categorySelect = document.getElementById('shoppingCategory');
+        if (!categorySelect) return;
+
+        if (this.tempBulkItems.length === 0) {
+            this.showValidation('Adicione ao menos um item à lista antes de salvar');
+            return;
+        }
+
+        const category = categorySelect.value;
+        const total = this.tempBulkItems.length;
+
+        try {
+            for (const row of this.tempBulkItems) {
+                await this.personalDataService.add(this.moduleName, {
+                    item: row.item,
+                    quantity: row.quantity || '1',
+                    category,
+                    purchased: false,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                });
+            }
+
+            this.tempBulkItems = [];
+            this.renderBulkItemsList();
+
+            const categoryId = category.toLowerCase().replace(/\s/g, '-');
+            this.expandedCategories.add(categoryId);
+
+            this.cancelForm();
+            await this.loadAndRender();
+            this.showSuccess(`${total} item(ns) adicionado(s) em "${category}"`);
+        } catch (err) {
+            Logger.error('Erro ao salvar lista em massa:', err);
+            this.showError('Erro ao salvar a lista');
+        }
+    }
+
+    /**
      * Renders empty state when no items exist
      */
     renderEmptyState() {
@@ -361,7 +651,24 @@ class ShoppingModule extends BasePersonalModule {
      */
     clearForm() {
         super.clearForm();
-        document.getElementById('shoppingCategory').value = 'Alimentos';
-        document.getElementById('shoppingFormTitle').textContent = 'Adicionar Item';
+        const categorySelect = document.getElementById('shoppingCategory');
+        if (categorySelect) categorySelect.value = 'Alimentos';
+        const title = document.getElementById('shoppingFormTitle');
+        if (title) title.textContent = 'Adicionar Item';
+
+       this.tempBulkItems = [];
+        this.renderBulkItemsList();
+    }
+
+    /**
+     * Hook into showForm to attach the bulk builder keyboard shortcuts and
+     * paint the initial empty-state placeholder for the preview list.
+     */
+    showForm() {
+        super.showForm();
+        setTimeout(() => {
+            this.renderBulkItemsList();
+            this.setupBulkItemInputListeners();
+        }, 50);
     }
 }

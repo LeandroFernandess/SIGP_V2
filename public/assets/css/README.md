@@ -74,11 +74,13 @@ css/
 │   ├── personal/
 │   │   ├── personal.css       # Import central do módulo pessoal
 │   │   ├── _base.css          # Estilos base compartilhados do módulo pessoal
+│   │   ├── _notes.css         # Anotações
 │   │   ├── _tasks.css         # Tarefas
 │   │   ├── _links.css         # Links úteis
 │   │   ├── _passwords.css     # Gerenciador de senhas
 │   │   ├── _shopping.css      # Lista de compras
-│   │   └── _wishlist.css      # Lista de desejos
+│   │   ├── _wishlist.css      # Lista de desejos
+│   │   └── _reminders.css     # Lembretes recorrentes
 │   ├── settings/
 │   │   └── settings.css       # Configurações (perfil, segurança, preferências)
 │   ├── support/
@@ -140,7 +142,7 @@ Cada funcionalidade do sistema possui seus estilos isolados nesta pasta.
 | `documents/` | Cards de documentos, área de upload, drag & drop visual, estados vazios |
 | `exams/` | Listagem de exames médicos, cards informativos, indicadores de status |
 | `expenses/` | Tabelas financeiras, cards de despesas fixas e crédito, formulários de renda, gráficos de relatório |
-| `personal/` | Módulo pessoal subdividido: tarefas, links, senhas, compras, wishlist — com `personal.css` como ponto de entrada e parciais `_*.css` |
+| `personal/` | Módulo pessoal subdividido: anotações, tarefas, links, senhas, compras, wishlist e lembretes — com `personal.css` como ponto de entrada e parciais `_*.css` |
 | `settings/` | Painel de configurações: cards de perfil, segurança, preferências de notificações, informações da conta |
 | `support/` | Página de suporte e FAQ |
 | `training/` | Treinos de academia (exercícios, séries, calendário de tracking) e corrida |
@@ -480,11 +482,13 @@ css/
 │   ├── personal/
 │   │   ├── personal.css       # Central import for the personal module
 │   │   ├── _base.css          # Shared base styles
+│   │   ├── _notes.css         # Notes
 │   │   ├── _tasks.css         # Tasks
 │   │   ├── _links.css         # Bookmarks
 │   │   ├── _passwords.css     # Password manager
 │   │   ├── _shopping.css      # Shopping list
-│   │   └── _wishlist.css      # Wishlist
+│   │   ├── _wishlist.css      # Wishlist
+│   │   └── _reminders.css     # Recurring reminders
 │   ├── settings/
 │   │   └── settings.css       # Settings (profile, security, preferences)
 │   ├── support/
@@ -546,7 +550,7 @@ Each system feature has its own isolated styles in this folder.
 | `documents/` | Document cards, upload area, drag & drop visuals, empty states |
 | `exams/` | Medical exam listings, information cards, status indicators |
 | `expenses/` | Financial tables, fixed and credit expense cards, income forms, report charts |
-| `personal/` | Personal module subdivided: tasks, links, passwords, shopping, wishlist — with `personal.css` as entry point and `_*.css` partials |
+| `personal/` | Personal module subdivided: notes, tasks, links, passwords, shopping, wishlist and reminders — with `personal.css` as entry point and `_*.css` partials |
 | `settings/` | Settings panel: profile, security, notification preferences, account info cards |
 | `support/` | Support page and FAQ |
 | `training/` | Gym training (exercises, sets, tracking calendar) and running |

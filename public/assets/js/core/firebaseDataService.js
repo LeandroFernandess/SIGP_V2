@@ -129,7 +129,13 @@ export class FirebaseDataService {
 
             callback(dataList);
         }, (error) => {
-            console.error(`❌ Erro na escuta do Firestore (${collectionName}):`, error);
+            console.error('❌ Firestore Listen Error:', {
+                collectionName,
+                collectionPath,
+                code: error?.code || 'UNKNOWN',
+                message: error?.message,
+                error
+            });
             callback([]);
         });
 

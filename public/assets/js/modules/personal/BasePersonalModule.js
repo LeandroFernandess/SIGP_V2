@@ -170,7 +170,7 @@ class BasePersonalModule {
             this.showForm();
             this.fillForm(item);
             this.hideItemsList();
-            
+
             const form = document.getElementById(`${this.moduleName}Form`);
             if (form) {
                 form.classList.add('editing-mode');
@@ -218,7 +218,7 @@ class BasePersonalModule {
         const form = document.getElementById(`${this.moduleName}Form`);
         const addBtn = document.getElementById(`addBtn${this.capitalize(this.moduleName)}`);
         const list = document.getElementById(`${this.moduleName}List`);
-        
+
         if (form) form.classList.add('active');
         if (addBtn) addBtn.classList.add('hidden');
         if (list) list.classList.add('hidden');
@@ -242,7 +242,7 @@ class BasePersonalModule {
 
         form.classList.toggle('focus-mode');
         overlay.classList.toggle('active');
-        
+
         if (form.classList.contains('focus-mode')) {
             document.body.style.overflow = 'hidden';
         } else {
@@ -256,12 +256,12 @@ class BasePersonalModule {
     cancelForm() {
         this.clearForm();
         this.editingId = null;
-        
+
         const form = document.getElementById(`${this.moduleName}Form`);
         const addBtn = document.getElementById(`addBtn${this.capitalize(this.moduleName)}`);
         const overlay = document.getElementById('formOverlay');
         const list = document.getElementById(`${this.moduleName}List`);
-        
+
         if (form) {
             form.classList.remove('active');
             form.classList.remove('focus-mode');
@@ -284,7 +284,7 @@ class BasePersonalModule {
         if (listContainer) {
             listContainer.classList.add('hidden-for-edit');
         }
-        
+
         const filters = document.querySelector('.task-filters, .filter-buttons');
         if (filters) {
             filters.classList.add('hidden-for-edit');
@@ -299,62 +299,13 @@ class BasePersonalModule {
         if (listContainer) {
             listContainer.classList.remove('hidden-for-edit');
         }
-        
+
         const filters = document.querySelector('.task-filters, .filter-buttons');
         if (filters) {
             filters.classList.remove('hidden-for-edit');
         }
     }
 
-    /**
-     * Hides other cards when in edit mode (legacy - no longer used)
-     * @deprecated Use hideItemsList() instead
-     */
-    hideOtherCards(editingId) {
-        const listContainer = document.getElementById(`${this.moduleName}List`);
-        if (!listContainer) return;
-
-        const cards = listContainer.querySelectorAll('.item-card');
-        cards.forEach(card => {
-            const cardId = this.extractCardId(card);
-            
-            if (cardId && cardId !== editingId) {
-                card.classList.add('hidden-for-edit');
-            }
-        });
-    }
-
-    /**
-     * Shows all cards again (legacy - no longer used)
-     * @deprecated Use showItemsList() instead
-     */
-    showAllCards() {
-        const listContainer = document.getElementById(`${this.moduleName}List`);
-        if (!listContainer) return;
-
-        const cards = listContainer.querySelectorAll('.item-card');
-        cards.forEach(card => {
-            card.classList.remove('hidden-for-edit');
-        });
-    }
-
-    /**
-     * Extracts the ID from a card
-     * @param {HTMLElement} card - Card element
-     * @returns {string|null} Card ID or null
-     */
-    extractCardId(card) {
-        if (card.dataset.id) return card.dataset.id;
-        
-        const editBtn = card.querySelector('[onclick*="edit"]');
-        if (editBtn) {
-            const match = editBtn.getAttribute('onclick').match(/['"]([^'"]+)['"]/);
-            if (match) return match[1];
-        }
-        
-        return null;
-    }   
-    
     /**
      * Clears all form fields
      */
