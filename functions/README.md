@@ -28,6 +28,7 @@ firebase functions:secrets:set EMAILJS_SERVICE_ID             # EmailJS → Emai
 firebase functions:secrets:set EMAILJS_TEMPLATE_ID            # EmailJS → Email Templates → digest template ID
 firebase functions:secrets:set EMAILJS_FEEDBACK_TEMPLATE_ID   # EmailJS → Email Templates → feedback template ID
 firebase functions:secrets:set EMAILJS_PUBLIC_KEY             # EmailJS → Account → API Keys → Public Key
+firebase functions:secrets:set FEEDBACK_RECIPIENT_EMAIL        # Email address that receives feedback form submissions
 ```
 
 ## Deploy

@@ -84,7 +84,7 @@ if (!USE_FIREBASE) {
         }
         auth = getAuth(app);
         storage = getStorage(app);
-        functionsClient = getFunctions(app);
+        functionsClient = getFunctions(app, 'us-central1');
 
     } catch (error) {
         console.error('❌ Erro ao inicializar Firebase:', error);

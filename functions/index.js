@@ -54,6 +54,7 @@ const EMAILJS_SERVICE_ID = defineSecret('EMAILJS_SERVICE_ID');
 const EMAILJS_TEMPLATE_ID = defineSecret('EMAILJS_TEMPLATE_ID');
 const EMAILJS_FEEDBACK_TEMPLATE_ID = defineSecret('EMAILJS_FEEDBACK_TEMPLATE_ID');
 const EMAILJS_PUBLIC_KEY = defineSecret('EMAILJS_PUBLIC_KEY');
+const FEEDBACK_RECIPIENT_EMAIL = defineSecret('FEEDBACK_RECIPIENT_EMAIL');
 
 const APP_ID = 'sigp-app';
 const OPENAI_ENDPOINT = 'https://api.openai.com/v1/chat/completions';
@@ -74,7 +75,15 @@ const FEEDBACK_SECRETS = [
     EMAILJS_SERVICE_ID,
     EMAILJS_FEEDBACK_TEMPLATE_ID,
     EMAILJS_PUBLIC_KEY,
+    FEEDBACK_RECIPIENT_EMAIL,
 ];
+
+const CALLABLE_REGION = 'us-central1';
+const CALLABLE_BASE_OPTS = {
+    region: CALLABLE_REGION,
+    cors: true,
+    invoker: 'public',
+};
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Callable function: send on user login (only if prefs.enabled)
@@ -82,6 +91,7 @@ const FEEDBACK_SECRETS = [
 
 exports.sendDigestOnLogin = onCall(
     {
+        ...CALLABLE_BASE_OPTS,
         secrets: DIGEST_SECRETS,
         timeoutSeconds: 120,
     },
@@ -108,6 +118,7 @@ exports.sendDigestOnLogin = onCall(
 
 exports.sendDigestNow = onCall(
     {
+        ...CALLABLE_BASE_OPTS,
         secrets: DIGEST_SECRETS,
         timeoutSeconds: 120,
     },
@@ -141,6 +152,7 @@ exports.sendDigestNow = onCall(
  */
 exports.sendFeedback = onCall(
     {
+        ...CALLABLE_BASE_OPTS,
         secrets: FEEDBACK_SECRETS,
         timeoutSeconds: 30,
     },
@@ -181,6 +193,9 @@ exports.sendFeedback = onCall(
                 user_id: EMAILJS_PUBLIC_KEY.value(),
                 accessToken: EMAILJS_PRIVATE_KEY.value(),
                 template_params: {
+                    to_email: FEEDBACK_RECIPIENT_EMAIL.value(),
+                    to_name: 'Leandro Fernandes',
+                    reply_to: fromEmail,
                     from_name: fromName,
                     from_email: fromEmail,
                     user_id: userId,
