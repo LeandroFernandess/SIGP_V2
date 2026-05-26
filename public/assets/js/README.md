@@ -150,8 +150,8 @@ Camada de inicialização e infraestrutura fundamental.
 
 | Arquivo | Tipo | Responsabilidade |
 |---|---|---|
-| `app.js` | ES Module | Entry point de `index.html`. Cria serviços e inicializa auth handlers. |
-| `dashboard.js` (em managers/) | ES Module | Entry point de `dashboard.html`. Aguarda `onAuthStateChanged`, inicializa managers e dispara `DigestService`. |
+| `app.js` | ES Module | Entry point de `index`. Cria serviços e inicializa auth handlers. |
+| `dashboard.js` (em managers/) | ES Module | Entry point de `dashboard`. Aguarda `onAuthStateChanged`, inicializa managers e dispara `DigestService`. |
 | `firebaseConfig.js` | ES Module | Inicializa Firebase SDK v11.6.1 (app, auth, firestore, storage). Re-exporta todas as funções Firebase para consumo por outros módulos. |
 | `firebaseDataService.js` | ES Module | Classe estática com CRUD genérico Firestore. Path: `/artifacts/{appId}/users/{userId}/{collection}`. `removeUndefinedFields()` para limpeza recursiva de dados. Real-time via `onSnapshot`. |
 | `firebaseGlobals.js` | ES Module | **Bridge pattern** — importa tudo de `firebaseConfig.js` + `FirebaseDataService` e expõe em `window.firebaseGlobals` para scripts clássicos. |
@@ -268,10 +268,10 @@ A aplicação adota uma **arquitetura em camadas com orquestração centralizada
 
 ### Fluxo Geral da Aplicação
 
-#### Página de Autenticação (`index.html`)
+#### Página de Autenticação (`index`)
 
 ```
-1. index.html carrega scripts
+1. index carrega scripts
 2. app.js (entry point ES Module):
    ├── Cria UserService (Firebase Auth + Firestore)
    ├── Cria UIManager, LoadingManager, FormManager
@@ -280,13 +280,13 @@ A aplicação adota uma **arquitetura em camadas com orquestração centralizada
    └── Cria ForgotPasswordHandler (com DI)
 3. Usuário preenche formulário
 4. Handler valida → chama UserService → Firebase Auth
-5. Sucesso → sessionStorage.setUser() → redirect para dashboard.html
+5. Sucesso → sessionStorage.setUser() → redirect para dashboard
 ```
 
-#### Dashboard (`dashboard.html`)
+#### Dashboard (`dashboard`)
 
 ```
-1. dashboard.html carrega scripts (ES modules + clássicos)
+1. dashboard carrega scripts (ES modules + clássicos)
 2. ThemeManager.loadSavedTheme() — antes do DOM (previne flash)
 3. dashboard.js (entry point ES Module):
    ├── onAuthStateChanged → verifica autenticação
@@ -405,7 +405,7 @@ async renderMeuModulo(container) {
 }
 ```
 
-#### 4. Adicionar navegação no `dashboard.html`
+#### 4. Adicionar navegação no `dashboard`
 
 ```html
 <!-- Na sidebar -->
@@ -415,7 +415,7 @@ async renderMeuModulo(container) {
 </a>
 ```
 
-#### 5. Incluir scripts no `dashboard.html`
+#### 5. Incluir scripts no `dashboard`
 
 ```html
 <!-- Meu Módulo -->
@@ -776,10 +776,10 @@ The application adopts a **layered architecture with centralized orchestration**
 
 ### Application Flow
 
-#### Authentication Page (`index.html`)
+#### Authentication Page (`index`)
 
 ```
-1. index.html loads scripts
+1. index loads scripts
 2. app.js (ES Module entry point):
    ├── Creates UserService (Firebase Auth + Firestore)
    ├── Creates UIManager, LoadingManager, FormManager
@@ -788,13 +788,13 @@ The application adopts a **layered architecture with centralized orchestration**
    └── Creates ForgotPasswordHandler (with DI)
 3. User fills in form
 4. Handler validates → calls UserService → Firebase Auth
-5. Success → sessionStorage.setUser() → redirect to dashboard.html
+5. Success → sessionStorage.setUser() → redirect to dashboard
 ```
 
-#### Dashboard (`dashboard.html`)
+#### Dashboard (`dashboard`)
 
 ```
-1. dashboard.html loads scripts (ES modules + classic)
+1. dashboard loads scripts (ES modules + classic)
 2. ThemeManager.loadSavedTheme() — before DOM (prevents flash)
 3. dashboard.js (ES Module entry point):
    ├── onAuthStateChanged → verifies authentication
@@ -906,7 +906,7 @@ async renderMyModule(container) {
 }
 ```
 
-#### 4. Add navigation in `dashboard.html`
+#### 4. Add navigation in `dashboard`
 
 ```html
 <!-- In the sidebar -->
@@ -916,7 +916,7 @@ async renderMyModule(container) {
 </a>
 ```
 
-#### 5. Include scripts in `dashboard.html`
+#### 5. Include scripts in `dashboard`
 
 ```html
 <!-- My Module -->

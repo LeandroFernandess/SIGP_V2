@@ -30,7 +30,7 @@
 
 O **SIGP** (Sistema Inteligente de Gestão Pessoal) é uma aplicação web de página única (SPA) projetada para centralizar e organizar diversos aspectos da vida pessoal do usuário — finanças, tarefas, documentos, treinos, exames médicos, senhas e muito mais.
 
-A aplicação é composta por duas páginas HTML (`index.html` para autenticação e `dashboard.html` para o painel principal), com conteúdo dinâmico carregado por um sistema de abas internas, permitindo múltiplas seções abertas simultaneamente.
+A aplicação é composta por duas páginas HTML (`index` para autenticação e `dashboard` para o painel principal), com conteúdo dinâmico carregado por um sistema de abas internas, permitindo múltiplas seções abertas simultaneamente.
 
 ---
 
@@ -354,7 +354,7 @@ SOFTWARE.
 
 **SIGP** (Sistema Inteligente de Gestão Pessoal / Intelligent Personal Management System) is a single-page web application (SPA) designed to centralize and organize various aspects of the user's personal life — finances, tasks, documents, workouts, medical exams, passwords, and more.
 
-The application consists of two HTML pages (`index.html` for authentication and `dashboard.html` for the main panel), with dynamic content loaded by an internal tab system that allows multiple sections to be open simultaneously.
+The application consists of two HTML pages (`index` for authentication and `dashboard` for the main panel), with dynamic content loaded by an internal tab system that allows multiple sections to be open simultaneously.
 
 ---
 

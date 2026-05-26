@@ -103,7 +103,7 @@ class LoginHandler {
                 );
 
                 setTimeout(() => {
-                    window.location.href = 'dashboard.html';
+                    window.location.href = 'dashboard';
                 }, 1500);
             } else {
                 this.loadingManager.hide();
@@ -224,7 +224,7 @@ class LoginHandler {
                 );
 
                 setTimeout(() => {
-                    window.location.href = 'dashboard.html';
+                    window.location.href = 'dashboard';
                 }, 1500);
             } else {
                 this.loadingManager.hide();

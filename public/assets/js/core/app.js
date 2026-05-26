@@ -11,8 +11,8 @@
  * - Error handling for Firebase configuration issues
  * 
  * Page Flow:
- * - index.html: Login/Register forms (managed by this file)
- * - dashboard.html: Main page after login (managed by dashboard.js)
+ * - index: Login/Register forms (managed by this file)
+ * - dashboard: Main page after login (managed by dashboard.js)
  * 
  * Dependencies:
  * - UserService (Firebase Auth operations)

@@ -6,7 +6,7 @@
  * (digest and feedback) is handled server-side by Cloud Functions so no
  * EmailJS credentials or identifiers are ever exposed to the client.
  *
- * This file is kept to avoid 404s from dashboard.html while the script
+ * This file is kept to avoid 404s from dashboard while the script
  * tag is removed in a follow-up deploy.
  *
  * @author Leandro Fialho Fernandes

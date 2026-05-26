@@ -148,7 +148,7 @@ class RegisterHandler {
                 }
 
                 setTimeout(() => {
-                    window.location.href = 'dashboard.html';
+                    window.location.href = 'dashboard';
                 }, 1500);
             } else {
                 if (loadingManager) {

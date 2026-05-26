@@ -231,7 +231,7 @@ export class UserService {
      * const result = await userService.authenticate('user@example.com', 'password123');
      * if (result.success) {
      *   sessionStorage.setItem('currentUser', JSON.stringify(result.user));
-     *   window.location.href = 'dashboard.html';
+     *   window.location.href = 'dashboard';
      * } else {
      *   alert(result.message);
      * }
@@ -424,7 +424,7 @@ export class UserService {
      *     console.log(`Welcome! Your username: ${result.user.username}`);
      *   }
      *   sessionStorage.setItem('currentUser', JSON.stringify(result.user));
-     *   window.location.href = 'dashboard.html';
+     *   window.location.href = 'dashboard';
      * }
      */
     async signInWithGoogle() {
