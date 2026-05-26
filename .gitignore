@@ -39,4 +39,4 @@ build/
 .firebase/
 
 # Chaves de API
-keys.keys
+keys.key
